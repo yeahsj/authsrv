@@ -1,10 +1,10 @@
+# Test
 open browser, input url: 
 http://localhost:8080/auth/twitter?backurl=http://www.myhome.com
-
 then redirect to twitter authentication page, Authentication and authorization.
-
 then the server will redirect to your home page http://www.myhome.com.
  
+# Support
 Now supports the following authorization:
 twitter
 facebook
@@ -16,6 +16,6 @@ soundcloud
 path
 sino-weibo
 
-Author:
+# Author:
 yeahsj@gmail.com
 
