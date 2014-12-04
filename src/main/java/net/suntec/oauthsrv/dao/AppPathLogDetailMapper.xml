@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.suntec.oauthsrv.dao.AppPathLogDetailMapper">
+
+	<parameterMap id="BaseParameterMap"
+		type="net.suntec.oauthsrv.dto.AppPathLogDetail">
+		<parameter property="path" jdbcType="VARCHAR" javaType="String" />
+		<parameter property="starttime" jdbcType="INTEGER" javaType="Integer" />
+		<parameter property="endtime" jdbcType="INTEGER" javaType="Integer" />
+		<parameter property="status" jdbcType="INTEGER" javaType="Integer" />
+		<parameter property="msg" jdbcType="VARCHAR" javaType="String" />
+		<parameter property="params" jdbcType="VARCHAR" javaType="String" />
+		<parameter property="cost" jdbcType="INTEGER" javaType="Integer" />
+		<parameter property="headers" jdbcType="VARCHAR" javaType="String" />
+		<parameter property="remoteAddr" jdbcType="VARCHAR" javaType="String" />
+	</parameterMap>
+
+	<resultMap id="BaseResultMap" type="net.suntec.oauthsrv.dto.AppPathLogDetail">
+		<id column="path" property="path" jdbcType="VARCHAR" />
+		<result column="starttime" property="starttime" jdbcType="INTEGER" />
+		<result column="endtime" property="endtime" jdbcType="INTEGER" />
+		<result column="status" property="status" jdbcType="INTEGER" />
+		<result column="msg" property="msg" jdbcType="VARCHAR" />
+		<result column="params" property="params" jdbcType="VARCHAR" />
+		<result column="cost" property="cost" jdbcType="INTEGER" />
+		<result column="headers" property="headers" jdbcType="VARCHAR" />
+		<result column="remoteaddr" property="remoteAddr" jdbcType="VARCHAR" />
+	</resultMap>
+
+
+	<sql id="Base_Column_List">
+		path,
+		starttime,
+		endtime,
+		status,
+		msg,
+		params,
+		cost,
+		headers,
+		remoteaddr
+   	</sql>
+	<!--
+		<sql id="Where_Clause"> <trim prefix="WHERE" prefixOverrides="and">
+		<if test="path != null and path != ''">and path LIKE #{path}</if> <if
+		test="starttime != null">and starttime = #{starttime}</if> <if
+		test="endtime != null">and endtime = #{endtime}</if> <if test="status
+		!= null">and status = #{status}</if> <if test="msg != null and msg !=
+		''">and msg LIKE #{msg}</if> <if test="params != null and params !=
+		''">and params LIKE #{params}</if> </trim> </sql>
+	-->
+
+	<sql id="Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="and">
+			<if test="path != null and path != ''"><![CDATA[and path LIKE CONCAT( '%' , #{path} , '%' )]]></if>
+			<if test="starttime != null">and starttime = #{starttime}</if>
+			<if test="endtime != null">and endtime = #{endtime}</if>
+			<if test="status != null">and status = #{status}</if>
+			<if test="msg != null and msg != ''"><![CDATA[and msg LIKE CONCAT( '%' , #{msg} , '%' )]]></if>
+			<if test="params != null and params != ''"><![CDATA[and params LIKE CONCAT( '%' , #{params} , '%' )]]></if>
+		</trim>
+	</sql>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from APP_PATH_LOG_DETAIL
+		where path = #{path,jdbcType=VARCHAR}
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from
+		APP_PATH_LOG_DETAIL
+		where path = #{path,jdbcType=VARCHAR}
+    </delete>
+
+	<insert id="insert" parameterType="net.suntec.oauthsrv.dto.AppPathLogDetail">
+		insert into APP_PATH_LOG_DETAIL (
+		<include refid="Base_Column_List" />
+		)
+		values (
+		#{path,jdbcType=VARCHAR},
+		#{starttime,jdbcType=INTEGER},
+		#{endtime,jdbcType=INTEGER},
+		#{status,jdbcType=INTEGER},
+		#{msg,jdbcType=VARCHAR},
+		#{params,jdbcType=VARCHAR},
+		#{cost,jdbcType=INTEGER},
+		#{headers,jdbcType=VARCHAR},
+		#{remoteAddr,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<update id="updateByPrimaryKey" parameterType="net.suntec.oauthsrv.dto.AppPathLogDetail">
+		update
+		APP_PATH_LOG_DETAIL
+		set
+		starttime = #{starttime,jdbcType=INTEGER},
+		endtime = #{endtime,jdbcType=INTEGER},
+		status =
+		#{status,jdbcType=INTEGER},
+		msg = #{msg,jdbcType=VARCHAR},
+		params =
+		#{params,jdbcType=VARCHAR}
+		where path = #{path,jdbcType=VARCHAR}
+	</update>
+
+	<select id="select" resultMap="BaseResultMap"
+		parameterType="net.suntec.oauthsrv.dto.AppPathLogDetail">
+		select
+		<include refid="Base_Column_List" />
+		from APP_PATH_LOG_DETAIL
+		<include refid="Where_Clause" />
+	</select>
+
+	<select id="count" resultType="java.lang.Integer"
+		parameterType="net.suntec.oauthsrv.dto.AppPathLogDetail">
+		select
+		count(1)
+		from APP_PATH_LOG_DETAIL
+		<include refid="Where_Clause" />
+	</select>
+</mapper>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
+	http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+	<context-param>
+		<param-name>systemConfigPath</param-name>
+		<param-value>/config/SystemConfig.xml</param-value>
+	</context-param>
+
+	<!--
+		<listener> <description>加载配置</description>
+		<listener-class>net.suntec.oauthsrv.framework.AppListener</listener-class>
+		</listener> <listener>
+		<description>AppSessionActivationListener</description>
+		<listener-class>net.suntec.oauthsrv.framework.AppSessionActivationListener</listener-class>
+		</listener> <listener> <description>AppSessionListener</description>
+		<listener-class>net.suntec.oauthsrv.framework.AppSessionListener</listener-class>
+		</listener> <listener>
+		<description>AppSessionAttrListener</description>
+		<listener-class>net.suntec.oauthsrv.framework.AppSessionAttrListener</listener-class>
+		</listener> <filter> <filter-name>appInitFilter</filter-name>
+		<filter-class>net.suntec.oauthsrv.framework.AppInitFilter</filter-class>
+		<init-param> <param-name>encode</param-name>
+		<param-value>UTF-8</param-value> </init-param> </filter>
+	-->
+
+
+	<filter>
+		<filter-name>encodeFilter</filter-name>
+		<filter-class>net.suntec.oauthsrv.framework.EncodeFilter</filter-class>
+		<init-param>
+			<param-name>encode</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+
+	<filter>
+		<filter-name>pathlogFilter</filter-name>
+		<filter-class>net.suntec.oauthsrv.framework.PathLogFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>encodeFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>pathlogFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!--
+		<filter> <filter-name>webAccessFilter</filter-name>
+		<filter-class>net.suntec.oauthsrv.framework.WebAccessFilter</filter-class>
+		<init-param> <param-name>exceptServlets</param-name> <param-value>
+		/flow/login;/flow/doLogin;/flow/doLoginEndpoint </param-value>
+		</init-param> <init-param> <param-name>exceptions</param-name>
+		<param-value>htm;html;css;js;jpg;gif;ico;htc;faces;png;maifest</param-value>
+		</init-param> <init-param> <param-name>exceptJSPs</param-name>
+		<param-value></param-value> </init-param> </filter> <filter-mapping>
+		<filter-name>webAccessFilter</filter-name>
+		<url-pattern>/*</url-pattern> </filter-mapping>
+	-->
+	<servlet>
+		<servlet-name>mvc</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath*:/springMVC.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet>
+		<description>AppInit</description>
+		<display-name>AppInit</display-name>
+		<servlet-name>AppInitServlet</servlet-name>
+		<servlet-class>net.suntec.oauthsrv.framework.AppInitServlet</servlet-class>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>mvc</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Protected Context</web-resource-name>
+			<url-pattern>/*</url-pattern>
+		</web-resource-collection>
+		<user-data-constraint>
+			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+ 	-->
+ 
+	<welcome-file-list>
+		<welcome-file>main.html</welcome-file>
+	</welcome-file-list>
+</web-app>

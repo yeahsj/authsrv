@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="default">
+	<property file="build.properties">
+	</property>
+
+	<target name="default">
+		<delete>
+			<fileset dir="${to.src.dir}/">
+				<exclude name=".git/**" />
+			</fileset>
+		</delete>
+
+		<delete>
+			<fileset dir="${to.web.inf.dir}/">
+				<exclude name=".git/**" />
+			</fileset>
+		</delete>
+
+		<delete>
+			<fileset dir="${to.js.dir}/">
+				<exclude name=".git/**" />
+			</fileset>
+		</delete>
+
+		<delete>
+			<fileset dir="${to.css.dir}/">
+				<exclude name=".git/**" />
+			</fileset>
+		</delete>
+		
+		<delete>
+			<fileset dir="${to.html.dir}/">
+				<exclude name=".git/**" />
+			</fileset>
+		</delete>
+
+		<copy todir="${to.src.dir}">
+			<fileset dir="${src.java.dir}">
+			</fileset>
+			<fileset dir="${src.resource.dir}">
+			</fileset>
+		</copy>
+
+		<copy todir="${to.web.inf.dir}">
+			<fileset dir="${web.inf.dir}">
+				<exclude name=".class">
+				</exclude>
+			</fileset>
+		</copy>
+		<!--
+		<copy todir="${to.lib.dir}">
+			<fileset dir="${jar.dir}">
+			</fileset>
+		</copy>
+		-->
+
+		<copy todir="${to.css.dir}">
+			<fileset dir="${css.dir}">
+			</fileset>
+		</copy>
+		<copy todir="${to.js.dir}">
+			<fileset dir="${js.dir}">
+			</fileset>
+		</copy>
+		<copy todir="${to.html.dir}">
+			<fileset dir="${html.dir}">
+			</fileset>
+		</copy>  
+	</target>
+</project>

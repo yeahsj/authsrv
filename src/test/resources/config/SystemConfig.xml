@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SystemConfig>
+	<ServerConfig 
+	managerUserName="SuntecAdmin" 
+	managerPassword="psetsuntec" 
+	/>
+	<!-- 
+	<IautoConfig host="tmapdemo2.iauto.com" port="80" protocol="http"
+		grantType="password" 
+		phoneClientId="Phone_353f7a0ca0660fc0d52f384d3081818e"
+		phoneClientSercet="P_g0eMq2" 
+		deviceClientId="CarDevice_726ff9b40d40aa1e6e798abc701b4e06"
+		deviceClientSercet="D_j0jnZ3" languageCode="02002" ifVersion="1" />
+	 
+	<IautoConfig host="appstore.eddo-us.iauto.com" port="80" protocol="http"
+		grantType="password" 
+		phoneClientId="Phone_353f7a0ca0660fc0d52f384d3081818e"
+		phoneClientSercet="P_g0eMq2" 
+		deviceClientId="CarDevice_726ff9b40d40aa1e6e798abc701b4e06"
+		deviceClientSercet="D_j0jnZ3" languageCode="02002" ifVersion="1" />
+	--> 
+	 <IautoConfig 
+	 	host="172.26.181.120" 
+	 	port="8080" 
+	 	protocol="http"
+	 	isDemo="false"
+	 	demoName="demo2"
+		grantType="password" 
+		phoneClientId="Phone_353f7a0ca0660fc0d52f384d3081818e"
+		phoneClientSercet="P_g0eMq2" 
+		deviceClientId="CarDevice_726ff9b40d40aa1e6e798abc701b4e06"
+		deviceClientSercet="D_j0jnZ3" languageCode="02002" ifVersion="1" />
+	<!-- 
+	<IautoConfig host="appstore.suntec.net" port="80" protocol="http"
+		grantType="password" 
+		phoneClientId="Phone_353f7a0ca0660fc0d52f384d3081818e"
+		phoneClientSercet="P_g0eMq2" 
+		deviceClientId="CarDevice_726ff9b40d40aa1e6e798abc701b4e06"
+		deviceClientSercet="D_j0jnZ3" languageCode="02002" ifVersion="1" />
+	 -->
+</SystemConfig>

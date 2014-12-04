@@ -1,0 +1,13 @@
+/target/
+/web/html
+/web/js
+/web/css
+/doc
+/lib
+/web/testhtml
+/.myeclipse
+/.settings
+/.project
+/.mymetadata
+/.classpath
+

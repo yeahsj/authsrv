@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.suntec.oauthsrv.dao.AppIautoMapMapper">
+
+	<parameterMap id="BaseParameterMap" type="net.suntec.oauthsrv.dto.AppIautoMap">
+		<parameter property="aimId" jdbcType="INTEGER" javaType="Integer" />
+		<parameter property="iautoUserId" jdbcType="VARCHAR"
+			javaType="String" />
+		<parameter property="appType" jdbcType="VARCHAR" javaType="String" />
+		<parameter property="clientId" jdbcType="VARCHAR" javaType="String" />
+		<parameter property="accessToken" jdbcType="VARCHAR"
+			javaType="String" />
+		<parameter property="refreshToken" jdbcType="VARCHAR"
+			javaType="String" />
+		<parameter property="apiUid" jdbcType="VARCHAR" javaType="String" />
+		<parameter property="creationDate" jdbcType="VARCHAR"
+			javaType="String" />
+	</parameterMap>
+
+	<resultMap id="BaseResultMap" type="net.suntec.oauthsrv.dto.AppIautoMap">
+		<id column="aim_id" property="aimId" jdbcType="INTEGER" />
+		<result column="iauto_user_id" property="iautoUserId" jdbcType="VARCHAR" />
+		<result column="app_type" property="appType" jdbcType="VARCHAR" />
+		<result column="client_id" property="clientId" jdbcType="VARCHAR" />
+		<result column="access_token" property="accessToken" jdbcType="VARCHAR" />
+		<result column="refresh_token" property="refreshToken"
+			jdbcType="VARCHAR" />
+		<result column="api_uid" property="apiUid" jdbcType="VARCHAR" />
+		<result column="creation_date" property="creationDate"
+			jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Select_Column_List">
+		aim.aim_id,
+		aim.iauto_user_id,
+		aim.app_type,
+		aim.client_id,
+		aim.access_token,
+		aim.refresh_token,
+		aim.api_uid,
+		aim.creation_date
+     </sql>
+     
+	<sql id="Base_Column_List">
+		aim_id,
+		iauto_user_id,
+		app_type,
+		client_id,
+		access_token,
+		refresh_token,
+		api_uid,
+		creation_date
+     </sql>
+	<!--
+		<sql id="Where_Clause"> <trim prefix="WHERE" prefixOverrides="and">
+		<if test="aimId != null">and aim_id = #{aimId}</if> <if
+		test="iautoUserId != null">and iauto_user_id = #{iautoUserId}</if> <if
+		test="appType != null and appType != ''">and app_type LIKE
+		#{appType}</if> <if test="clientId != null and clientId != ''">and
+		client_id LIKE #{clientId}</if> <if test="accessToken != null and
+		accessToken != ''">and access_token LIKE #{accessToken}</if> <if
+		test="refreshToken != null and refreshToken != ''">and refresh_token
+		LIKE #{refreshToken}</if> <if test="apiUid != null">and api_uid =
+		#{apiUid}</if> </trim> </sql>
+	-->
+
+	<sql id="Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="and">
+			<if test="aimId != null">and aim_id = #{aimId}</if>
+			<if test="iautoUserId != null">and iauto_user_id = #{iautoUserId}</if>
+			<if test="appType != null and appType != ''"><![CDATA[and app_type LIKE CONCAT( '%' , #{appType} , '%' )]]></if>
+			<if test="clientId != null and clientId != ''"><![CDATA[and client_id LIKE CONCAT( '%' , #{clientId} , '%' )]]></if>
+			<if test="accessToken != null and accessToken != ''"><![CDATA[and access_token LIKE CONCAT( '%' , #{accessToken} , '%' )]]></if>
+			<if test="refreshToken != null and refreshToken != ''"><![CDATA[and refresh_token LIKE CONCAT( '%' , #{refreshToken} , '%' )]]></if>
+			<if test="apiUid != null">and api_uid = #{apiUid}</if>
+		</trim>
+	</sql>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from APP_IAUTO_MAP
+		where aim_id = #{aimId,jdbcType=VARCHAR}
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from
+		APP_IAUTO_MAP
+		where aim_id = #{aimId,jdbcType=VARCHAR}
+    </delete>
+
+
+
+
+	<insert id="insert" parameterType="net.suntec.oauthsrv.dto.AppIautoMap">
+		insert into APP_IAUTO_MAP (
+		iauto_user_id,
+		app_type,
+		client_id,
+		access_token,
+		refresh_token,
+		api_uid,
+		creation_date
+		)
+		values (
+		#{iautoUserId,jdbcType=VARCHAR},
+		#{appType,jdbcType=VARCHAR},
+		#{clientId,jdbcType=VARCHAR},
+		#{accessToken,jdbcType=VARCHAR},
+		#{refreshToken,jdbcType=VARCHAR},
+		#{apiUid,jdbcType=VARCHAR},
+		date_trunc('second', now())
+		)
+    </insert>
+
+	<update id="updateByPrimaryKey" parameterType="net.suntec.oauthsrv.dto.AppIautoMap">
+		update
+		APP_IAUTO_MAP
+		set
+		iauto_user_id = #{iautoUserId,jdbcType=VARCHAR},
+		app_type = #{appType,jdbcType=VARCHAR},
+		client_id =
+		#{clientId,jdbcType=VARCHAR},
+		access_token =
+		#{accessToken,jdbcType=VARCHAR},
+		refresh_token =
+		#{refreshToken,jdbcType=VARCHAR},
+		api_uid = #{apiUid,jdbcType=VARCHAR}
+		where aim_id = #{aimId,jdbcType=VARCHAR} 
+    </update>
+
+	<select id="select" resultMap="BaseResultMap"
+		parameterType="net.suntec.oauthsrv.dto.AppIautoMap">
+		select
+		<include refid="Base_Column_List" />
+		from APP_IAUTO_MAP
+		<include refid="Where_Clause" />
+	</select>
+
+	<select id="count" resultType="java.lang.Integer"
+		parameterType="net.suntec.oauthsrv.dto.AppIautoMap">
+		select
+		count(1)
+		from APP_IAUTO_MAP
+		<include refid="Where_Clause" />
+	</select>
+
+	<delete id="deleteByPrimaryKeys" parameterType="net.suntec.oauthsrv.dto.AppIautoMap">
+		delete
+		from
+		APP_IAUTO_MAP
+		where
+		iauto_user_id = #{iautoUserId,jdbcType=VARCHAR}
+		and
+		app_type = #{appType,jdbcType=VARCHAR}
+    </delete>
+
+	<select id="selectByPrimaryKeys" resultMap="BaseResultMap"
+		parameterType="net.suntec.oauthsrv.dto.AppIautoMap">
+		select
+		<include refid="Base_Column_List" />
+		from APP_IAUTO_MAP
+		where
+		iauto_user_id = #{iautoUserId,jdbcType=VARCHAR}
+		and app_type = #{appType,jdbcType=VARCHAR}
+	</select>
+	
+	
+	<select id="selectIautoBindApp" resultMap="BaseResultMap"
+		parameterType="net.suntec.oauthsrv.dto.AppIautoMap">
+		select
+		<include refid="Select_Column_List" />
+		from APP_IAUTO_MAP aim
+		where
+		aim.iauto_user_id = #{iautoUserId,jdbcType=VARCHAR}
+		and aim.app_type = #{appType,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectExpiredApp" resultMap="BaseResultMap"
+		parameterType="net.suntec.oauthsrv.dto.AppIautoMap">
+		select
+		<include refid="Base_Column_List" />
+		from app_iauto_map
+		where
+		to_date( creation_date , 'YYYY-MM-DD
+		HH24:MI:SS' ) + interval '60 Days' &lt; now()
+	</select>
+
+	<delete id="deleteExpiredApps" parameterType="net.suntec.oauthsrv.dto.AppIautoMap">
+		delete
+		from
+		APP_IAUTO_MAP aim
+    	where 
+			exists
+			( select 1 from app_base ab where ab.app_type = aim.app_type and 
+			365*EXTRACT(YEAR from age(  now()  , to_date(aim.creation_date , 'YYYY-MM-DD HH24:MI:SS' )  )  )+
+			30*EXTRACT(MONTH from age(  now()  , to_date(aim.creation_date , 'YYYY-MM-DD HH24:MI:SS' )  )  )+
+			EXTRACT(DAY from age(  now()  , to_date(aim.creation_date , 'YYYY-MM-DD HH24:MI:SS' )  )  ) >= ab.expired_time );
+    </delete>
+    <!-- 
+    	to_date( creation_date , 'YYYY-MM-DD HH24:MI:SS' ) + interval '${expireTime} Days' &lt; now()
+     -->
+    
+</mapper>

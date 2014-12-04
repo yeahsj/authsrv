@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.suntec.oauthsrv.dao.AppDeviceDistributeMapper">
+
+	<parameterMap id="BaseParameterMap"
+		type="net.suntec.oauthsrv.dto.AppDeviceDistribute">
+		<parameter property="appType" jdbcType="VARCHAR" javaType="String" />
+		<parameter property="clientId" jdbcType="VARCHAR" javaType="String" />
+		<parameter property="deviceNo" jdbcType="VARCHAR" javaType="String" />
+	</parameterMap>
+
+	<resultMap id="BaseResultMap" type="net.suntec.oauthsrv.dto.AppDeviceDistribute">
+		<result column="app_type" property="appType" jdbcType="VARCHAR" />
+		<result column="client_id" property="clientId" jdbcType="VARCHAR" />
+		<result column="device_no" property="deviceNo" jdbcType="VARCHAR" />
+	</resultMap>
+
+
+	<sql id="Base_Column_List">
+		app_type,
+		client_id,
+		device_no
+ 	</sql>
+	<!--
+		<sql id="Where_Clause"> <trim prefix="WHERE" prefixOverrides="and">
+		<if test="appType != null and appType != ''">and app_type LIKE
+		#{appType}</if> <if test="clientId != null and clientId != ''">and
+		client_id LIKE #{clientId}</if> <if test="deviceNo != null and
+		deviceNo != ''">and device_no LIKE #{deviceNo}</if> </trim> </sql>
+	-->
+
+	<sql id="Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="and">
+			<if test="appType != null and appType != ''"><![CDATA[and app_type LIKE CONCAT( '%' , #{appType} , '%' )]]></if>
+			<if test="clientId != null and clientId != ''"><![CDATA[and client_id LIKE CONCAT( '%' , #{clientId} , '%' )]]></if>
+			<if test="deviceNo != null and deviceNo != ''"><![CDATA[and device_no LIKE CONCAT( '%' , #{deviceNo} , '%' )]]></if>
+		</trim>
+	</sql>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from APP_DEVICE_DISTRIBUTE
+		where app_type = #{appType,jdbcType=VARCHAR}
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from APP_DEVICE_DISTRIBUTE
+		where app_type = #{appType,jdbcType=VARCHAR}
+    </delete>
+
+	<insert id="insert" parameterType="net.suntec.oauthsrv.dto.AppDeviceDistribute">
+		insert into APP_DEVICE_DISTRIBUTE (
+		<include refid="Base_Column_List" />
+		)
+		values (
+		#{appType,jdbcType=VARCHAR},
+		#{clientId,jdbcType=VARCHAR},
+		#{deviceNo,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<update id="updateByPrimaryKey" parameterType="net.suntec.oauthsrv.dto.AppDeviceDistribute">
+		update APP_DEVICE_DISTRIBUTE
+		set
+		client_id = #{clientId,jdbcType=VARCHAR},
+		device_no = #{deviceNo,jdbcType=VARCHAR}
+		where app_type = #{appType,jdbcType=VARCHAR} 
+    </update>
+
+	<select id="select" resultMap="BaseResultMap"
+		parameterType="net.suntec.oauthsrv.dto.AppDeviceDistribute">
+		select
+		<include refid="Base_Column_List" />
+		from APP_DEVICE_DISTRIBUTE
+		<include refid="Where_Clause" />
+	</select>
+	
+	<select id="selectClientIdByDeviceNo" resultMap="BaseResultMap"
+		parameterType="net.suntec.oauthsrv.dto.AppDeviceDistribute">
+		select
+		<include refid="Base_Column_List" />
+		from APP_DEVICE_DISTRIBUTE
+		where 
+		app_type = #{appType,jdbcType=VARCHAR} 
+		and device_no = #{deviceNo,jdbcType=VARCHAR}
+	</select>
+	
+
+	<select id="count" resultType="java.lang.Integer"
+		parameterType="net.suntec.oauthsrv.dto.AppDeviceDistribute">
+		select
+		count(1)
+		from APP_DEVICE_DISTRIBUTE
+		<include refid="Where_Clause" />
+	</select>
+</mapper>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.suntec.oauthsrv.dao.AppIautoBindConfigMapper">
+
+	<parameterMap id="BaseParameterMap"
+		type="net.suntec.oauthsrv.dto.AppIautoBindConfig">
+		<parameter property="userName" jdbcType="VARCHAR" javaType="String" />
+		<parameter property="appType" jdbcType="VARCHAR" javaType="String" />
+	</parameterMap>
+
+	<resultMap id="BaseResultMap" type="net.suntec.oauthsrv.dto.AppIautoBindConfig">
+		<id column="user_name" property="userName" jdbcType="VARCHAR" />
+		<result column="app_type" property="appType" jdbcType="VARCHAR" />
+	</resultMap>
+
+
+	<sql id="Base_Column_List">
+		user_name,
+		app_type
+	</sql>
+	<!--
+		<sql id="Where_Clause"> <trim prefix="WHERE" prefixOverrides="and">
+		<if test="userName != null and userName != ''">and user_name LIKE
+		#{userName}</if> <if test="appType != null and appType != ''">and
+		app_type LIKE #{appType}</if> </trim> </sql>
+	-->
+
+	<sql id="Where_Clause">
+		<trim prefix="WHERE" prefixOverrides="and">
+			<if test="userName != null and userName != ''"><![CDATA[and user_name LIKE CONCAT( '%' , #{userName} , '%' )]]></if>
+			<if test="appType != null and appType != ''"><![CDATA[and app_type LIKE CONCAT( '%' , #{appType} , '%' )]]></if>
+		</trim>
+	</sql>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from APP_IAUTO_BIND_CONFIG
+		where user_name = #{userName,jdbcType=VARCHAR}
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from APP_IAUTO_BIND_CONFIG
+		where user_name = #{userName,jdbcType=VARCHAR}
+    </delete>
+
+	<insert id="insert" parameterType="net.suntec.oauthsrv.dto.AppIautoBindConfig">
+		insert into APP_IAUTO_BIND_CONFIG (
+		<include refid="Base_Column_List" />
+		)
+		values (
+		#{userName,jdbcType=VARCHAR},
+		#{appType,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<update id="updateByPrimaryKey" parameterType="net.suntec.oauthsrv.dto.AppIautoBindConfig">
+		update APP_IAUTO_BIND_CONFIG
+		set
+		app_type = #{appType,jdbcType=VARCHAR}
+		where user_name = #{userName,jdbcType=VARCHAR} 
+    </update>
+
+	<select id="select" resultMap="BaseResultMap"
+		parameterType="net.suntec.oauthsrv.dto.AppIautoBindConfig">
+		select
+		<include refid="Base_Column_List" />
+		from APP_IAUTO_BIND_CONFIG
+		<include refid="Where_Clause" />
+	</select>
+
+	<select id="count" resultType="java.lang.Integer"
+		parameterType="net.suntec.oauthsrv.dto.AppIautoBindConfig">
+		select
+		count(1)
+		from APP_IAUTO_BIND_CONFIG
+		<include refid="Where_Clause" />
+	</select>
+</mapper>
