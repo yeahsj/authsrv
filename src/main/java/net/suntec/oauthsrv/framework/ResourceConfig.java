@@ -74,8 +74,9 @@ public class ResourceConfig {
 		InputSource inputSource = new InputSource();
 		InputStream inputStream = null;
 		try {
-			inputStream = ResourceConfig.class.getClassLoader().getResourceAsStream(configFile);
-//			inputStream = new FileInputStream(new File(resourceUrl.toURI()));
+			inputStream = ResourceConfig.class.getClassLoader()
+					.getResourceAsStream(configFile);
+			// inputStream = new FileInputStream(new File(resourceUrl.toURI()));
 			// inputStream = new
 			// FileInputStream(ResourceUtils.getFile(configFile));
 			inputSource.setByteStream(inputStream);

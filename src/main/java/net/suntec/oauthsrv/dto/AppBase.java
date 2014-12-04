@@ -24,7 +24,7 @@ public class AppBase extends PioneerDTO {
 	private Integer oauthVersion;
 	private Integer requestUserInfo;
 	private String description;
-	private Integer expiredTime; 
+	private Integer expiredTime;
 
 	// 显示字段
 	private String accessToken;

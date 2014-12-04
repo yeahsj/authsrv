@@ -21,7 +21,8 @@ import com.openjava.core.util.StrUtil;
  * @修改历史:
  */
 public abstract class AbstractOauthProvider {
-	public abstract String getAuthHeader(AppConfig appConfig, Token token, String requestUrl, String method);
+	public abstract String getAuthHeader(AppConfig appConfig, Token token,
+			String requestUrl, String method);
 
 	public abstract void buildRedirectUrl(OauthFlowStatus user);
 
@@ -29,8 +30,9 @@ public abstract class AbstractOauthProvider {
 
 	public void prodUserProfile(OauthFlowStatus oauthFlowStatus) {
 		OAuthService service = getOAuthService(oauthFlowStatus);
-		ProviderUser providerUser = service.getProviderUser(oauthFlowStatus.getAccessToken(), oauthFlowStatus
-				.getAppConfig().isRequestForUserInfo());
+		ProviderUser providerUser = service.getProviderUser(oauthFlowStatus
+				.getAccessToken(), oauthFlowStatus.getAppConfig()
+				.isRequestForUserInfo());
 		oauthFlowStatus.setProviderUser(providerUser);
 	}
 
@@ -46,8 +48,11 @@ public abstract class AbstractOauthProvider {
 	 */
 	protected OAuthService getOAuthService(AppConfig appConfig) {
 		ServiceBuilder builder = new ServiceBuilder();
-		builder.provider(appConfig.getClazz()).apiKey(appConfig.getAppKey()).apiSecret(appConfig.getAppSecret())
-				.callback(appConfig.getLocalServer() + appConfig.getCallbackUrl());
+		builder.provider(appConfig.getClazz())
+				.apiKey(appConfig.getAppKey())
+				.apiSecret(appConfig.getAppSecret())
+				.callback(
+						appConfig.getLocalServer() + appConfig.getCallbackUrl());
 		// builder.debugStream(System.out);
 		if (!StrUtil.isEmpty(appConfig.getScope())) {
 			builder.scope(appConfig.getScope());

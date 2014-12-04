@@ -23,6 +23,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.openjava.core.util.StrUtil;
 
+/**
+ * 
+ * 
+ * @项目名称: OauthSrv
+ * @功能描述:
+ * @当前版本： 1.0
+ * @创建时间: 2014年12月4日 下午5:50:07
+ * @author: <a href="mailto:yeahsj@yahoo.com.cn">yeahsj</a>
+ * @修改历史:
+ */
 @Controller
 public class MainAction {
 	@Autowired
@@ -31,7 +41,8 @@ public class MainAction {
 	private final Logger logger = LoggerFactory.getLogger(MainAction.class);
 
 	@RequestMapping(value = "/")
-	public String all(HttpServletRequest req, HttpServletResponse res, Model model) throws IOException {
+	public String all(HttpServletRequest req, HttpServletResponse res,
+			Model model) throws IOException {
 		// res.sendRedirect(AppConstant.MAIN_URL);
 		String code = req.getParameter("code");
 		if (StrUtil.isEmpty(code)) {
@@ -42,15 +53,18 @@ public class MainAction {
 		// return null;
 	}
 
-	public String handleFeedly(HttpServletRequest req, HttpServletResponse res) throws IOException {
+	public String handleFeedly(HttpServletRequest req, HttpServletResponse res)
+			throws IOException {
 		String errMsg = null;
-		OauthFlowStatus oauthFlowStatus = SessionUtil.getSessionOauthStatus(req, "");
+		OauthFlowStatus oauthFlowStatus = SessionUtil.getSessionOauthStatus(
+				req, "");
 		if (null == oauthFlowStatus) {
 			res.sendRedirect(AppConstant.MAIN_URL);
 			return null;
 		}
 
-		OauthStatusParamDTO oauthStatusParamDTO = SessionUtil.getSessionOauthParamsStatus(req, "");
+		OauthStatusParamDTO oauthStatusParamDTO = SessionUtil
+				.getSessionOauthParamsStatus(req, "");
 
 		String code = req.getParameter("code");
 		if (StrUtil.isNotEmpty(code)) {
@@ -65,20 +79,26 @@ public class MainAction {
 			OauthProviderService.obtainAccessToken(oauthFlowStatus);
 			OauthProviderService.prodUserProfile(oauthFlowStatus);
 			SessionUtil.removeSessionOauthStatus(req, "");
-			String fromPhone = StrUtil.nullToString(oauthStatusParamDTO.getFromPhone());
+			String fromPhone = StrUtil.nullToString(oauthStatusParamDTO
+					.getFromPhone());
 			if ("true".equals(fromPhone)
-					|| (oauthStatusParamDTO.isSave() && StrUtil.isNotEmpty(oauthStatusParamDTO.getLoginName()))) {
+					|| (oauthStatusParamDTO.isSave() && StrUtil
+							.isNotEmpty(oauthStatusParamDTO.getLoginName()))) {
 				AppIautoMap record = new AppIautoMap();
 				record.setIautoUserId(oauthStatusParamDTO.getLoginName());
 				record.setClientId(oauthFlowStatus.getAppConfig().getAppKey());
 				record.setAppType(oauthFlowStatus.getAppConfig().getAppType());
 				record.setApiUid(oauthFlowStatus.getProviderUser().getUserId());
-				record.setAccessToken(oauthFlowStatus.getAccessToken().getToken());
-				record.setRefreshToken(oauthFlowStatus.getAccessToken().getSecret());
-				aSCoreService.saveAuthStatus(record, AppConstant.AUTH_LOGIN_PHONE);
+				record.setAccessToken(oauthFlowStatus.getAccessToken()
+						.getToken());
+				record.setRefreshToken(oauthFlowStatus.getAccessToken()
+						.getSecret());
+				aSCoreService.saveAuthStatus(record,
+						AppConstant.AUTH_LOGIN_PHONE);
 			}
 
-			if ("true".equals(fromPhone) && StrUtil.isEmpty(oauthStatusParamDTO.getBackurl())) {
+			if ("true".equals(fromPhone)
+					&& StrUtil.isEmpty(oauthStatusParamDTO.getBackurl())) {
 				res.sendRedirect(AppConstant.INDEX_URL);
 			} else {
 				StringBuilder redUrl = new StringBuilder();

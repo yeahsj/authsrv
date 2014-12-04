@@ -52,14 +52,17 @@ public class AppInitServlet extends HttpServlet {
 
 	/**
 	 * 定时JOB
-	 * @throws ServletException 
+	 * 
+	 * @throws ServletException
 	 */
 	private void doAutoJob() throws ServletException {
 		logger.info("doAutoJob ................ ");
 		try {
 			AppTaskExecutors appTaskExecutors = AppTaskExecutors.getInstance();
-			appTaskExecutors.addTask(new CleanAccessTokenJob(this.getServletContext()),
-					CleanAccessTokenJob.INITIALDELAY, CleanAccessTokenJob.PERIOD, CleanAccessTokenJob.TIME_UNIT);
+			appTaskExecutors.addTask(
+					new CleanAccessTokenJob(this.getServletContext()),
+					CleanAccessTokenJob.INITIALDELAY,
+					CleanAccessTokenJob.PERIOD, CleanAccessTokenJob.TIME_UNIT);
 			logger.info("doAutoJob success  ........... ");
 		} catch (Exception ex) {
 			logger.warning(ex.getMessage());
@@ -82,8 +85,9 @@ public class AppInitServlet extends HttpServlet {
 	private void initSysConfig() throws ServletException {
 		logger.info(" initSysConfig ................... ");
 		ResourceConfig resourceConfig = ResourceConfig.getInstance();
-		String systemConfigPath = getServletContext().getInitParameter("systemConfigPath");
-		logger.info("systemConfigPath: " + systemConfigPath );
+		String systemConfigPath = getServletContext().getInitParameter(
+				"systemConfigPath");
+		logger.info("systemConfigPath: " + systemConfigPath);
 		try {
 			resourceConfig.init(systemConfigPath);
 			logger.info(" initSysConfig success ................... ");

@@ -26,8 +26,8 @@ import com.openjava.core.util.StrUtil;
 public class IautoGetDeviceUserInfoService extends IautoGetUserInfoService {
 	private static String USER_INFO_DEVICE_URL = "/aswapi/getUserInfoForDevice";
 
-	public IautoGetDeviceUserInfoService(IautoConfigDTO configDTO, IautoGetDeviceUserInfoParamDTO paramDTO,
-			IautoHeaderDTO headerDTO) {
+	public IautoGetDeviceUserInfoService(IautoConfigDTO configDTO,
+			IautoGetDeviceUserInfoParamDTO paramDTO, IautoHeaderDTO headerDTO) {
 		super(configDTO, paramDTO, headerDTO);
 		super.loginUrl = USER_INFO_DEVICE_URL;
 	}
@@ -35,16 +35,20 @@ public class IautoGetDeviceUserInfoService extends IautoGetUserInfoService {
 	@Override
 	public void checkParams() {
 		if (StrUtil.isEmpty(headerDTO.getSessionToken())) {
-			throw new ASIautoException(errMsg, AuthErrorCodeConstant.IT_GUI_ERR_NO_SESSIONTOKEN);
+			throw new ASIautoException(errMsg,
+					AuthErrorCodeConstant.IT_GUI_ERR_NO_SESSIONTOKEN);
 		}
 		if (StrUtil.isEmpty(paramDTO.getDeviceNo())) {
-			throw new ASIautoException(errMsg, AuthErrorCodeConstant.IT_GUI_DEVICE_ERR_NO_DEVICENO);
+			throw new ASIautoException(errMsg,
+					AuthErrorCodeConstant.IT_GUI_DEVICE_ERR_NO_DEVICENO);
 		}
 		if (StrUtil.isEmpty(paramDTO.getClientId())) {
-			throw new ASIautoException(errMsg, AuthErrorCodeConstant.IT_GUI_DEVICE_ERR_NO_CLIENTID);
+			throw new ASIautoException(errMsg,
+					AuthErrorCodeConstant.IT_GUI_DEVICE_ERR_NO_CLIENTID);
 		}
 		if (StrUtil.isEmpty(paramDTO.getPlatformVersion())) {
-			throw new ASIautoException(errMsg, AuthErrorCodeConstant.IT_GUI_DEVICE_ERR_NO_IF);
+			throw new ASIautoException(errMsg,
+					AuthErrorCodeConstant.IT_GUI_DEVICE_ERR_NO_IF);
 		}
 	}
 
@@ -53,7 +57,8 @@ public class IautoGetDeviceUserInfoService extends IautoGetUserInfoService {
 		request.addBodyParameter("client_id", paramDTO.getClientId());
 		request.addBodyParameter("languageCode", paramDTO.getLanguageCode());
 		request.addBodyParameter("deviceNo", paramDTO.getDeviceNo());
-		request.addBodyParameter("platformVersion", paramDTO.getPlatformVersion());
+		request.addBodyParameter("platformVersion",
+				paramDTO.getPlatformVersion());
 	}
 
 	/**
@@ -74,7 +79,8 @@ public class IautoGetDeviceUserInfoService extends IautoGetUserInfoService {
 		headerDTO.setIfVersion(configDTO.getIfVersion());
 		// deviceNo=
 		headerDTO.setSessionToken("8b71ce1590e9b595a2f91aea97343117");
-		IautoGetDeviceUserInfoService service = new IautoGetDeviceUserInfoService(configDTO, paramDTO, headerDTO);
+		IautoGetDeviceUserInfoService service = new IautoGetDeviceUserInfoService(
+				configDTO, paramDTO, headerDTO);
 		service.service();
 	}
 

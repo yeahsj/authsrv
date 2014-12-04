@@ -42,10 +42,12 @@ public final class IautoDeviceUtil {
 	 * @param iautoDeviceParamDTO
 	 * @return
 	 */
-	public static String getIautoDeviceUserName(HttpServletRequest req, IautoDeviceParamDTO iautoDeviceParamDTO,
+	public static String getIautoDeviceUserName(HttpServletRequest req,
+			IautoDeviceParamDTO iautoDeviceParamDTO,
 			MessageService messageService) {
 		String loginName = null;
-		IautoConfigDTO iautoConfigDTO = ResourceConfig.getInstance().getIautoConfigDTO();
+		IautoConfigDTO iautoConfigDTO = ResourceConfig.getInstance()
+				.getIautoConfigDTO();
 		// 是否模拟测试
 		if (iautoConfigDTO.getIsDemo()) {
 			loginName = iautoConfigDTO.getDemoName();
@@ -59,13 +61,16 @@ public final class IautoDeviceUtil {
 		}
 
 		if (StrUtil.isEmpty(loginName)) {
-			throw new ASBaseException(messageService.getMessage(req, MessageConstant.MSG_AUTHENTICATE_FAILED,
-					AuthErrorCodeConstant.APP_NO_LOGIN_NAME), AuthErrorCodeConstant.APP_NO_LOGIN_NAME);
+			throw new ASBaseException(messageService.getMessage(req,
+					MessageConstant.MSG_AUTHENTICATE_FAILED,
+					AuthErrorCodeConstant.APP_NO_LOGIN_NAME),
+					AuthErrorCodeConstant.APP_NO_LOGIN_NAME);
 		}
 		return loginName;
 	}
 
-	private static String getIautoDeviceUserNameFromIautoServer(IautoDeviceParamDTO iautoDeviceParamDTO) {
+	private static String getIautoDeviceUserNameFromIautoServer(
+			IautoDeviceParamDTO iautoDeviceParamDTO) {
 		return getIautoDeviceUserNameFromIautoServer(iautoDeviceParamDTO, true);
 	}
 
@@ -75,16 +80,19 @@ public final class IautoDeviceUtil {
 	 * @param iautoDeviceParamDTO
 	 * @return
 	 */
-	private static String getIautoDeviceUserNameFromIautoServer(IautoDeviceParamDTO iautoDeviceParamDTO, boolean cache) {
+	private static String getIautoDeviceUserNameFromIautoServer(
+			IautoDeviceParamDTO iautoDeviceParamDTO, boolean cache) {
 		String iautoSessionToken = iautoDeviceParamDTO.getSessionToken();
 		IautoUserDTO user = getIautoDeviceUser(iautoDeviceParamDTO);
 		if (null == user) {
-			throw new ASIautoException(" user not found or iauto session expired ",
+			throw new ASIautoException(
+					" user not found or iauto session expired ",
 					AuthErrorCodeConstant.APP_INVALID_ACCESS_TOKEN);
 		}
 		String userName = user.getUserName();
 		if (StrUtil.isEmpty(userName)) {
-			throw new ASIautoException(" iauto loginName not exists iauto sessiontoken expired ",
+			throw new ASIautoException(
+					" iauto loginName not exists iauto sessiontoken expired ",
 					AuthErrorCodeConstant.APP_NO_LOGIN_NAME);
 		}
 		if (cache) {
@@ -100,23 +108,27 @@ public final class IautoDeviceUtil {
 	 * @param iautoDeviceParamDTO
 	 * @return
 	 */
-	private static IautoUserDTO getIautoDeviceUser(IautoDeviceParamDTO iautoDeviceParamDTO) {
+	private static IautoUserDTO getIautoDeviceUser(
+			IautoDeviceParamDTO iautoDeviceParamDTO) {
 		String iautoSessionToken = iautoDeviceParamDTO.getSessionToken();
 		String platformVersion = iautoDeviceParamDTO.getPlatformVersion();
 		String deviceNo = iautoDeviceParamDTO.getDeviceNo();
 		if (StrUtil.isEmpty(iautoSessionToken)) {
-			throw new ASIautoException(" sessionToken is required  ", AuthErrorCodeConstant.IT_GUI_ERR_NO_SESSIONTOKEN);
+			throw new ASIautoException(" sessionToken is required  ",
+					AuthErrorCodeConstant.IT_GUI_ERR_NO_SESSIONTOKEN);
 		}
 		if (StrUtil.isEmpty(platformVersion)) {
-			throw new ASIautoException(" platformVersion is required  ", AuthErrorCodeConstant.IT_GUI_DEVICE_ERR_NO_IF);
+			throw new ASIautoException(" platformVersion is required  ",
+					AuthErrorCodeConstant.IT_GUI_DEVICE_ERR_NO_IF);
 		}
 		if (StrUtil.isEmpty(deviceNo)) {
-			throw new ASIautoException(" deviceNo is required  ", AuthErrorCodeConstant.IT_GUI_DEVICE_ERR_NO_DEVICENO);
+			throw new ASIautoException(" deviceNo is required  ",
+					AuthErrorCodeConstant.IT_GUI_DEVICE_ERR_NO_DEVICENO);
 		}
 		String iautoClientId = iautoDeviceParamDTO.getIautoClientId();
 		String languageCode = "";
 		IautoApiService iautoApiService = new IautoApiService();
-		return iautoApiService.doGetDeviceUserInfo(iautoSessionToken, iautoClientId, deviceNo, platformVersion,
-				languageCode);
+		return iautoApiService.doGetDeviceUserInfo(iautoSessionToken,
+				iautoClientId, deviceNo, platformVersion, languageCode);
 	}
 }

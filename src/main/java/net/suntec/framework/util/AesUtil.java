@@ -22,6 +22,16 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 
+/**
+ * 
+ * 
+ * @项目名称: OauthSrv
+ * @功能描述:
+ * @当前版本： 1.0
+ * @创建时间: 2014年12月4日 下午5:49:27
+ * @author: <a href="mailto:yeahsj@yahoo.com.cn">yeahsj</a>
+ * @修改历史:
+ */
 public class AesUtil {
 	private static final String SALT = "3FF2EC019C627B945225DEBAD71A01B6985FE84C95A70EB132882F88C0A59A55";
 

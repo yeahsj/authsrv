@@ -36,8 +36,8 @@ public class AppTaskExecutors {
 
 	private AppTaskExecutors() {
 		taskExecutor = new ScheduledThreadPoolExecutor(5);
-		logThreadPoolExecutor = new ThreadPoolExecutor(5, 10, 60L, TimeUnit.SECONDS,
-				new LinkedBlockingQueue<Runnable>());
+		logThreadPoolExecutor = new ThreadPoolExecutor(5, 10, 60L,
+				TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 	}
 
 	public void shudown() {
@@ -67,7 +67,8 @@ public class AppTaskExecutors {
 				logThreadPoolExecutor.shutdownNow(); // Cancel currently
 				// executing tasks
 				// Wait a while for tasks to respond to being cancelled
-				if (!logThreadPoolExecutor.awaitTermination(60, TimeUnit.SECONDS))
+				if (!logThreadPoolExecutor.awaitTermination(60,
+						TimeUnit.SECONDS))
 					System.err.println("Pool did not terminate");
 			}
 		} catch (InterruptedException ie) {
@@ -96,7 +97,8 @@ public class AppTaskExecutors {
 		logger.info("  shutdown success ..... ");
 	}
 
-	public void addTask(Runnable command, long initialDelay, long period, TimeUnit unit) {
+	public void addTask(Runnable command, long initialDelay, long period,
+			TimeUnit unit) {
 		taskExecutor.scheduleAtFixedRate(command, initialDelay, period, unit);
 	}
 

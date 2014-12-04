@@ -10,11 +10,22 @@ import net.suntec.framework.iauto.dto.param.IautoPhoneLoginParamDTO;
 import net.suntec.framework.iauto.dto.result.IautoPhoneLoginResultDTO;
 import net.suntec.oauthsrv.framework.ResourceConfig;
 
+/**
+ * 
+ * 
+ * @项目名称: OauthSrv
+ * @功能描述:
+ * @当前版本： 1.0
+ * @创建时间: 2014年12月4日 下午5:49:17
+ * @author: <a href="mailto:yeahsj@yahoo.com.cn">yeahsj</a>
+ * @修改历史:
+ */
 public class IautoPhoneLoginService extends IautoLoginService {
 
 	static String PHONE_LOGIN_URL = "/auth/oauth/v2.0/token";
 
-	public IautoPhoneLoginService(IautoConfigDTO configDTO, IautoPhoneLoginParamDTO paramDTO, IautoHeaderDTO headerDTO) {
+	public IautoPhoneLoginService(IautoConfigDTO configDTO,
+			IautoPhoneLoginParamDTO paramDTO, IautoHeaderDTO headerDTO) {
 		super(configDTO, paramDTO, headerDTO);
 	}
 
@@ -35,10 +46,12 @@ public class IautoPhoneLoginService extends IautoLoginService {
 		paramDTO.setPassword("demo");
 		IautoHeaderDTO headerDTO = new IautoHeaderDTO();
 
-		IautoPhoneLoginService iautoDeviceLoginService = new IautoPhoneLoginService(configDTO, paramDTO, headerDTO);
+		IautoPhoneLoginService iautoDeviceLoginService = new IautoPhoneLoginService(
+				configDTO, paramDTO, headerDTO);
 		iautoDeviceLoginService.service();
 		if (iautoDeviceLoginService.isSuccess()) {
-			IautoPhoneLoginResultDTO result = iautoDeviceLoginService.getResult();
+			IautoPhoneLoginResultDTO result = iautoDeviceLoginService
+					.getResult();
 			System.out.println(result.getAccessToken());
 		} else {
 			System.out.println(iautoDeviceLoginService.getErrMsg());

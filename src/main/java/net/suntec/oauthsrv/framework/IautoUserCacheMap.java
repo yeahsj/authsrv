@@ -23,12 +23,13 @@ public final class IautoUserCacheMap {
 	public static IautoUserCacheMap getInstance() {
 		return instance;
 	}
- 
+
 	public synchronized String put(String key, String value) {
 		if (IAUTO_USER_MAP.size() >= 1000) {
 			logger.info("cache size over 1000 and remove");
-			for(int i=0; i<200; i++ ){
-				IAUTO_USER_MAP.remove(IAUTO_USER_MAP.keySet().iterator().next());
+			for (int i = 0; i < 200; i++) {
+				IAUTO_USER_MAP
+						.remove(IAUTO_USER_MAP.keySet().iterator().next());
 			}
 		}
 		return IAUTO_USER_MAP.put(key, value);

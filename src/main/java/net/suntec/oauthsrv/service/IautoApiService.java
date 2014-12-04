@@ -15,6 +15,16 @@ import net.suntec.oauthsrv.framework.ResourceConfig;
 
 import com.openjava.core.util.StrUtil;
 
+/**
+ * 
+ * 
+ * @项目名称: OauthSrv
+ * @功能描述:
+ * @当前版本： 1.0
+ * @创建时间: 2014年12月4日 下午5:53:39
+ * @author: <a href="mailto:yeahsj@yahoo.com.cn">yeahsj</a>
+ * @修改历史:
+ */
 public class IautoApiService {
 	String errMsg;
 
@@ -22,8 +32,9 @@ public class IautoApiService {
 		iautoConfigDTO = ResourceConfig.getInstance().getIautoConfigDTO();
 	}
 
-	public IautoUserDTO doGetDeviceUserInfo(String sessionToken, String clientId, String deviceNo,
-			String platformVersion, String languageCode) {
+	public IautoUserDTO doGetDeviceUserInfo(String sessionToken,
+			String clientId, String deviceNo, String platformVersion,
+			String languageCode) {
 		IautoGetDeviceUserInfoParamDTO paramDTO = new IautoGetDeviceUserInfoParamDTO();
 		if (StrUtil.isEmpty(clientId)) {
 			clientId = iautoConfigDTO.getDeviceClientId();
@@ -38,20 +49,21 @@ public class IautoApiService {
 		IautoHeaderDTO headerDTO = new IautoHeaderDTO();
 		headerDTO.setSessionToken(sessionToken);
 		headerDTO.setIfVersion(iautoConfigDTO.getIfVersion());
-		IautoGetDeviceUserInfoService iautoGetDeviceUserInfoService = new IautoGetDeviceUserInfoService(iautoConfigDTO,
-				paramDTO, headerDTO);
+		IautoGetDeviceUserInfoService iautoGetDeviceUserInfoService = new IautoGetDeviceUserInfoService(
+				iautoConfigDTO, paramDTO, headerDTO);
 		iautoGetDeviceUserInfoService.service();
 		return iautoGetDeviceUserInfoService.getResult();
 
-//		isSuccess = iautoGetDeviceUserInfoService.isSuccess();
-//		if (isSuccess) {
-//		} else {
-//			errMsg = " iauto login failed ";
-//			throw new AuthException(errMsg);
-//		}
+		// isSuccess = iautoGetDeviceUserInfoService.isSuccess();
+		// if (isSuccess) {
+		// } else {
+		// errMsg = " iauto login failed ";
+		// throw new AuthException(errMsg);
+		// }
 	}
 
-	public IautoUserDTO doGetPhoneUserInfo(String sessionToken, String clientId, String languageCode) {
+	public IautoUserDTO doGetPhoneUserInfo(String sessionToken,
+			String clientId, String languageCode) {
 		IautoGetDeviceUserInfoParamDTO paramDTO = new IautoGetDeviceUserInfoParamDTO();
 		if (StrUtil.isEmpty(clientId)) {
 			clientId = iautoConfigDTO.getPhoneClientId();
@@ -65,38 +77,41 @@ public class IautoApiService {
 		IautoHeaderDTO headerDTO = new IautoHeaderDTO();
 		headerDTO.setSessionToken(sessionToken);
 		headerDTO.setIfVersion(iautoConfigDTO.getIfVersion());
-		IautoGetPhoneUserInfoService iautoGetDeviceUserInfoService = new IautoGetPhoneUserInfoService(iautoConfigDTO,
-				paramDTO, headerDTO);
+		IautoGetPhoneUserInfoService iautoGetDeviceUserInfoService = new IautoGetPhoneUserInfoService(
+				iautoConfigDTO, paramDTO, headerDTO);
 		iautoGetDeviceUserInfoService.service();
-//		isSuccess = iautoGetDeviceUserInfoService.isSuccess();
-//		if (isSuccess) {
+		// isSuccess = iautoGetDeviceUserInfoService.isSuccess();
+		// if (isSuccess) {
 		return iautoGetDeviceUserInfoService.getResult();
-//		} else {
-//			errMsg = " iauto login failed ";
-//			throw new AuthException(errMsg);
-//		}
+		// } else {
+		// errMsg = " iauto login failed ";
+		// throw new AuthException(errMsg);
+		// }
 	}
 
 	public IautoPhoneLoginResultDTO doPhoneLogin() {
-		return doPhoneLogin(IautoConstant.DEVICE_USERNAME, IautoConstant.DEVICE_PWD);
+		return doPhoneLogin(IautoConstant.DEVICE_USERNAME,
+				IautoConstant.DEVICE_PWD);
 	}
 
-	public IautoPhoneLoginResultDTO doPhoneLogin(String username, String password) {
+	public IautoPhoneLoginResultDTO doPhoneLogin(String username,
+			String password) {
 		IautoPhoneLoginParamDTO paramDTO = new IautoPhoneLoginParamDTO();
 		paramDTO.setUsername(username);
 		paramDTO.setPassword(password);
 		paramDTO.setClientId(iautoConfigDTO.getPhoneClientId());
 		paramDTO.setClientSercet(iautoConfigDTO.getPhoneClientSercet());
 		paramDTO.setGrantType(IautoConstant.GRANT_TYPE);
-		IautoPhoneLoginService iautoPhoneLoginService = new IautoPhoneLoginService(iautoConfigDTO, paramDTO, null);
+		IautoPhoneLoginService iautoPhoneLoginService = new IautoPhoneLoginService(
+				iautoConfigDTO, paramDTO, null);
 		iautoPhoneLoginService.service();
-//		isSuccess = iautoPhoneLoginService.isSuccess();
-//		if (isSuccess) {
+		// isSuccess = iautoPhoneLoginService.isSuccess();
+		// if (isSuccess) {
 		return iautoPhoneLoginService.getResult();
-//		} else {
-//			errMsg = " iauto login failed ";
-//			throw new AuthException(errMsg);
-//		}
+		// } else {
+		// errMsg = " iauto login failed ";
+		// throw new AuthException(errMsg);
+		// }
 	}
 
 	public IautoPhoneLoginResultDTO doDeviceLogin() {
@@ -107,16 +122,16 @@ public class IautoApiService {
 		paramDTO.setUsername(IautoConstant.DEVICE_USERNAME);
 		paramDTO.setPassword(IautoConstant.DEVICE_PWD);
 		IautoHeaderDTO headerDTO = new IautoHeaderDTO();
-		IautoDeviceLoginService iautoDeviceLoginService = new IautoDeviceLoginService(iautoConfigDTO, paramDTO,
-				headerDTO);
+		IautoDeviceLoginService iautoDeviceLoginService = new IautoDeviceLoginService(
+				iautoConfigDTO, paramDTO, headerDTO);
 		iautoDeviceLoginService.service();
-//		isSuccess = iautoDeviceLoginService.isSuccess();
-//		if (isSuccess) {
+		// isSuccess = iautoDeviceLoginService.isSuccess();
+		// if (isSuccess) {
 		return iautoDeviceLoginService.getResult();
-//		} else {
-//			errMsg = " iauto login failed ";
-//			throw new AuthException(errMsg);
-//		}
+		// } else {
+		// errMsg = " iauto login failed ";
+		// throw new AuthException(errMsg);
+		// }
 	}
 
 	public boolean isSuccess() {

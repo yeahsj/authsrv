@@ -26,25 +26,26 @@ public final class ServerPathUtil {
 
 	public static String getCurrentServerRootPath(HttpServletRequest req) {
 		StringBuilder localServer = new StringBuilder();
-		ServerConfig serverConfig = ResourceConfig.getInstance().getServerConfig();
-		if( StrUtil.isEmpty(  serverConfig.getProtol() )){
+		ServerConfig serverConfig = ResourceConfig.getInstance()
+				.getServerConfig();
+		if (StrUtil.isEmpty(serverConfig.getProtol())) {
 			localServer.append(req.getScheme());
-		}else{
+		} else {
 			localServer.append(serverConfig.getProtol());
-		} 
+		}
 		localServer.append(LABEL_1);
 		localServer.append(LABEL_2);
 		localServer.append(req.getServerName());
 		// localServer.append(req.getScheme());
 
-		if (req.getServerPort() != 80 && req.getServerPort() != 443 ) {
+		if (req.getServerPort() != 80 && req.getServerPort() != 443) {
 			localServer.append(LABEL_1);
 			localServer.append(req.getServerPort());
 		}
-		
+
 		String path = req.getContextPath();
-		if( !path.equals("/") && !path.equals("")){
-			localServer.append( path );
+		if (!path.equals("/") && !path.equals("")) {
+			localServer.append(path);
 		}
 		return localServer.toString();
 	}

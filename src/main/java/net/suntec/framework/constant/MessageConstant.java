@@ -1,5 +1,15 @@
 package net.suntec.framework.constant;
 
+/**
+ * 
+ * 
+ * @项目名称: OauthSrv
+ * @功能描述: 国际化消息常量
+ * @当前版本： 1.0
+ * @创建时间: 2014年12月4日 下午5:45:44
+ * @author: <a href="mailto:yeahsj@yahoo.com.cn">yeahsj</a>
+ * @修改历史:
+ */
 public interface MessageConstant {
 	String MSG_SYSTEM_FAILED = "MSG_SYSTEM_FAILED";
 	String MSG_AUTHENTICATE_FAILED = "MSG_AUTHENTICATE_FAILED";

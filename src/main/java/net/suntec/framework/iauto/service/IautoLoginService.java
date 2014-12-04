@@ -15,10 +15,22 @@ import org.scribe.model.Verb;
 
 import com.openjava.core.util.encryption.MD5Processor;
 
-public abstract class IautoLoginService extends
+/**
+ * 
+ * 
+ * @项目名称: OauthSrv
+ * @功能描述:
+ * @当前版本： 1.0
+ * @创建时间: 2014年12月4日 下午5:49:13
+ * @author: <a href="mailto:yeahsj@yahoo.com.cn">yeahsj</a>
+ * @修改历史:
+ */
+public abstract class IautoLoginService
+		extends
 		IautoAbstractHttpService<IautoPhoneLoginParamDTO, IautoPhoneLoginResultDTO> {
 
-	public IautoLoginService(IautoConfigDTO configDTO, IautoPhoneLoginParamDTO paramDTO, IautoHeaderDTO headerDTO) {
+	public IautoLoginService(IautoConfigDTO configDTO,
+			IautoPhoneLoginParamDTO paramDTO, IautoHeaderDTO headerDTO) {
 		super(configDTO, paramDTO, headerDTO);
 	}
 
@@ -26,7 +38,8 @@ public abstract class IautoLoginService extends
 	public void addBodyParameters(OAuthRequest request) {
 		request.addBodyParameter("grant_type", paramDTO.getGrantType());
 		request.addBodyParameter("username", paramDTO.getUsername());
-		request.addBodyParameter("password", MD5Processor.getMD5Value(paramDTO.getPassword()));
+		request.addBodyParameter("password",
+				MD5Processor.getMD5Value(paramDTO.getPassword()));
 		request.addBodyParameter("client_id", paramDTO.getClientId());
 		request.addBodyParameter("client_secret", paramDTO.getClientSercet());
 	}
@@ -44,7 +57,8 @@ public abstract class IautoLoginService extends
 			response = request.send();// fe01ce2a7fbac8fafaed7c982a04e229
 		} catch (OAuthConnectionException ex) {
 			errMsg = ex.getMessage();
-			throw new ASIautoLoginException(errMsg, AuthErrorCodeConstant.IT_ERR_CONN);
+			throw new ASIautoLoginException(errMsg,
+					AuthErrorCodeConstant.IT_ERR_CONN);
 		}
 		String body = response.getBody();
 		logger.debug("response body : " + body);
@@ -61,11 +75,13 @@ public abstract class IautoLoginService extends
 				isSuccess = true;
 			} else {
 				errMsg = result.getString("error_description");
-				throw new ASIautoLoginException(errMsg, AuthErrorCodeConstant.IT_LG_ERR_PARAM);
+				throw new ASIautoLoginException(errMsg,
+						AuthErrorCodeConstant.IT_LG_ERR_PARAM);
 			}
 		} else {
 			errMsg = "get token is failed";
-			throw new ASIautoLoginException(errMsg, AuthErrorCodeConstant.IT_ERR_NO_CODE);
+			throw new ASIautoLoginException(errMsg,
+					AuthErrorCodeConstant.IT_ERR_NO_CODE);
 		}
 	}
 

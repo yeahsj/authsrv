@@ -22,6 +22,16 @@ import org.springframework.stereotype.Service;
 import com.openjava.core.util.DateUtil;
 import com.openjava.core.util.StrUtil;
 
+/**
+ * 
+ * 
+ * @项目名称: OauthSrv
+ * @功能描述:
+ * @当前版本： 1.0
+ * @创建时间: 2014年12月4日 下午5:53:19
+ * @author: <a href="mailto:yeahsj@yahoo.com.cn">yeahsj</a>
+ * @修改历史:
+ */
 @Service
 public class ASCoreService {
 	@Autowired

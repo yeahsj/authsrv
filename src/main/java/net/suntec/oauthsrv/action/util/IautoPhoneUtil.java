@@ -27,7 +27,8 @@ public final class IautoPhoneUtil {
 		return getIautoPhoneUserName(iautoPhoneParamDTO);
 	}
 
-	public static String getIautoPhoneUserName(IautoPhoneParamDTO iautoPhoneParamDTO) {
+	public static String getIautoPhoneUserName(
+			IautoPhoneParamDTO iautoPhoneParamDTO) {
 		String sessionToken = iautoPhoneParamDTO.getSessionToken();
 		if (IautoUserCacheMap.getInstance().containsKey(sessionToken)) {
 			return IautoUserCacheMap.getInstance().get(sessionToken);
@@ -36,30 +37,37 @@ public final class IautoPhoneUtil {
 		}
 	}
 
-	public static String getIautoPhoneUserNameFromIautoServer(IautoPhoneParamDTO iautoPhoneParamDTO) {
+	public static String getIautoPhoneUserNameFromIautoServer(
+			IautoPhoneParamDTO iautoPhoneParamDTO) {
 		return getIautoPhoneUserNameFromIautoServer(iautoPhoneParamDTO, true);
 	}
 
-	public static String getIautoPhoneUserNameFromIautoServer(IautoPhoneParamDTO iautoPhoneParamDTO, boolean cache) {
+	public static String getIautoPhoneUserNameFromIautoServer(
+			IautoPhoneParamDTO iautoPhoneParamDTO, boolean cache) {
 		IautoUserDTO user = getIautoPhoneUser(iautoPhoneParamDTO);
 		if (null == user) {
-			throw new ASIautoException(" user not found or iauto session expired ",
+			throw new ASIautoException(
+					" user not found or iauto session expired ",
 					AuthErrorCodeConstant.APP_INVALID_ACCESS_TOKEN);
 		}
 		String userName = user.getUserName();
 		if (StrUtil.isEmpty(userName)) {
-			throw new ASIautoException(" iauto loginName not exists iauto sessiontoken expired ",
+			throw new ASIautoException(
+					" iauto loginName not exists iauto sessiontoken expired ",
 					AuthErrorCodeConstant.APP_NO_LOGIN_NAME);
 		}
 		if (cache) {
-			IautoUserCacheMap.getInstance().put(iautoPhoneParamDTO.getSessionToken(), userName);
+			IautoUserCacheMap.getInstance().put(
+					iautoPhoneParamDTO.getSessionToken(), userName);
 		}
 		return userName;
 	}
 
-	public static IautoUserDTO getIautoPhoneUser(IautoPhoneParamDTO iautoPhoneParamDTO) {
+	public static IautoUserDTO getIautoPhoneUser(
+			IautoPhoneParamDTO iautoPhoneParamDTO) {
 		IautoApiService iautoApiService = new IautoApiService();
-		return iautoApiService.doGetPhoneUserInfo(iautoPhoneParamDTO.getSessionToken(), null, null);
+		return iautoApiService.doGetPhoneUserInfo(
+				iautoPhoneParamDTO.getSessionToken(), null, null);
 	}
 
 }

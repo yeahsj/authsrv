@@ -24,8 +24,8 @@ public class EncodeFilter implements Filter {
 	}
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-			ServletException {
+	public void doFilter(ServletRequest request, ServletResponse response,
+			FilterChain chain) throws IOException, ServletException {
 		if (null == encode) {
 			encode = "UTF-8";
 		}
@@ -39,7 +39,8 @@ public class EncodeFilter implements Filter {
 		// "CP=CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR"
 		// );
 		// res.setHeader("P3P", "CP=CAO PSA OUR");
-		res.setHeader("P3P", "CP='IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT'");
+		res.setHeader("P3P",
+				"CP='IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT'");
 		res.setCharacterEncoding(encode);
 		chain.doFilter(request, response);
 	}

@@ -1,5 +1,15 @@
 package net.suntec.oauthsrv.framework.dto;
 
+/**
+ * 
+ * 
+ * @项目名称: OauthSrv
+ * @功能描述:
+ * @当前版本： 1.0
+ * @创建时间: 2014年12月4日 下午5:52:23
+ * @author: <a href="mailto:yeahsj@yahoo.com.cn">yeahsj</a>
+ * @修改历史:
+ */
 public class AppstoreConfig {
 	private String protocol = null;
 	private String host = null;
@@ -22,7 +32,8 @@ public class AppstoreConfig {
 	}
 
 	public String getHostUrl() {
-		return this.getProtocol() + "://" + this.getHost() + ":" + this.getPort();
+		return this.getProtocol() + "://" + this.getHost() + ":"
+				+ this.getPort();
 	}
 
 	public String getProtocol() {

@@ -41,10 +41,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.openjava.core.util.StrUtil;
 
+/**
+ * 
+ * 
+ * @项目名称: OauthSrv
+ * @功能描述:
+ * @当前版本： 1.0
+ * @创建时间: 2014年12月4日 下午5:50:02
+ * @author: <a href="mailto:yeahsj@yahoo.com.cn">yeahsj</a>
+ * @修改历史:
+ */
 @Controller
 @RequestMapping(value = "/api")
 public class FlowEndpointAction {
-	private final Logger logger = LoggerFactory.getLogger(FlowEndpointAction.class);
+	private final Logger logger = LoggerFactory
+			.getLogger(FlowEndpointAction.class);
 	@Autowired
 	MessageService messageService;
 	@Autowired
@@ -55,8 +66,8 @@ public class FlowEndpointAction {
 	ASDeviceService aSDeviceService;
 
 	@RequestMapping(value = "/{provider}/sessionToken")
-	public @ResponseBody
-	SpringJsonResult<IautoPhoneLoginResultDTO> getSessionToken(@PathVariable("provider") String provider) {
+	public @ResponseBody SpringJsonResult<IautoPhoneLoginResultDTO> getSessionToken(
+			@PathVariable("provider") String provider) {
 		logger.info("start [TST-1] " + provider + " ....... ");
 		SpringJsonResult<IautoPhoneLoginResultDTO> result = null;
 		IautoApiService iautoApiService = new IautoApiService();
@@ -81,8 +92,8 @@ public class FlowEndpointAction {
 
 	@Deprecated
 	@RequestMapping(value = "/doLoginEndpoint")
-	public @ResponseBody
-	SpringJsonResult<String> doLoginEndpoint(HttpServletRequest req, HttpServletResponse res,
+	public @ResponseBody SpringJsonResult<String> doLoginEndpoint(
+			HttpServletRequest req, HttpServletResponse res,
 			@ModelAttribute IautoPhoneParamDTO iautoPhoneParamDTO) {
 		String errMsg = null;
 		SpringJsonResult<String> result;
@@ -90,7 +101,8 @@ public class FlowEndpointAction {
 			logger.debug("do login");
 			String loginName = iautoPhoneParamDTO.getLoginName();
 			if (StrUtil.isEmpty(loginName)) {
-				loginName = IautoPhoneUtil.getIautoPhoneUserName(iautoPhoneParamDTO);
+				loginName = IautoPhoneUtil
+						.getIautoPhoneUserName(iautoPhoneParamDTO);
 			}
 			// String userName =
 			// IautoPhoneUtil.getIautoPhoneUserName(iautoPhoneParamDTO);
@@ -119,8 +131,8 @@ public class FlowEndpointAction {
 	}
 
 	@RequestMapping(value = "/listBindAppEndpoint")
-	public @ResponseBody
-	SpringJsonResult<AppBase> listBindAppEndpoint(HttpServletRequest req,
+	public @ResponseBody SpringJsonResult<AppBase> listBindAppEndpoint(
+			HttpServletRequest req,
 			@ModelAttribute IautoPhoneParamDTO iautoPhoneParamDTO) {
 		logger.info("start [OAUTH-2-4] ....... ");
 		SpringJsonResult<AppBase> result;
@@ -130,21 +142,26 @@ public class FlowEndpointAction {
 		try {
 			String userName = req.getParameter("loginName");
 			if (StrUtil.isEmpty(userName)) {
-				userName = IautoPhoneUtil.getIautoPhoneUserName(iautoPhoneParamDTO);
+				userName = IautoPhoneUtil
+						.getIautoPhoneUserName(iautoPhoneParamDTO);
 			}
 			if (StrUtil.isEmpty(userName)) {
-				errMsg = messageService.getMessage(req, MessageConstant.MSG_LIST_BINDS_FAILED,
+				errMsg = messageService.getMessage(req,
+						MessageConstant.MSG_LIST_BINDS_FAILED,
 						AuthErrorCodeConstant.APP_NO_LOGIN_NAME);
 			} else {
 				appListResult = aSPhoneService.selectPhoneBindAppList(userName);
-				lastUpdatetime = aSCoreService.selectLastestHistoryTime(userName);
+				lastUpdatetime = aSCoreService
+						.selectLastestHistoryTime(userName);
 			}
 			// appListResult = ApiActionConvert.connvert(datas);
 		} catch (ASBaseException ex) {
-			errMsg = messageService.getMessage(req, MessageConstant.MSG_LIST_BINDS_FAILED, ex.getErrCode());
+			errMsg = messageService.getMessage(req,
+					MessageConstant.MSG_LIST_BINDS_FAILED, ex.getErrCode());
 			logger.error(errMsg);
 		} catch (Exception ex) {
-			errMsg = messageService.getMessage(req, MessageConstant.MSG_LIST_BINDS_FAILED,
+			errMsg = messageService.getMessage(req,
+					MessageConstant.MSG_LIST_BINDS_FAILED,
 					AuthErrorCodeConstant.API_FETCH_APP_LIST);
 			logger.error(errMsg);
 		}
@@ -172,9 +189,10 @@ public class FlowEndpointAction {
 	 * @throws IOException
 	 */
 	@RequestMapping(value = "/{provider}/unbindEndpoint")
-	public @ResponseBody
-	SpringJsonResult<AppBase> unbindEndpoint(HttpServletRequest req, HttpServletResponse res,
-			@PathVariable("provider") String provider, @ModelAttribute IautoPhoneParamDTO iautoPhoneParamDTO)
+	public @ResponseBody SpringJsonResult<AppBase> unbindEndpoint(
+			HttpServletRequest req, HttpServletResponse res,
+			@PathVariable("provider") String provider,
+			@ModelAttribute IautoPhoneParamDTO iautoPhoneParamDTO)
 			throws IOException {
 		logger.info("start [OAUTH-2-5] ....... ");
 		String errMsg = null;
@@ -188,22 +206,27 @@ public class FlowEndpointAction {
 			AppIautoMap record = new AppIautoMap();
 			String userName = req.getParameter("loginName");
 			if (StrUtil.isEmpty(userName)) {
-				userName = IautoPhoneUtil.getIautoPhoneUserName(iautoPhoneParamDTO);
+				userName = IautoPhoneUtil
+						.getIautoPhoneUserName(iautoPhoneParamDTO);
 			}
 			if (StrUtil.isEmpty(userName)) {
-				errMsg = messageService.getMessage(req, MessageConstant.MSG_LIST_BINDS_FAILED,
+				errMsg = messageService.getMessage(req,
+						MessageConstant.MSG_LIST_BINDS_FAILED,
 						AuthErrorCodeConstant.API_LOGIN_NAME_IS_REQUIRED);
 			} else {
 				record.setIautoUserId(userName);
 				record.setAppType(provider);
 				appbase = aSPhoneService.deletePhoneLogoutApp(record);
-				lastUpdatetime = aSCoreService.selectLastestHistoryTime(userName);
+				lastUpdatetime = aSCoreService
+						.selectLastestHistoryTime(userName);
 			}
 		} catch (ASBaseException ex) {
-			errMsg = messageService.getMessage(req, MessageConstant.MSG_UN_BIND_FAILED, ex.getErrCode());
+			errMsg = messageService.getMessage(req,
+					MessageConstant.MSG_UN_BIND_FAILED, ex.getErrCode());
 			logger.error(errMsg);
 		} catch (Exception ex) {
-			errMsg = messageService.getMessage(req, MessageConstant.MSG_UN_BIND_FAILED,
+			errMsg = messageService.getMessage(req,
+					MessageConstant.MSG_UN_BIND_FAILED,
 					AuthErrorCodeConstant.API_UNBIDN_FAILED);
 			logger.error(errMsg);
 		}
@@ -230,8 +253,8 @@ public class FlowEndpointAction {
 	 */
 	@Deprecated
 	@RequestMapping(value = "/agreeSwitchForPhone")
-	public @ResponseBody
-	SpringJsonResult<String> agreeSwitchForPhone(HttpServletRequest req, HttpServletResponse res,
+	public @ResponseBody SpringJsonResult<String> agreeSwitchForPhone(
+			HttpServletRequest req, HttpServletResponse res,
 			@ModelAttribute IautoPhoneParamDTO iautoPhoneParamDTO) {
 		logger.info("start [OAUTH-2-2] ....... ");
 		String errMsg = null;
@@ -239,14 +262,19 @@ public class FlowEndpointAction {
 			String status = req.getParameter("status");
 			String userName = req.getParameter("loginName");
 			if (StrUtil.isEmpty(userName)) {
-				userName = IautoPhoneUtil.getIautoPhoneUserName(iautoPhoneParamDTO);
+				userName = IautoPhoneUtil
+						.getIautoPhoneUserName(iautoPhoneParamDTO);
 			}
 			aSCoreService.saveAgreeSwitch(userName, "", status);
 		} catch (ASBaseException ex) {
-			errMsg = messageService.getMessage(req, MessageConstant.MSG_AGREE_SWITCH_FAILED, ex.getLocalizedMessage());
+			errMsg = messageService.getMessage(req,
+					MessageConstant.MSG_AGREE_SWITCH_FAILED,
+					ex.getLocalizedMessage());
 			logger.error(errMsg);
 		} catch (Exception ex) {
-			errMsg = messageService.getMessage(req, MessageConstant.MSG_AGREE_SWITCH_FAILED, ex.getLocalizedMessage());
+			errMsg = messageService.getMessage(req,
+					MessageConstant.MSG_AGREE_SWITCH_FAILED,
+					ex.getLocalizedMessage());
 			logger.error(errMsg);
 		}
 		return SpringResultUtil.jsonResult(errMsg);
@@ -260,8 +288,8 @@ public class FlowEndpointAction {
 	 * @return
 	 */
 	@RequestMapping(value = "/fetchAgreeSwitchForPhone")
-	public @ResponseBody
-	SpringJsonResult<String> fetchAgreeSwitchForPhone(HttpServletRequest req, HttpServletResponse res,
+	public @ResponseBody SpringJsonResult<String> fetchAgreeSwitchForPhone(
+			HttpServletRequest req, HttpServletResponse res,
 			@ModelAttribute IautoPhoneParamDTO iautoPhoneParamDTO) {
 		logger.info("start [OAUTH-2-3] ....... ");
 		String errMsg = null;
@@ -270,16 +298,19 @@ public class FlowEndpointAction {
 		try {
 			String userName = req.getParameter("loginName");
 			if (StrUtil.isEmpty(userName)) {
-				userName = IautoPhoneUtil.getIautoPhoneUserName(iautoPhoneParamDTO);
+				userName = IautoPhoneUtil
+						.getIautoPhoneUserName(iautoPhoneParamDTO);
 			}
 			isBind = aSCoreService.hasAgreeBindConfig(userName);
 		} catch (ASBaseException ex) {
-			errMsg = messageService.getMessage(req, MessageConstant.MSG_FETCH_AGREE_SWITCH_FAILED, ex
-					.getLocalizedMessage());
+			errMsg = messageService.getMessage(req,
+					MessageConstant.MSG_FETCH_AGREE_SWITCH_FAILED,
+					ex.getLocalizedMessage());
 			logger.error(errMsg);
 		} catch (Exception ex) {
-			errMsg = messageService.getMessage(req, MessageConstant.MSG_FETCH_AGREE_SWITCH_FAILED, ex
-					.getLocalizedMessage());
+			errMsg = messageService.getMessage(req,
+					MessageConstant.MSG_FETCH_AGREE_SWITCH_FAILED,
+					ex.getLocalizedMessage());
 			logger.error(errMsg);
 		}
 		if (!StrUtil.isEmpty(errMsg)) {
@@ -297,28 +328,33 @@ public class FlowEndpointAction {
 
 	@RequestMapping(value = "/agreeSwitchForDevice")
 	@Deprecated
-	public @ResponseBody
-	SpringJsonResult<String> agreeSwitchForDevice(HttpServletRequest req, HttpServletResponse res,
+	public @ResponseBody SpringJsonResult<String> agreeSwitchForDevice(
+			HttpServletRequest req, HttpServletResponse res,
 			@ModelAttribute IautoDeviceParamDTO iautoDeviceParamDTO) {
 		logger.info("start [OAUTH-1-4] ....... ");
 		String errMsg = null;
 		try {
 			String status = req.getParameter("status");
-			String loginName = IautoDeviceUtil.getIautoDeviceUserName(req, iautoDeviceParamDTO, messageService);
+			String loginName = IautoDeviceUtil.getIautoDeviceUserName(req,
+					iautoDeviceParamDTO, messageService);
 			aSCoreService.saveAgreeSwitch(loginName, "", status);
 		} catch (ASBaseException ex) {
-			errMsg = messageService.getMessage(req, MessageConstant.MSG_AGREE_SWITCH_FAILED, ex.getLocalizedMessage());
+			errMsg = messageService.getMessage(req,
+					MessageConstant.MSG_AGREE_SWITCH_FAILED,
+					ex.getLocalizedMessage());
 			logger.error(errMsg);
 		} catch (Exception ex) {
-			errMsg = messageService.getMessage(req, MessageConstant.MSG_AGREE_SWITCH_FAILED, ex.getLocalizedMessage());
+			errMsg = messageService.getMessage(req,
+					MessageConstant.MSG_AGREE_SWITCH_FAILED,
+					ex.getLocalizedMessage());
 			logger.error(errMsg);
 		}
 		return SpringResultUtil.jsonResult(errMsg);
 	}
 
 	@RequestMapping(value = "/authStatus")
-	public @ResponseBody
-	SpringJsonResult<String> authStatus(HttpServletRequest req, HttpServletResponse res,
+	public @ResponseBody SpringJsonResult<String> authStatus(
+			HttpServletRequest req, HttpServletResponse res,
 			@ModelAttribute IautoPhoneParamDTO iautoPhoneParamDTO) {
 		logger.info("start [OAUTH-2-7] ....... ");
 		String errMsg = null;
@@ -326,14 +362,19 @@ public class FlowEndpointAction {
 		try {
 			String loginName = req.getParameter("loginName");
 			if (StrUtil.isEmpty(loginName)) {
-				loginName = IautoPhoneUtil.getIautoPhoneUserName(iautoPhoneParamDTO);
+				loginName = IautoPhoneUtil
+						.getIautoPhoneUserName(iautoPhoneParamDTO);
 			}
 			lastUpdateTime = aSCoreService.selectLastestHistoryTime(loginName);
 		} catch (ASBaseException ex) {
-			errMsg = messageService.getMessage(req, MessageConstant.MSG_SYSTEM_FAILED, ex.getLocalizedMessage());
+			errMsg = messageService
+					.getMessage(req, MessageConstant.MSG_SYSTEM_FAILED,
+							ex.getLocalizedMessage());
 			logger.error(errMsg);
 		} catch (Exception ex) {
-			errMsg = messageService.getMessage(req, MessageConstant.MSG_SYSTEM_FAILED, ex.getLocalizedMessage());
+			errMsg = messageService
+					.getMessage(req, MessageConstant.MSG_SYSTEM_FAILED,
+							ex.getLocalizedMessage());
 			logger.error(errMsg);
 		}
 		if (!StrUtil.isEmpty(errMsg)) {

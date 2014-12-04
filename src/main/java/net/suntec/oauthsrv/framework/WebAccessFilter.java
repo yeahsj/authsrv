@@ -16,6 +16,16 @@ import org.slf4j.LoggerFactory;
 import com.openjava.core.util.ArrUtil;
 import com.openjava.core.util.StrUtil;
 
+/**
+ * 
+ * 
+ * @项目名称: OauthSrv
+ * @功能描述: 路径管理
+ * @当前版本： 1.0
+ * @创建时间: 2014年12月4日 下午5:52:09
+ * @author: <a href="mailto:yeahsj@yahoo.com.cn">yeahsj</a>
+ * @修改历史:
+ */
 public class WebAccessFilter implements Filter {
 
 	String exludePath = "";
@@ -29,8 +39,8 @@ public class WebAccessFilter implements Filter {
 	}
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-			ServletException {
+	public void doFilter(ServletRequest request, ServletResponse response,
+			FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
 		String reDirectURL; // 需要保留以便重定向的URL
 		String authenticateURL; // 需要验证权限的URL
@@ -43,7 +53,8 @@ public class WebAccessFilter implements Filter {
 		} else {
 			if (needPriviValidate(authenticateURL)) {
 				logger.info(authenticateURL + "is needPriviValidate ");
-				req.getRequestDispatcher("/flow/login").forward(request, response);
+				req.getRequestDispatcher("/flow/login").forward(request,
+						response);
 			} else {
 				chain.doFilter(request, response);
 			}
@@ -76,7 +87,8 @@ public class WebAccessFilter implements Filter {
 	 * @return boolean
 	 */
 	private boolean needPriviValidate(String authenticateURL) {
-		if (authenticateURL.startsWith("/auth") || authenticateURL.startsWith("/config")) {
+		if (authenticateURL.startsWith("/auth")
+				|| authenticateURL.startsWith("/config")) {
 			return false;
 		}
 		boolean needValidate = true;

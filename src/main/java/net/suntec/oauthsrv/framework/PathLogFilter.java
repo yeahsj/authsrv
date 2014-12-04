@@ -43,13 +43,14 @@ public class PathLogFilter implements Filter {
 	}
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-			ServletException {
+	public void doFilter(ServletRequest request, ServletResponse response,
+			FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
 		String path = req.getRequestURI();
 		// logger.info(req.getRequestURL().toString());
 
-		if (path.equals("/") || path.indexOf("css") > -1 || path.indexOf("js") > -1) {
+		if (path.equals("/") || path.indexOf("css") > -1
+				|| path.indexOf("js") > -1) {
 			chain.doFilter(request, response);
 		} else if (path.indexOf("/api/authStatus") > -1) {
 			chain.doFilter(request, response);
@@ -59,15 +60,17 @@ public class PathLogFilter implements Filter {
 			long startTime = Calendar.getInstance().getTimeInMillis();
 			String remoteAddr = req.getRemoteAddr();
 
-			ServletContext servletContext = req.getSession().getServletContext();
+			ServletContext servletContext = req.getSession()
+					.getServletContext();
 			try {
 				beforeFilter(path);
 				chain.doFilter(request, response);
-				afterFilter(servletContext, path, params.toString(), headers.toString(), remoteAddr, startTime);
+				afterFilter(servletContext, path, params.toString(),
+						headers.toString(), remoteAddr, startTime);
 			} catch (Exception ex) {
 				String errMsg = ex.getMessage();
-				errorOnFilter(servletContext, path, params.toString(), headers.toString(), remoteAddr, startTime,
-						errMsg);
+				errorOnFilter(servletContext, path, params.toString(),
+						headers.toString(), remoteAddr, startTime, errMsg);
 			}
 		}
 
@@ -134,8 +137,8 @@ public class PathLogFilter implements Filter {
 		logger.info(msg.toString());
 	}
 
-	private void afterFilter(ServletContext servletContext, String path, String params, String headers,
-			String remoteAddr, long startTime) {
+	private void afterFilter(ServletContext servletContext, String path,
+			String params, String headers, String remoteAddr, long startTime) {
 		long endTime = Calendar.getInstance().getTimeInMillis();
 		if (params.length() >= 255) {
 			params = params.substring(0, 255);
@@ -173,8 +176,9 @@ public class PathLogFilter implements Filter {
 		// logger.info(msg.toString());
 	}
 
-	private void errorOnFilter(ServletContext servletContext, String path, String params, String headers,
-			String remoteAddr, long startTime, String errMsg) {
+	private void errorOnFilter(ServletContext servletContext, String path,
+			String params, String headers, String remoteAddr, long startTime,
+			String errMsg) {
 		long endTime = Calendar.getInstance().getTimeInMillis();
 		if (params.length() >= 255) {
 			params = params.substring(0, 255);

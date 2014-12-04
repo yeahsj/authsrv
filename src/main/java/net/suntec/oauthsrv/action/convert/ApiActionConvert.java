@@ -8,6 +8,16 @@ import net.suntec.oauthsrv.dto.AppBase;
 
 import com.openjava.core.util.StrUtil;
 
+/**
+ * 
+ * 
+ * @项目名称: OauthSrv
+ * @功能描述:
+ * @当前版本： 1.0
+ * @创建时间: 2014年12月4日 下午5:50:21
+ * @author: <a href="mailto:yeahsj@yahoo.com.cn">yeahsj</a>
+ * @修改历史:
+ */
 public final class ApiActionConvert {
 	public static List<AppListResult> connvert(List<AppBase> appBases) {
 		List<AppListResult> results = new ArrayList<AppListResult>();
@@ -23,10 +33,10 @@ public final class ApiActionConvert {
 				appListResult.setBind(false);
 			}
 			results.add(appListResult);
-		} 
+		}
 		return results;
 	}
-	
+
 	public static AppListResult connvert(AppBase appBase) {
 		AppListResult appListResult = new AppListResult();
 		appListResult.setAppName(appBase.getAppName());

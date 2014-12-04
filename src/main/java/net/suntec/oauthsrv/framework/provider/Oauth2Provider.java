@@ -51,7 +51,8 @@ public class Oauth2Provider extends AbstractOauthProvider {
 	}
 
 	@Override
-	public String getAuthHeader(AppConfig appConfig, Token token, String requestUrl, String method) {
+	public String getAuthHeader(AppConfig appConfig, Token token,
+			String requestUrl, String method) {
 		throw new UnsupportedOperationException("Unsupported operation");
 	}
 

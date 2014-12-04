@@ -1,10 +1,20 @@
 package net.suntec.framework.iauto.dto;
 
+/**
+ * 
+ * 
+ * @项目名称: OauthSrv
+ * @功能描述: Iauto config
+ * @当前版本： 1.0
+ * @创建时间: 2014年12月4日 下午5:47:11
+ * @author: <a href="mailto:yeahsj@yahoo.com.cn">yeahsj</a>
+ * @修改历史:
+ */
 public class IautoConfigDTO {
 	private String protocol = null;
 	private String host = null;
 	private String port = null;
-	
+
 	private String phoneClientId = "";
 	private String phoneClientSercet = "";
 	private String deviceClientId = "";
@@ -15,7 +25,7 @@ public class IautoConfigDTO {
 
 	private boolean isDemo = false;
 	private String demoName = "";
-	
+
 	public String getDemoName() {
 		return demoName;
 	}
@@ -31,8 +41,6 @@ public class IautoConfigDTO {
 	public void setIsDemo(boolean isDemo) {
 		this.isDemo = isDemo;
 	}
-	
-	
 
 	public String getProtocol() {
 		return protocol;
@@ -107,7 +115,8 @@ public class IautoConfigDTO {
 	}
 
 	public String getIautoServer() {
-		String serverUrl = this.getProtocol() + "://" + this.getHost() + ":" + this.getPort();
+		String serverUrl = this.getProtocol() + "://" + this.getHost() + ":"
+				+ this.getPort();
 		return serverUrl;
 	}
 

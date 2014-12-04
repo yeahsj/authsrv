@@ -11,8 +11,18 @@ import org.scribe.model.OAuthRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class IautoAbstractHttpService<P extends IautoParamDTO, R extends IautoResultDTO> implements
-		IautoHttpService {
+/**
+ * 
+ * 
+ * @项目名称: OauthSrv
+ * @功能描述:
+ * @当前版本： 1.0
+ * @创建时间: 2014年12月4日 下午5:48:47
+ * @author: <a href="mailto:yeahsj@yahoo.com.cn">yeahsj</a>
+ * @修改历史:
+ */
+public abstract class IautoAbstractHttpService<P extends IautoParamDTO, R extends IautoResultDTO>
+		implements IautoHttpService {
 	IautoConfigDTO configDTO;
 	P paramDTO;
 	IautoHeaderDTO headerDTO;
@@ -21,7 +31,8 @@ public abstract class IautoAbstractHttpService<P extends IautoParamDTO, R extend
 	boolean isSuccess = false;
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 
-	public IautoAbstractHttpService(IautoConfigDTO configDTO, P paramDTO, IautoHeaderDTO headerDTO) {
+	public IautoAbstractHttpService(IautoConfigDTO configDTO, P paramDTO,
+			IautoHeaderDTO headerDTO) {
 		this.configDTO = configDTO;
 		this.paramDTO = paramDTO;
 		this.headerDTO = headerDTO;

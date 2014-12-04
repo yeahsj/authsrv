@@ -13,12 +13,22 @@ import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Verb;
 
+/**
+ * 
+ * 
+ * @项目名称: OauthSrv
+ * @功能描述:
+ * @当前版本： 1.0
+ * @创建时间: 2014年12月4日 下午5:49:03
+ * @author: <a href="mailto:yeahsj@yahoo.com.cn">yeahsj</a>
+ * @修改历史:
+ */
 public abstract class IautoGetUserInfoService extends
 		IautoAbstractHttpService<IautoGetDeviceUserInfoParamDTO, IautoUserDTO> {
 	String loginUrl = "";
 
-	public IautoGetUserInfoService(IautoConfigDTO configDTO, IautoGetDeviceUserInfoParamDTO paramDTO,
-			IautoHeaderDTO headerDTO) {
+	public IautoGetUserInfoService(IautoConfigDTO configDTO,
+			IautoGetDeviceUserInfoParamDTO paramDTO, IautoHeaderDTO headerDTO) {
 		super(configDTO, paramDTO, headerDTO);
 	}
 
@@ -34,8 +44,9 @@ public abstract class IautoGetUserInfoService extends
 	public void service() {
 		logger.debug("start IautoGetUserInfoService ...... ");
 		checkParams();
-		
-		OAuthRequest request = new OAuthRequest(Verb.POST, configDTO.getIautoServer() + loginUrl);
+
+		OAuthRequest request = new OAuthRequest(Verb.POST,
+				configDTO.getIautoServer() + loginUrl);
 		setHeader(request);
 		setTimeOut(request);
 		addBodyParameters(request);
@@ -44,7 +55,8 @@ public abstract class IautoGetUserInfoService extends
 			response = request.send();// fe01ce2a7fbac8fafaed7c982a04e229
 		} catch (OAuthConnectionException ex) {
 			errMsg = ex.getMessage();
-			throw new ASIautoException(errMsg, AuthErrorCodeConstant.IT_ERR_CONN);
+			throw new ASIautoException(errMsg,
+					AuthErrorCodeConstant.IT_ERR_CONN);
 		}
 		String body = response.getBody();
 		logger.debug("response body : " + body);
@@ -57,11 +69,13 @@ public abstract class IautoGetUserInfoService extends
 				isSuccess = true;
 			} else {
 				errMsg = result.getString("errMsg");
-				throw new ASIautoException(errMsg, AuthErrorCodeConstant.IT_GUI_ERR_PARAM);
+				throw new ASIautoException(errMsg,
+						AuthErrorCodeConstant.IT_GUI_ERR_PARAM);
 			}
 		} else {
 			errMsg = "request iauto user info failed";
-			throw new ASIautoException(errMsg, AuthErrorCodeConstant.IT_ERR_NO_CODE);
+			throw new ASIautoException(errMsg,
+					AuthErrorCodeConstant.IT_ERR_NO_CODE);
 		}
 	}
 

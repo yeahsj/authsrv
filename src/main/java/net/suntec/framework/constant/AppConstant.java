@@ -1,5 +1,15 @@
 package net.suntec.framework.constant;
 
+/**
+ * 
+ * 
+ * @项目名称: OauthSrv
+ * @功能描述:
+ * @当前版本： 1.0
+ * @创建时间: 2014年12月4日 下午5:45:37
+ * @author: <a href="mailto:yeahsj@yahoo.com.cn">yeahsj</a>
+ * @修改历史:
+ */
 public interface AppConstant {
 	String SESSION_USER_ATTR = "user";
 	String SESSION_OAUTH_STATUS = "oauthFlowStatus"; // 在认证流程中需要保存状态的参数

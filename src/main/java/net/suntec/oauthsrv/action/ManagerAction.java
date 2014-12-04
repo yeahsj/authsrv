@@ -19,6 +19,16 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.xml.sax.SAXException;
 
+/**
+ * 
+ * 
+ * @项目名称: OauthSrv
+ * @功能描述:
+ * @当前版本： 1.0
+ * @创建时间: 2014年12月4日 下午5:50:11
+ * @author: <a href="mailto:yeahsj@yahoo.com.cn">yeahsj</a>
+ * @修改历史:
+ */
 @Controller
 @RequestMapping(value = "/config")
 public class ManagerAction {
@@ -33,9 +43,12 @@ public class ManagerAction {
 	public String reloadConfig(HttpServletRequest req, HttpServletResponse res) {
 		String userName = req.getParameter("userName");
 		String password = req.getParameter("password");
-		ServerConfig serverConfig = ResourceConfig.getInstance().getServerConfig();
-		if (serverConfig.getManagerUserName().equals(userName) && serverConfig.getManagerPassword().equals(password)) {
-			String configFile = req.getSession().getServletContext().getInitParameter("systemConfigPath");
+		ServerConfig serverConfig = ResourceConfig.getInstance()
+				.getServerConfig();
+		if (serverConfig.getManagerUserName().equals(userName)
+				&& serverConfig.getManagerPassword().equals(password)) {
+			String configFile = req.getSession().getServletContext()
+					.getInitParameter("systemConfigPath");
 			try {
 				ResourceConfig.getInstance().init(configFile);
 			} catch (SAXException e) {

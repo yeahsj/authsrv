@@ -35,6 +35,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.openjava.core.util.StrUtil;
 
+/**
+ * 
+ * 
+ * @项目名称: OauthSrv
+ * @功能描述:
+ * @当前版本： 1.0
+ * @创建时间: 2014年12月4日 下午5:51:26
+ * @author: <a href="mailto:yeahsj@yahoo.com.cn">yeahsj</a>
+ * @修改历史:
+ */
 @Controller
 @RequestMapping(value = "/v2/api/phone")
 public class PhoneEndpointAction {

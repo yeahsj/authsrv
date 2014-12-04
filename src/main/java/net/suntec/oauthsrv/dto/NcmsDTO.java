@@ -4,7 +4,7 @@ package net.suntec.oauthsrv.dto;
  * 
  * 
  * @项目名称: OauthSrv
- * @功能描述: 
+ * @功能描述:
  * @当前版本： 1.0
  * @创建时间: 2014年11月25日 上午11:28:33
  * @author: <a href="mailto:yeahsj@yahoo.com.cn">yeahsj</a>

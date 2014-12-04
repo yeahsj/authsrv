@@ -10,11 +10,11 @@ import net.suntec.oauthsrv.dto.AppIautoMap;
  * 
  * @项目名称: oauthsrv
  * @功能描述: oauth srv架构
- * @修改历史:	1.0
- * @当前版本：	1.0
- * @创建时间:	2014-05-22 17:06:48
- * @author:	<a href="mailto:yeahsj@gmail.com">sang jun</a>
+ * @修改历史: 1.0
+ * @当前版本： 1.0
+ * @创建时间: 2014-05-22 17:06:48
+ * @author: <a href="mailto:yeahsj@gmail.com">sang jun</a>
  */
-public interface AppBaseMapper extends PioneerDAO<AppBase>  {
+public interface AppBaseMapper extends PioneerDAO<AppBase> {
 	public List<AppBase> listBindApp(AppIautoMap aim);
 }

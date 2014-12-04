@@ -12,5 +12,5 @@ import com.openjava.model.PO;
  * @修改历史:
  */
 public abstract class PioneerDTO implements PO {
-	
+
 }

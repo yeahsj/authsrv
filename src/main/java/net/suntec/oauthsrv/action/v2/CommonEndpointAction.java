@@ -55,7 +55,7 @@ public class CommonEndpointAction {
 	@Autowired
 	ASCoreService aSCoreService;
 	@Autowired
-	MessageService messageService; 
+	MessageService messageService;
 
 	private final Logger logger = LoggerFactory
 			.getLogger(DeviceEndpointAction.class);

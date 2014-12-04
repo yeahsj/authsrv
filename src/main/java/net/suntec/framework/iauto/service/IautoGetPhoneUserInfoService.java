@@ -26,16 +26,17 @@ import com.openjava.core.util.StrUtil;
 public class IautoGetPhoneUserInfoService extends IautoGetUserInfoService {
 	private static String USER_INFO_PHONE_URL = "/aswapi/getUserInfoForPhone";
 
-	public IautoGetPhoneUserInfoService(IautoConfigDTO configDTO, IautoGetDeviceUserInfoParamDTO paramDTO,
-			IautoHeaderDTO headerDTO) {
+	public IautoGetPhoneUserInfoService(IautoConfigDTO configDTO,
+			IautoGetDeviceUserInfoParamDTO paramDTO, IautoHeaderDTO headerDTO) {
 		super(configDTO, paramDTO, headerDTO);
 		super.loginUrl = USER_INFO_PHONE_URL;
 	}
 
 	@Override
 	public void checkParams() {
-		if( StrUtil.isEmpty( headerDTO.getSessionToken() )){
-			throw new ASIautoException(errMsg, AuthErrorCodeConstant.IT_GUI_ERR_NO_SESSIONTOKEN);
+		if (StrUtil.isEmpty(headerDTO.getSessionToken())) {
+			throw new ASIautoException(errMsg,
+					AuthErrorCodeConstant.IT_GUI_ERR_NO_SESSIONTOKEN);
 		}
 	}
 
@@ -59,8 +60,10 @@ public class IautoGetPhoneUserInfoService extends IautoGetUserInfoService {
 		paramDTO.setLanguageCode(configDTO.getLanguageCode());
 		IautoHeaderDTO headerDTO = new IautoHeaderDTO();
 		headerDTO.setIfVersion(configDTO.getIfVersion());
-		headerDTO.setSessionToken("<TK>01Jj9KROo9nzkC17z4/Uh942EuYb1XKOUn3Eo46hw+quo=");
-		IautoGetPhoneUserInfoService service = new IautoGetPhoneUserInfoService(configDTO, paramDTO, headerDTO);
+		headerDTO
+				.setSessionToken("<TK>01Jj9KROo9nzkC17z4/Uh942EuYb1XKOUn3Eo46hw+quo=");
+		IautoGetPhoneUserInfoService service = new IautoGetPhoneUserInfoService(
+				configDTO, paramDTO, headerDTO);
 		service.service();
 	}
 

@@ -12,22 +12,26 @@ import javax.servlet.http.HttpSession;
  * @修改历史:
  */
 public class SessionAttributeUtil {
-	public static boolean checkSessionAttribute(HttpSession session, String attributeName) {
+	public static boolean checkSessionAttribute(HttpSession session,
+			String attributeName) {
 		Object obj = session.getAttribute(attributeName);
 		return (null != obj);
 	}
 
-	public static <T> void saveSessionAttribute(HttpSession session, String attributeName, T t) {
+	public static <T> void saveSessionAttribute(HttpSession session,
+			String attributeName, T t) {
 		session.setAttribute(attributeName, t);
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> T getSessionAttribute(HttpSession session, String attributeName) {
-		
+	public static <T> T getSessionAttribute(HttpSession session,
+			String attributeName) {
+
 		return (T) session.getAttribute(attributeName);
 	}
 
-	public static void removeSessionAttribute(HttpSession session, String attributeName) {
+	public static void removeSessionAttribute(HttpSession session,
+			String attributeName) {
 		session.removeAttribute(attributeName);
 	}
 }

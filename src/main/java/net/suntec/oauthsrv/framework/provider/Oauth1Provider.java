@@ -60,14 +60,17 @@ public class Oauth1Provider extends AbstractOauthProvider {
 		} else {
 			verifier = new Verifier(user.getOAuthVerifier());
 		}
-		Token token = new Token(user.getOAuthToken(), user.getOAuthSecret(), user.getOAuthRawResponse());
+		Token token = new Token(user.getOAuthToken(), user.getOAuthSecret(),
+				user.getOAuthRawResponse());
 		Token accessToken = service.getAccessToken(token, verifier);
 		user.setAccessToken(accessToken);
 	}
 
-	public String getAuthHeader(AppConfig appConfig, Token token, String requestUrl, String method) {
+	public String getAuthHeader(AppConfig appConfig, Token token,
+			String requestUrl, String method) {
 		OAuthService service = getOAuthService(appConfig);
-		OAuthRequest request = new OAuthRequest(Verb.valueOf(method), requestUrl);
+		OAuthRequest request = new OAuthRequest(Verb.valueOf(method),
+				requestUrl);
 		return service.getOauthHeader(token, request);
 	}
 

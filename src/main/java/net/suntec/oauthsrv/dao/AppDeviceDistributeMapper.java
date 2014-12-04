@@ -14,6 +14,8 @@ import net.suntec.oauthsrv.dto.AppDeviceDistribute;
  * @创建时间: 2014-09-05 16:54:36
  * @author: <a href="mailto:yeahsj@yahoo.com.cn">sang jun</a>
  */
-public interface AppDeviceDistributeMapper extends PioneerDAO<AppDeviceDistribute> {
-	public List<AppDeviceDistribute> selectClientIdByDeviceNo(AppDeviceDistribute param);
+public interface AppDeviceDistributeMapper extends
+		PioneerDAO<AppDeviceDistribute> {
+	public List<AppDeviceDistribute> selectClientIdByDeviceNo(
+			AppDeviceDistribute param);
 }
