@@ -18,6 +18,6 @@ soundcloud</br>
 path</br>
 sino-weibo</br>
 
-#Author:
+#Author
 yeahsj@gmail.com
 
