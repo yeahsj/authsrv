@@ -10,4 +10,11 @@
 /.project
 /.mymetadata
 /.classpath
+/1.json
+/build.xml
+/build_jar.xml
+/build.properties
+/Procfile
+/system.properties
+/bak
 
