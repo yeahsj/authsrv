@@ -2,7 +2,6 @@
 	contentType="text/html; charset=UTF-8"%>
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@page import="net.suntec.oauthsrv.dto.AppBase"%>
-<%@page import="net.suntec.framework.util.AuthSrvHtmlUtil"%>
 
 <article id="ibaList" data-role="page" data-title="App列表">
 <div data-role="header" data-position="fixed">
