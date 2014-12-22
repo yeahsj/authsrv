@@ -36,14 +36,15 @@ public class IautoPhoneLoginService extends IautoLoginService {
 
 	public static void main(String[] args) throws SAXException, IOException {
 		ResourceConfig instance = ResourceConfig.getInstance();
-		instance.init("H:\\code\\java\\openjava\\authsrv\\src\\main\\resources\\config\\SystemConfig.xml");
+//		instance.init("H:\\code\\java\\openjava\\authsrv\\src\\main\\resources\\config\\SystemConfig.xml");
+		instance.init("config/SystemConfig.xml");
 		IautoConfigDTO configDTO = instance.getIautoConfigDTO();
 		IautoPhoneLoginParamDTO paramDTO = new IautoPhoneLoginParamDTO();
 		paramDTO.setClientId(configDTO.getPhoneClientId());
 		paramDTO.setClientSercet(configDTO.getPhoneClientSercet());
 		paramDTO.setGrantType("password");
-		paramDTO.setUsername("demo2");
-		paramDTO.setPassword("demo");
+		paramDTO.setUsername("accountsync");
+		paramDTO.setPassword("suntec");
 		IautoHeaderDTO headerDTO = new IautoHeaderDTO();
 
 		IautoPhoneLoginService iautoDeviceLoginService = new IautoPhoneLoginService(

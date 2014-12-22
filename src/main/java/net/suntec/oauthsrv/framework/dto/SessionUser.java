@@ -1,5 +1,7 @@
 package net.suntec.oauthsrv.framework.dto;
 
+import java.io.Serializable;
+
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 
@@ -16,7 +18,11 @@ import org.slf4j.LoggerFactory;
  * @author: <a href="mailto:yeahsj@yahoo.com.cn">yeahsj</a>
  * @修改历史:
  */
-public class SessionUser implements HttpSessionBindingListener {
+public class SessionUser implements HttpSessionBindingListener,Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String iAutoLoginName;
 	private String appstoreAccessToken;
 	private String appstoreRefreshToken;

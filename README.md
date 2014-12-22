@@ -1,20 +1,20 @@
 #Test
-open browser, input url: </br>
-http://localhost:8080/auth/twitter?backurl=http://www.myhome.com</br>
+open browser, input url:   
+http://localhost:8080/auth/twitter?backurl=http://www.myhome.com  
 
-then redirect to twitter authentication page, input your username and password and authorization.</br>
+then redirect to twitter authentication page, input your username and password  and authorization.  
 
-then the server will redirect to your home page http://www.myhome.com.</br>
+then the server will redirect to your home page http://www.myhome.com  
  
 #Support
 Now supports the following app authorization:
-twitter</br>
-facebook</br>
-instagram</br>
-feedly</br>
-pocket</br>
-foursquare</br>
-soundcloud</br>
-path</br>
-sino-weibo</br>
+twitter  
+facebook  
+instagram  
+feedly  
+pocket  
+foursquare  
+soundcloud  
+path  
+sino-weibo  
 

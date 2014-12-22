@@ -3,7 +3,6 @@ package net.suntec.oauthsrv.dto;
 import java.io.Serializable;
 
 import net.suntec.framework.PioneerDTO;
-import net.suntec.framework.util.AuthSrvHtmlUtil;
 
 import com.openjava.core.util.StrUtil;
 
@@ -139,12 +138,5 @@ public class AppBase extends PioneerDTO {
 	public boolean getIsBind() {
 		return StrUtil.isNotEmpty(this.accessToken);
 	}
-
-	public String getClickAction() {
-		return AuthSrvHtmlUtil.getClickActionForBind(this.getIsBind());
-	}
-
-	public String getBtnClassForBind() {
-		return AuthSrvHtmlUtil.getBtnClassForBind(this.getIsBind());
-	}
+ 
 }

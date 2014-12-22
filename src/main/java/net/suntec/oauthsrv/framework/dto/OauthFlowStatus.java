@@ -1,5 +1,7 @@
 package net.suntec.oauthsrv.framework.dto;
 
+import java.io.Serializable;
+
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 
@@ -22,8 +24,12 @@ import org.slf4j.LoggerFactory;
  * @author: <a href="mailto:yeahsj@gmail.com">yeahsj</a>
  * @修改历史:
  */
-public class OauthFlowStatus implements HttpSessionBindingListener {
+public class OauthFlowStatus implements HttpSessionBindingListener,Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	Logger logger = LoggerFactory.getLogger(getClass());
 	private Token accessToken;
 

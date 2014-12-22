@@ -2,6 +2,12 @@ package net.suntec.framework.util;
 
 import javax.servlet.http.HttpServletRequest;
 
+
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.openjava.core.util.StrUtil;
 
 import net.suntec.oauthsrv.framework.ResourceConfig;
@@ -20,6 +26,7 @@ import net.suntec.oauthsrv.framework.dto.ServerConfig;
 public final class ServerPathUtil {
 	static String LABEL_1 = ":";
 	static String LABEL_2 = "//";
+	static Logger logger = LoggerFactory.getLogger(ServerPathUtil.class.getName());
 
 	private ServerPathUtil() {
 	}
@@ -36,6 +43,7 @@ public final class ServerPathUtil {
 		localServer.append(LABEL_1);
 		localServer.append(LABEL_2);
 		localServer.append(req.getServerName());
+		
 		// localServer.append(req.getScheme());
 
 		if (req.getServerPort() != 80 && req.getServerPort() != 443) {
@@ -47,6 +55,7 @@ public final class ServerPathUtil {
 		if (!path.equals("/") && !path.equals("")) {
 			localServer.append(path);
 		}
+		logger.info( localServer.toString() );
 		return localServer.toString();
 	}
 }

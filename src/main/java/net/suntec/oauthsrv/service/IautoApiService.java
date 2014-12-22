@@ -53,7 +53,7 @@ public class IautoApiService {
 				iautoConfigDTO, paramDTO, headerDTO);
 		iautoGetDeviceUserInfoService.service();
 		return iautoGetDeviceUserInfoService.getResult();
-
+		
 		// isSuccess = iautoGetDeviceUserInfoService.isSuccess();
 		// if (isSuccess) {
 		// } else {

@@ -1,6 +1,5 @@
 package net.suntec.oauthsrv.action.jsonresult;
 
-import net.suntec.framework.util.AuthSrvHtmlUtil;
 
 /**
  * 
@@ -49,12 +48,5 @@ public class AppListResult {
 	public boolean getIsBind() {
 		return isBind;
 	}
-
-	public String getClickAction() {
-		return AuthSrvHtmlUtil.getClickActionForBind(this.getIsBind());
-	}
-
-	public String getBtnClassForBind() {
-		return AuthSrvHtmlUtil.getBtnClassForBind(this.getIsBind());
-	}
+ 
 }

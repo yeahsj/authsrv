@@ -1,5 +1,7 @@
 package net.suntec.oauthsrv.framework.dto;
 
+import java.io.Serializable;
+
 import com.openjava.core.util.StrUtil;
 import com.openjava.model.DTO;
 
@@ -13,7 +15,11 @@ import com.openjava.model.DTO;
  * @author: <a href="mailto:yeahsj@gmail.com">yeahsj</a>
  * @修改历史:
  */
-public class OauthStatusParamDTO implements DTO {
+public class OauthStatusParamDTO implements DTO,Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String backurl; // current server 获取token后,返回到客户端的路径
 	private String errurl; // current server 获取token后,返回到客户端的路径
 	private String fromPhone;// 控制跳转路径
