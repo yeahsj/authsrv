@@ -16,6 +16,7 @@ import net.suntec.framework.PioneerDTO;
 public class AppIautoMap extends PioneerDTO {
 	private Integer aimId;
 	private String iautoUserId;
+	private String uid;
 	private String appType;
 	private String clientId;
 
@@ -25,6 +26,14 @@ public class AppIautoMap extends PioneerDTO {
 	private String creationDate;
 
 	private Integer expireTime;
+
+	public String getUid() {
+		return uid;
+	}
+
+	public void setUid(String uid) {
+		this.uid = uid;
+	}
 
 	public Integer getExpireTime() {
 		return expireTime;

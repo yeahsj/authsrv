@@ -6,8 +6,10 @@ import net.suntec.oauthsrv.action.param.IautoDeviceParamDTO;
 import net.suntec.oauthsrv.dao.AppBaseMapper;
 import net.suntec.oauthsrv.dao.AppIautoBindConfigMapper;
 import net.suntec.oauthsrv.dao.AppIautoMapMapper;
+import net.suntec.oauthsrv.dao.DeviceOperationHistoryMapper;
 import net.suntec.oauthsrv.dto.AppIautoBindConfig;
 import net.suntec.oauthsrv.dto.AppIautoMap;
+import net.suntec.oauthsrv.dto.DeviceOperationHistory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,9 @@ public class ASDeviceService {
 	@Autowired
 	AppIautoBindConfigMapper appIautoBindConfigMapper;
 
+	@Autowired
+	DeviceOperationHistoryMapper deviceOperationHistoryMapper;
+
 	/**
 	 * 同意并上传授权信息--车机功能
 	 * 
@@ -51,6 +56,26 @@ public class ASDeviceService {
 	public void saveAgreeAndBindApp(AppIautoMap record,
 			AppIautoBindConfig param, Integer action) {
 		saveAgreeAndBindApp(record, param, action, true);
+	}
+
+	/**
+	 * 获取AccessToken
+	 * 
+	 * @param iautoDeviceParamDTO
+	 * @param appType
+	 * @param loginName
+	 * @return
+	 */
+	public AppIautoMap saveFetchToken(IautoDeviceParamDTO iautoDeviceParamDTO,
+			String appType, String loginName, String appVersion) {
+		if (!StrUtil.isEmpty(appVersion)) {
+			DeviceOperationHistory history = new DeviceOperationHistory();
+			history.setAppType(appType);
+			history.setAppVersion(appVersion);
+			history.setDeviceNo(iautoDeviceParamDTO.getDeviceNo());
+			deviceOperationHistoryMapper.insert(history);
+		}
+		return this.saveFetchToken(iautoDeviceParamDTO, appType, loginName);
 	}
 
 	/**
@@ -101,6 +126,33 @@ public class ASDeviceService {
 					record.getIautoUserId(), action);
 		}
 		appIautoMapMapper.deleteByPrimaryKeys(record);
+		if (StrUtil.isNotEmpty(record.getAccessToken())) {
+			// 按AccessToken删除
+			appIautoMapMapper.deleteByAccessToken(record);
+		}
+	}
+
+	/**
+	 * 登出第三方App(车机)
+	 * 
+	 * @param record
+	 * @param action
+	 */
+	public void saveLogoutByAccessToken(String appType, String accessToken) {
+		AppIautoMap record = new AppIautoMap();
+		record.setAccessToken(accessToken);
+		record.setAppType(appType);
+		appIautoMapMapper.deleteByAccessToken(record);
+	}
+
+	/**
+	 * 登出第三方App(车机)
+	 * 
+	 * @param record
+	 * @param action
+	 */
+	public void saveLogoutByAccessToken(AppIautoMap record) {
+		appIautoMapMapper.deleteByAccessToken(record);
 	}
 
 	public void saveLogout(AppIautoMap record, Integer action) {

@@ -19,7 +19,7 @@ public class TestIautoPhone extends TestCase {
 	protected ResourceConfig getInstance(String configFile) throws SAXException, IOException {
 		ResourceConfig instance = ResourceConfig.getInstance();
 		if (null == configFile) {
-			configFile = "H:\\code\\java\\openjava\\authsrv\\src\\main\\resources\\config\\SystemConfig.xml";
+			configFile = "config/SystemConfig.xml";
 		}
 		instance.init(configFile);
 		return instance;
@@ -30,8 +30,8 @@ public class TestIautoPhone extends TestCase {
 		paramDTO.setClientId(configDTO.getPhoneClientId());
 		paramDTO.setClientSercet(configDTO.getPhoneClientSercet());
 		paramDTO.setGrantType("password");
-		paramDTO.setUsername("demo2");
-		paramDTO.setPassword("demo");
+		paramDTO.setUsername("zpf");
+		paramDTO.setPassword("111111");
 		return paramDTO;
 	}
 

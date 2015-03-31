@@ -16,4 +16,8 @@ import net.suntec.oauthsrv.dto.AppInfo;
  */
 public interface AppInfoMapper extends PioneerDAO<AppInfo> {
 	public List<AppInfo> selectClientId(String appType);
+	
+	public boolean checkClientIdValid(AppInfo appInfo);
+	
+	public AppInfo selectByClientId(AppInfo appInfo);
 }

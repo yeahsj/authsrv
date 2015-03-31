@@ -124,6 +124,28 @@
 		where ai.app_type = #{appType,jdbcType=VARCHAR}
 		order by ct asc limit 1
 	</select>
+	
+	
+	<select id="selectByClientId" resultMap="BaseResultMap"
+		parameterType="net.suntec.oauthsrv.dto.AppInfo">
+		select
+		<include refid="Select_Column_List" />
+		, (select count(*) from app_iauto_map aim where aim.app_type =
+		ai.app_type and aim.client_id = ai.app_clientid) ct from app_info ai
+		where ai.app_type = #{appType,jdbcType=VARCHAR}
+		and ai.app_clientid = #{appClientid,jdbcType=VARCHAR}
+		order by ct asc limit 1
+	</select>
+	 
+	<select id="checkClientIdValid" resultType="java.lang.Boolean"
+		parameterType="net.suntec.oauthsrv.dto.AppInfo">
+		select
+		count(1)
+		from app_info ai
+		where 
+		app_type = #{appType,jdbcType=VARCHAR} 
+		and app_clientid = #{appClientid,jdbcType=VARCHAR}
+	</select>
 
 
 </mapper>

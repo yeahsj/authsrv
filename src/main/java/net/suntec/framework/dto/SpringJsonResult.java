@@ -19,10 +19,6 @@ public class SpringJsonResult<T> {
 	protected T result;
 	protected String lastUpdateTime;
 
-	public String getLastUpdateTime() {
-		return lastUpdateTime;
-	}
-
 	public void setLastUpdateTime(String lastUpdateTime) {
 		this.lastUpdateTime = lastUpdateTime;
 	}
@@ -46,5 +42,4 @@ public class SpringJsonResult<T> {
 	public void setResult(T result) {
 		this.result = result;
 	}
-
 }

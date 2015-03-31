@@ -1,10 +1,15 @@
 package net.suntec.oauthsrv.action;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.suntec.constant.Agent;
 import net.suntec.constant.AuthErrorCodeConstant;
 import net.suntec.framework.constant.AppConstant;
 import net.suntec.framework.constant.MessageConstant;
@@ -13,16 +18,25 @@ import net.suntec.framework.dto.SpringErrorJsonResult;
 import net.suntec.framework.dto.SpringJsonResult;
 import net.suntec.framework.exception.ASBaseException;
 import net.suntec.framework.exception.ASParamValidaterException;
+import net.suntec.framework.util.ASLogger;
 import net.suntec.framework.util.OauthProviderService;
 import net.suntec.framework.util.ServerPathUtil;
 import net.suntec.framework.util.SessionUtil;
+import net.suntec.oauthsrv.action.check.ActionCheck;
+import net.suntec.oauthsrv.action.check.ApptypeCheck;
+import net.suntec.oauthsrv.action.check.auth.callback.ParamsCheck;
+import net.suntec.oauthsrv.action.check.auth.callback.ResubmitActionCheck;
+import net.suntec.oauthsrv.action.check.auth.callback.SessionObjectCheck;
+import net.suntec.oauthsrv.action.check.auth.tobind.ToBindParamsCheck;
 import net.suntec.oauthsrv.action.jsonresult.AgreeBindStatusResult;
 import net.suntec.oauthsrv.action.jsonresult.AppInfoResult;
 import net.suntec.oauthsrv.action.jsonresult.TokenResult;
+import net.suntec.oauthsrv.action.param.DeviceAppInfo;
 import net.suntec.oauthsrv.action.param.IautoDeviceParamDTO;
 import net.suntec.oauthsrv.action.util.IautoDeviceUtil;
 import net.suntec.oauthsrv.action.util.IautoPhoneUtil;
 import net.suntec.oauthsrv.action.util.SpringResultUtil;
+import net.suntec.oauthsrv.action.util.UrlUtil;
 import net.suntec.oauthsrv.dto.AppConfig;
 import net.suntec.oauthsrv.dto.AppIautoBindConfig;
 import net.suntec.oauthsrv.dto.AppIautoMap;
@@ -31,10 +45,9 @@ import net.suntec.oauthsrv.framework.dto.OauthStatusParamDTO;
 import net.suntec.oauthsrv.service.ASCoreService;
 import net.suntec.oauthsrv.service.ASDeviceService;
 import net.suntec.oauthsrv.service.MessageService;
+import net.suntec.oauthsrv.service.TokenCheckService;
 
 import org.scribe.model.Token;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -62,8 +75,145 @@ public final class OauthAction {
 	ASCoreService aSCoreService;
 	@Autowired
 	MessageService messageService;
+	@Autowired
+	TokenCheckService tokenCheckService;
 
-	private final Logger logger = LoggerFactory.getLogger(OauthAction.class);
+	private final ASLogger logger = new ASLogger(OauthAction.class);
+
+	/**
+	 * 检查Token有效性
+	 * @param req
+	 * @param res
+	 * @param provider
+	 * @param deviceAppInfo
+	 * @return
+	 */
+	@RequestMapping(value = "/{provider}/checktoken")
+	public @ResponseBody SpringJsonResult<String> checktoken(
+			HttpServletRequest req, HttpServletResponse res,
+			@PathVariable("provider") String provider,
+			@ModelAttribute DeviceAppInfo deviceAppInfo) {
+		logger.info("start [OAUTH-1-10] ...... ");
+		logger.info("session id is :" + req.getSession().getId());
+		SpringJsonResult<String> result = null;
+		String errMsg = null;
+		boolean isValid = false;
+		Integer errCode = AppConstant.ERROR_CODE;
+		try {
+			isValid = tokenCheckService.isValid(provider, deviceAppInfo);
+		} catch (ASBaseException e) {
+			errCode = e.getErrCode();
+			errMsg = messageService.getMessage(req,
+					MessageConstant.MSG_TOKEN_FAILED, errCode);
+			logger.error(errMsg, e.getMessage());
+		} catch (Exception ex) {
+			errMsg = messageService.getMessage(req,
+					MessageConstant.MSG_TOKEN_FAILED, ex.getLocalizedMessage());
+			logger.exception(errMsg, ex);
+		}
+
+		if (!StrUtil.isEmpty(errMsg)) {
+			result = new SpringErrorJsonResult<String>();
+			result.setCode(errCode);
+			result.setErrMsg(errMsg);
+		} else {
+			result = new SpringDetailJsonResult<String>();
+			result.setResult("" + isValid);
+		}
+		return result;
+	}
+	
+	/**
+	 * 
+	 * @param req
+	 * @param res
+	 * @param provider
+	 * @param iautoDeviceParamDTO
+	 * @return
+	 */
+	@RequestMapping(value = "/{provider}/toBind")
+	public String toBind(HttpServletRequest req, HttpServletResponse res,
+			@PathVariable("provider") String provider,
+			@ModelAttribute IautoDeviceParamDTO iautoDeviceParamDTO) {
+		logger.info("start [OAUTH-1-8] ....... ");
+		String errMsg = null;
+		Integer errCode = AppConstant.ERROR_CODE;
+		String loginName = req.getParameter("loginName");
+		String clientId = req.getParameter("clientId");
+		String uid = req.getParameter("uid");
+		String accessToken = req.getParameter("accessToken");
+		String refreshToken = req.getParameter("refreshToken");
+		String backurl = req.getParameter("backurl");
+		boolean isContinue = false;
+		boolean isBind = false;
+		try {
+			if (StrUtil.isEmpty(loginName)) {
+				loginName = IautoDeviceUtil.getIautoDeviceUserName(req,
+						iautoDeviceParamDTO, messageService);
+			}
+			for (ActionCheck actionCheck : toBindChecks) {
+				isContinue = actionCheck.execute(req, res, provider,
+						messageService);
+				if (!isContinue) {
+					errMsg = "check failed";
+					break;
+				}
+			}
+			if (isContinue) {
+				isBind = aSCoreService.hasAgreeBindConfig(loginName);
+				if (isBind) {
+					AppIautoMap record = new AppIautoMap();
+					record.setIautoUserId(loginName);
+					record.setClientId(clientId);
+					record.setAppType(provider);
+					record.setApiUid(uid);
+					record.setAccessToken(accessToken);
+					record.setRefreshToken(refreshToken);
+					aSCoreService.saveAuthStatus(record,
+							AppConstant.AUTH_LOGIN_DEVICE);
+					String redUrl = conCallbackSuccessUrl(backurl, accessToken,
+							refreshToken, uid, clientId);
+					res.sendRedirect(redUrl);
+				} else {
+//					AppIautoMap record = new AppIautoMap();
+//					record.setIautoUserId(loginName);
+//					record.setClientId(clientId);
+//					record.setAppType(provider);
+//					record.setApiUid(uid);
+//					record.setAccessToken(accessToken);
+//					record.setRefreshToken(refreshToken);
+//					String redUrl = conCallbackSuccessUrl(backurl, accessToken,
+//							refreshToken, uid, clientId);
+//					req.setAttribute("backurl", backurl);
+//					req.setAttribute("agreeParams", record);
+					res.sendRedirect( req.getContextPath() +
+									this.conAgreeUrl(backurl, accessToken, refreshToken, uid, clientId, provider, loginName) );
+				}
+			}
+		} catch (ASBaseException e) {
+			errCode = e.getErrCode();
+			errMsg = messageService.getMessage(req,
+					MessageConstant.MSG_TO_BIND_FAILED, errCode);
+			logger.error(errMsg, e.getMessage());
+		} catch (Exception e) {
+			errMsg = messageService
+					.getMessage(req, MessageConstant.MSG_TO_BIND_FAILED,
+							e.getLocalizedMessage());
+			logger.exception(errMsg, e);
+		}
+
+		if (!StrUtil.isEmpty(errMsg)) {
+			req.setAttribute("errMsg", errMsg);
+			req.setAttribute("appType", provider);
+			return AppConstant.DEVICE_ERROR_URL;
+		} else {
+//			if (isBind) {
+			return null;
+//			} else {
+//				return "/flow/device/switchAgree";
+//			}
+		}
+	}
 
 	/**
 	 * 
@@ -79,14 +229,19 @@ public final class OauthAction {
 			@ModelAttribute IautoDeviceParamDTO iautoDeviceParamDTO) {
 		logger.info("start [OAUTH-1-3] ....... ");
 		String errMsg = null;
+
 		String clientId = req.getParameter("clientId");
 		String accessToken = req.getParameter("accessToken");
 		String refreshToken = req.getParameter("refreshToken");
+		String loginName = req.getParameter("loginName");
+		String uid = StrUtil.nullToString(req.getParameter("uid"));
 		Integer errCode = AppConstant.ERROR_CODE;
 		try {
-			agreeAndBindAppCheck(clientId, accessToken);
-			String loginName = IautoDeviceUtil.getIautoDeviceUserName(req,
-					iautoDeviceParamDTO, messageService);
+			agreeAndBindAppCheck(provider, clientId, accessToken);
+			if (StrUtil.isEmpty(loginName)) {
+				loginName = IautoDeviceUtil.getIautoDeviceUserName(req,
+						iautoDeviceParamDTO, messageService);
+			}
 			AppIautoBindConfig agreeParam = new AppIautoBindConfig();
 			agreeParam.setUserName(loginName);
 			agreeParam.setAppType(provider);
@@ -94,7 +249,7 @@ public final class OauthAction {
 			record.setIautoUserId(loginName);
 			record.setClientId(clientId);
 			record.setAppType(provider);
-			record.setApiUid("");
+			record.setApiUid(uid);
 			record.setAccessToken(accessToken);
 			record.setRefreshToken(refreshToken);
 			aSDeviceService.saveAgreeAndBindApp(record, agreeParam,
@@ -102,14 +257,13 @@ public final class OauthAction {
 		} catch (ASBaseException e) {
 			errCode = e.getErrCode();
 			errMsg = messageService.getMessage(req,
-					MessageConstant.MSG_AGREE_AND_BIND_FAILED,
-					e.getLocalizedMessage());
-			logger.error(errMsg);
+					MessageConstant.MSG_AGREE_AND_BIND_FAILED, errCode);
+			logger.error(errMsg, e.getMessage());
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_AGREE_AND_BIND_FAILED,
 					e.getLocalizedMessage());
+			logger.exception(errMsg, e);
 		}
 		return SpringResultUtil.jsonResult(errMsg, errCode);
 	}
@@ -142,12 +296,11 @@ public final class OauthAction {
 		} catch (ASBaseException e) {
 			errCode = e.getErrCode();
 			errMsg = messageService.getMessage(req,
-					MessageConstant.MSG_AGREE_AND_BIND_FAILED,
-					e.getLocalizedMessage());
-			logger.error(errMsg);
+					MessageConstant.MSG_AGREE_AND_BIND_FAILED, errCode);
+			logger.error(errMsg, e.getMessage());
 		} catch (Exception ex) {
-			logger.error(ex.getMessage(), ex);
 			errMsg = ex.getLocalizedMessage();
+			logger.exception(errMsg, ex);
 		}
 		return SpringResultUtil.jsonResult(errMsg, errCode);
 	}
@@ -162,12 +315,14 @@ public final class OauthAction {
 			@PathVariable("provider") String provider,
 			@ModelAttribute IautoDeviceParamDTO iautoDeviceParamDTO) {
 		logger.info("start [OAUTH-1-1] ...... ");
+		logger.info("session id is :" + req.getSession().getId());
 		SpringJsonResult<TokenResult> result = null;
 		String errMsg = null;
 		AppIautoMap record = null;
-		boolean isBind = false;
+		// boolean isBind = false;
 		boolean noToken = true; // 标记服务器上有没有该iauto用户的对应的App信息
 		Integer errCode = AppConstant.ERROR_CODE;
+		String appVersion = req.getParameter("appVersion");
 		try {
 			/**
 			 * 1: 首先从session中判断是否已存在loginName 2: 没有则从iauto获取 3: 返回loginName
@@ -175,9 +330,9 @@ public final class OauthAction {
 			String loginName = IautoDeviceUtil.getIautoDeviceUserName(req,
 					iautoDeviceParamDTO, messageService);
 			record = aSDeviceService.saveFetchToken(iautoDeviceParamDTO,
-					provider, loginName);
+					provider, loginName, appVersion);
 			if (null == record) {
-				isBind = aSCoreService.hasAgreeBindConfig(loginName);
+				// isBind = aSCoreService.hasAgreeBindConfig(loginName);
 				noToken = true;
 			} else {
 				noToken = false;
@@ -185,13 +340,12 @@ public final class OauthAction {
 		} catch (ASBaseException e) {
 			errCode = e.getErrCode();
 			errMsg = messageService.getMessage(req,
-					MessageConstant.MSG_AGREE_AND_BIND_FAILED,
-					e.getLocalizedMessage());
-			logger.error(errMsg);
+					MessageConstant.MSG_TOKEN_FAILED, errCode);
+			logger.error(errMsg, e.getMessage());
 		} catch (Exception ex) {
-			logger.error(ex.getMessage(), ex);
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_TOKEN_FAILED, ex.getLocalizedMessage());
+			logger.exception(errMsg, ex);
 		}
 
 		if (!StrUtil.isEmpty(errMsg)) {
@@ -202,7 +356,8 @@ public final class OauthAction {
 			if (noToken) {
 				AgreeBindStatusResult<TokenResult> result2 = new AgreeBindStatusResult<TokenResult>();
 				result2.setCode(AppConstant.SUCCESS_CODE);
-				result2.setIsBind(isBind);
+				result2.setIsBind(true);
+				// result2.setIsBind(isBind);
 				result = result2;
 			} else {
 				result = new SpringDetailJsonResult<TokenResult>();
@@ -277,17 +432,17 @@ public final class OauthAction {
 			errCode = AuthErrorCodeConstant.NULL_POINTER_ERROR;
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_AUTHENTICATE_FAILED, errCode);
-			logger.error(errMsg);
+			logger.error(errMsg, e.getMessage());
 		} catch (ASBaseException e) {
 			errCode = e.getErrCode();
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_AUTHENTICATE_FAILED, errCode);
-			logger.error(errMsg);
+			logger.error(errMsg, e.getMessage());
 		} catch (Exception e) {
 			errCode = AuthErrorCodeConstant.AUTH_FAILED;
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_AUTHENTICATE_FAILED, errCode);
-			logger.error(errMsg);
+			logger.exception(errMsg, e);
 		}
 		if (!StrUtil.isEmpty(errMsg)) {
 			String fromPhone = StrUtil.nullToString(oauthParam.getFromPhone());
@@ -328,7 +483,6 @@ public final class OauthAction {
 			@PathVariable("provider") String provider) throws IOException {
 		clearSession(req, provider);
 		logger.info("start [OAUTH-1-2] ...... ");
-		logger.info("session id is :" + req.getSession().getId());
 		String errMsg = null;
 		String clientId = null;
 		Integer errCode = AppConstant.ERROR_CODE;
@@ -370,38 +524,28 @@ public final class OauthAction {
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_AUTHENTICATE_FAILED, errCode);
 			// logger.error(errMsg);
-			logger.error(errMsg, e);
+			logger.error(errMsg, e.getMessage());
 		} catch (ASBaseException e) {
 			errCode = e.getErrCode();
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_AUTHENTICATE_FAILED, errCode);
-			logger.error(errMsg);
+			logger.error(errMsg, e.getMessage());
 		} catch (Exception e) {
 			errCode = AuthErrorCodeConstant.AUTH_FAILED;
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_AUTHENTICATE_FAILED, errCode);
-			logger.error(errMsg);
+			logger.exception(errMsg, e);
 		}
 		if (!StrUtil.isEmpty(errMsg)) {
 			clearSession(req, provider);
-			String fromPhone = StrUtil.nullToString(oauthParam.getFromPhone());
-			if ("true".equals(fromPhone)) {
-				req.setAttribute("errMsg", errMsg);
-				if (StrUtil.isEmpty(oauthParam.getErrurl())) {
-					return AppConstant.ERROR_URL;
-				} else {
-					return handleErrorUrl(res, oauthParam.getErrurl(),
-							"errMsg=" + errMsg + "&errCode=" + errCode);
-				}
+			// String fromPhone =
+			// StrUtil.nullToString(oauthParam.getFromPhone());
+			req.setAttribute("errMsg", errMsg);
+			if (StrUtil.isEmpty(oauthParam.getErrurl())) {
+				return AppConstant.DEVICE_ERROR_URL;
 			} else {
-				req.setAttribute("errMsg", errMsg);
-				req.setAttribute("appType", provider);
-				if (StrUtil.isEmpty(oauthParam.getErrurl())) {
-					return AppConstant.DEVICE_ERROR_URL;
-				} else {
-					return handleErrorUrl(res, oauthParam.getErrurl(),
-							"errMsg=" + errMsg + "&errCode=" + errCode);
-				}
+				return handleErrorUrl(res, oauthParam.getErrurl(), "errMsg="
+						+ errMsg + "&errCode=" + errCode);
 			}
 		} else {
 			return null;
@@ -422,65 +566,70 @@ public final class OauthAction {
 	public String callback(HttpServletRequest req, HttpServletResponse res,
 			@PathVariable("provider") String provider,
 			@PathVariable("sortNo") String sortNo) throws IOException {
-		logger.info("callback for [OAUTH-1-2] ...... ");
-		logger.info("session id is :" + req.getSession().getId());
+
+		// String userAgent = req.getHeader("user-agent");
+		// Agent agent = AgentUtil.getAgent(userAgent);
+		logger.info("callback for [OAUTH-1-2] from "
+				+ req.getHeader("user-agent"));
 		String errMsg = null;
 		int errCode = AppConstant.ERROR_CODE;
 		String fromPhone = "";
 		String errurl = null;
-		boolean isResubmit = false;
 		try {
-			isResubmit = checkResubmit(res, req, provider);
-		} catch (Exception ex) {
-			isResubmit = true;
-		}
-		if (isResubmit) {
-			errMsg = messageService.getMessage(req,
-					MessageConstant.MSG_AUTHENTICATE_FAILED,
-					AuthErrorCodeConstant.AUTH_CALLBACK_RESUBMIT);
-			req.setAttribute("errMsg", errMsg);
-		} else {
+			for (ActionCheck actionCheck : callBackChecks) {
+				boolean isContinue = actionCheck.execute(req, res, provider,
+						messageService);
+				if (!isContinue) {
+					return null;
+				}
+			}
 			OauthFlowStatus oauthFlowStatus = SessionUtil
 					.getSessionOauthStatus(req, provider);
 			OauthStatusParamDTO oauthStatusParamDTO = SessionUtil
 					.getSessionOauthParamsStatus(req, provider);
-			if (null == oauthFlowStatus) {
-				errMsg = "oauthFlowStatus is null!";
-				logger.error(errMsg);
-			}
-			if (null == oauthStatusParamDTO) {
-				errMsg = "oauthStatusParamDTO is null!";
-				logger.error(errMsg);
-			}
 			errurl = oauthStatusParamDTO.getErrurl();
 			fromPhone = StrUtil
 					.nullToString(oauthStatusParamDTO.getFromPhone());
-			if (!provider.equals(oauthFlowStatus.getAppConfig().getAppType())) {
-				errMsg = "appType not match!";
-				logger.error(errMsg);
-			} else {
-				if (handleCancel(req, res, provider, fromPhone)) {
-					return null;
-				}
-				try {
-					String backurl = oauthStatusParamDTO.getBackurl();
-					String code = req.getParameter("code");
-					String oAuthVerifier = req.getParameter("oauth_verifier");
-					checkCallBack(provider, fromPhone, backurl, code,
-							oAuthVerifier);
-					if (StrUtil.isNotEmpty(code)) {
-						oauthFlowStatus.setOAuthVerifier(code);
-					} else {
-						oauthFlowStatus.setOAuthVerifier(oAuthVerifier);
-					}
-					logger.info("obtain accessToken ................ ");
-					OauthProviderService.obtainAccessToken(oauthFlowStatus);
-					logger.info("prod user profile ................ ");
-					OauthProviderService.prodUserProfile(oauthFlowStatus);
-					logger.info("start save data (optional) and redirect  ................ ");
-					// 手机支持部分,保存每次认证成功后的信息.
 
-					if ("true".equals(fromPhone)) {
+			String backurl = oauthStatusParamDTO.getBackurl();
+			String code = req.getParameter("code");
+			String oAuthVerifier = req.getParameter("oauth_verifier");
+
+			if (StrUtil.isNotEmpty(code)) {
+				oauthFlowStatus.setOAuthVerifier(code);
+			} else {
+				oauthFlowStatus.setOAuthVerifier(oAuthVerifier);
+			}
+			logger.info("obtain accessToken ................ ");
+			OauthProviderService.obtainAccessToken(oauthFlowStatus);
+			logger.info("prod user profile ................ ");
+			OauthProviderService.prodUserProfile(oauthFlowStatus);
+			logger.info("start save data (optional) and redirect  ................ ");
+			// 手机支持部分,保存每次认证成功后的信息.
+			agreeAndBindAppCheck(provider, oauthFlowStatus.getAppConfig()
+					.getAppKey(), oauthFlowStatus.getAccessToken().getToken());
+			if ("true".equals(fromPhone)) {
+				// || agent == Agent.ANDROID || agent == Agent.IPHONE
+				AppIautoMap record = new AppIautoMap();
+				record.setIautoUserId(oauthStatusParamDTO.getLoginName());
+				record.setClientId(oauthFlowStatus.getAppConfig().getAppKey());
+				record.setAppType(oauthFlowStatus.getAppConfig().getAppType());
+				record.setApiUid(oauthFlowStatus.getProviderUser().getUserId());
+				record.setAccessToken(oauthFlowStatus.getAccessToken()
+						.getToken());
+				record.setRefreshToken(oauthFlowStatus.getAccessToken()
+						.getSecret());
+				aSCoreService.saveAuthStatus(record,
+						AppConstant.AUTH_LOGIN_PHONE);
+				if (StrUtil.isEmpty(oauthStatusParamDTO.getBackurl())) {
+					res.sendRedirect(AppConstant.INDEX_URL);
+				} else {
+					res.sendRedirect(oauthStatusParamDTO.getBackurl());
+				}
+			} else {
+				if (StrUtil.isNotEmpty(oauthStatusParamDTO.getLoginName())) {
+					if (aSCoreService.hasAgreeBindConfig(oauthStatusParamDTO
+							.getLoginName())) {
 						AppIautoMap record = new AppIautoMap();
 						record.setIautoUserId(oauthStatusParamDTO
 								.getLoginName());
@@ -495,88 +644,125 @@ public final class OauthAction {
 						record.setRefreshToken(oauthFlowStatus.getAccessToken()
 								.getSecret());
 						aSCoreService.saveAuthStatus(record,
-								AppConstant.AUTH_LOGIN_PHONE);
-						if (StrUtil.isEmpty(oauthStatusParamDTO.getBackurl())) {
-							res.sendRedirect(AppConstant.INDEX_URL);
-						} else {
-							res.sendRedirect(oauthStatusParamDTO.getBackurl());
-						}
+								AppConstant.AUTH_LOGIN_DEVICE);
+						String redUrl = conCallbackSuccessUrl(backurl,
+								oauthFlowStatus.getAccessToken().getToken(),
+								StrUtil.nullToString(oauthFlowStatus
+										.getAccessToken().getSecret()),
+								StrUtil.nullToString(oauthFlowStatus
+										.getProviderUser().getUserId()),
+								oauthFlowStatus.getAppConfig().getAppKey());
+						res.sendRedirect(redUrl);
 					} else {
-						if (StrUtil.isNotEmpty(oauthStatusParamDTO
-								.getLoginName())
-								&& aSCoreService
-										.hasAgreeBindConfig(oauthStatusParamDTO
-												.getLoginName())) {
-							AppIautoMap record = new AppIautoMap();
-							record.setIautoUserId(oauthStatusParamDTO
-									.getLoginName());
-							record.setClientId(oauthFlowStatus.getAppConfig()
-									.getAppKey());
-							record.setAppType(oauthFlowStatus.getAppConfig()
-									.getAppType());
-							record.setApiUid(oauthFlowStatus.getProviderUser()
-									.getUserId());
-							record.setAccessToken(oauthFlowStatus
-									.getAccessToken().getToken());
-							record.setRefreshToken(oauthFlowStatus
-									.getAccessToken().getSecret());
-							aSCoreService.saveAuthStatus(record,
-									AppConstant.AUTH_LOGIN_DEVICE);
-						}
-						StringBuilder redUrl = new StringBuilder();
-						redUrl.append(backurl);
-						redUrl.append("?accessToken=");
-						redUrl.append(oauthFlowStatus.getAccessToken()
-								.getToken());
-						redUrl.append("&refreshToken=");
-						redUrl.append(StrUtil.nullToString(oauthFlowStatus
-								.getAccessToken().getSecret()));
-						redUrl.append("&uid=");
-						redUrl.append(StrUtil.nullToString(oauthFlowStatus
-								.getProviderUser().getUserId()));
-						redUrl.append("&clientId=");
-						redUrl.append(oauthFlowStatus.getAppConfig()
-								.getAppKey());
-						logger.info("redirect url: " + redUrl.toString());
-						res.sendRedirect(redUrl.toString());
+						res.sendRedirect( req.getContextPath() +
+								this.conAgreeUrl(backurl, oauthFlowStatus.getAccessToken()
+										.getToken(), oauthFlowStatus.getAccessToken()
+										.getSecret(), oauthFlowStatus.getProviderUser()
+										.getUserId(), oauthFlowStatus.getAppConfig()
+										.getAppKey(), provider, oauthStatusParamDTO.getLoginName()) );
+						return null;
+						// return "/flow/device/switchAgree";
+						// aSCoreService.saveAuthHistory(provider,
+						// oauthStatusParamDTO.getLoginName(),
+						// AppConstant.AUTH_LOGIN_DEVICE);
 					}
-				} catch (ASBaseException e) {
-					errCode = e.getErrCode();
-					errMsg = messageService.getMessage(req,
-							MessageConstant.MSG_AUTHENTICATE_FAILED,
-							e.getErrCode());
-					logger.error(errMsg);
-				} catch (Exception e) {
-					errMsg = messageService.getMessage(req,
-							MessageConstant.MSG_AUTHENTICATE_FAILED,
-							AuthErrorCodeConstant.AUTH_CALLBACK_FAILED);
-					logger.error(e.getMessage(), e);
+				} else {
+					String redUrl = conCallbackSuccessUrl(backurl,
+							oauthFlowStatus.getAccessToken().getToken(),
+							StrUtil.nullToString(oauthFlowStatus
+									.getAccessToken().getSecret()),
+							StrUtil.nullToString(oauthFlowStatus
+									.getProviderUser().getUserId()),
+							oauthFlowStatus.getAppConfig().getAppKey());
+					res.sendRedirect(redUrl);
 				}
 			}
+		} catch (ASBaseException e) {
+			errCode = e.getErrCode();
+			errMsg = messageService.getMessage(req,
+					MessageConstant.MSG_AUTHENTICATE_FAILED, errCode);
+			logger.error(errMsg, e.getMessage());
+		} catch (Exception e) {
+			errMsg = messageService.getMessage(req,
+					MessageConstant.MSG_AUTHENTICATE_FAILED,
+					AuthErrorCodeConstant.AUTH_CALLBACK_FAILED);
+			logger.exception(errMsg, e);
 		}
 
 		if (!StrUtil.isEmpty(errMsg)) {
-			if ("true".equals(fromPhone)) {
-				req.setAttribute("errMsg", errMsg);
-				if (StrUtil.isEmpty(errurl)) {
-					return AppConstant.ERROR_URL;
-				} else {
-					return handleErrorUrl(res, errurl, "errMsg=" + errMsg
-							+ "&errCode=" + errCode);
-				}
-			} else {
-				req.setAttribute("errMsg", errMsg);
-				req.setAttribute("appType", provider);
-				if (StrUtil.isEmpty(errurl)) {
-					return AppConstant.DEVICE_ERROR_URL;
-				} else {
-					return handleErrorUrl(res, errurl, "errMsg=" + errMsg
-							+ "&errCode=" + errCode);
-				}
-			}
+			return this.handleErrMsg(req, res, null, fromPhone, errCode,
+					errMsg, errurl);
+			// if ("true".equals(fromPhone)) {
+			// req.setAttribute("errMsg", errMsg);
+			// if (StrUtil.isEmpty(errurl)) {
+			// return AppConstant.ERROR_URL;
+			// } else {
+			// return handleErrorUrl(res, errurl, "errMsg=" + errMsg
+			// + "&errCode=" + errCode);
+			// }
+			// } else {
+			// req.setAttribute("errMsg", errMsg);
+			// req.setAttribute("appType", provider);
+			// if (StrUtil.isEmpty(errurl)) {
+			// return AppConstant.DEVICE_ERROR_URL;
+			// } else {
+			// return handleErrorUrl(res, errurl, "errMsg=" + errMsg
+			// + "&errCode=" + errCode);
+			// }
+			// }
 		} else {
 			return null;
 		}
+	}
+
+	private String handleErrMsg(HttpServletRequest req,
+			HttpServletResponse res, Agent agent, String fromPhone,
+			int errCode, String errMsg, String errurl) throws IOException {
+		req.setAttribute("errMsg", errMsg);
+		if (StrUtil.isEmpty(errurl)) {
+			return AppConstant.DEVICE_ERROR_URL;
+		} else {
+			return handleErrorUrl(res, errurl, "errMsg=" + errMsg + "&errCode="
+					+ errCode);
+		}
+	}
+
+	private String conAgreeUrl(String backurl, String accessToken,
+			String refreshToken, String uid, String clientId , String appType , String loginName ) throws UnsupportedEncodingException{
+		StringBuilder params = new StringBuilder();
+		params.append("/page/iAuto3rdBind?");
+		params.append("clientId=");
+		params.append( clientId );
+		params.append("&accessToken=");
+		params.append( accessToken );
+		params.append("&refreshToken=");
+		params.append( refreshToken );
+		params.append("&iautoUserId=");
+		params.append( loginName );
+		params.append("&uid=");
+		params.append( uid );
+		params.append("&appType=");
+		params.append(appType);
+		params.append("&st=");
+		params.append( Math.random() );
+		params.append("&backurl=");
+		params.append(URLEncoder.encode(backurl, "UTF-8"));
+		return params.toString();
+	}
+	private String conCallbackSuccessUrl(String backurl, String accessToken,
+			String refreshToken, String uid, String clientId) {
+		StringBuilder redUrl = new StringBuilder();
+		redUrl.append(backurl);
+		redUrl.append("?accessToken=");
+		redUrl.append(accessToken);
+		redUrl.append("&refreshToken=");
+		redUrl.append(refreshToken);
+		redUrl.append("&uid=");
+		redUrl.append(uid);
+		redUrl.append("&clientId=");
+		redUrl.append(clientId);
+		logger.info("redirect url: " + redUrl.toString());
+		return redUrl.toString();
 	}
 
 	@RequestMapping(value = "/{provider}/logout")
@@ -588,24 +774,45 @@ public final class OauthAction {
 		String errMsg = null;
 		Integer errCode = AppConstant.ERROR_CODE;
 		try {
-			String loginName = IautoDeviceUtil.getIautoDeviceUserName(req,
-					iautoDeviceParamDTO, messageService);
-			AppIautoMap appIautoMap = new AppIautoMap();
-			appIautoMap.setIautoUserId(loginName);
-			appIautoMap.setAppType(provider);
+			String accessToken = req.getParameter("accessToken");
 			clearSession(req, provider);
-			aSDeviceService.saveLogout(appIautoMap,
-					AppConstant.AUTH_LOGOUT_DEVICE);
+			if (StrUtil.isEmpty(accessToken)) {
+				String loginName = IautoDeviceUtil.getIautoDeviceUserName(req,
+						iautoDeviceParamDTO, messageService);
+				AppIautoMap appIautoMap = new AppIautoMap();
+				appIautoMap.setIautoUserId(loginName);
+				appIautoMap.setAppType(provider);
+				aSDeviceService.saveLogout(appIautoMap,
+						AppConstant.AUTH_LOGOUT_DEVICE);
+			} else {
+				String loginName = null;
+				try {
+					loginName = IautoDeviceUtil.getIautoDeviceUserName(req,
+							iautoDeviceParamDTO, messageService);
+				} catch (Exception ex) {
+					logger.error(ex.getMessage());
+				}
+				if (!StrUtil.isEmpty(loginName)) {
+					aSDeviceService.saveLogoutByAccessToken(provider,
+							accessToken);
+				} else {
+					AppIautoMap appIautoMap = new AppIautoMap();
+					appIautoMap.setIautoUserId(loginName);
+					appIautoMap.setAppType(provider);
+					appIautoMap.setAccessToken(accessToken);
+					aSDeviceService.saveLogout(appIautoMap,
+							AppConstant.AUTH_LOGOUT_DEVICE);
+				}
+			}
 		} catch (ASBaseException e) {
 			errCode = e.getErrCode();
 			errMsg = messageService.getMessage(req,
-					MessageConstant.MSG_AGREE_AND_BIND_FAILED,
-					e.getLocalizedMessage());
-			logger.error(errMsg);
+					MessageConstant.MSG_LOGOUT_FAILED, errCode);
+			logger.error(errMsg, e.getMessage());
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_LOGOUT_FAILED, e.getLocalizedMessage());
+			logger.exception(errMsg, e);
 		}
 
 		return SpringResultUtil.jsonResult(errMsg, errCode);
@@ -633,6 +840,7 @@ public final class OauthAction {
 		String clientId = req.getParameter("clientId");
 		String accessToken = req.getParameter("accessToken");
 		String refreshToken = req.getParameter("refreshToken");
+		String params = req.getParameter("params");
 
 		SpringJsonResult<String> result = null;
 		String errMsg = null;
@@ -641,6 +849,7 @@ public final class OauthAction {
 		try {
 			this.getHeaderCheck(clientId, accessToken, requestUrl, method);
 			// requestUrl = URLDecoder.decode(requestUrl, "UTF-8");
+			requestUrl = UrlUtil.conUrl(requestUrl, params);
 			logger.info("requestUrl: " + requestUrl);
 			AppConfig appConfig = OauthProviderService.prodAppConfig(provider,
 					clientId);
@@ -652,12 +861,12 @@ public final class OauthAction {
 		} catch (ASBaseException e) {
 			errCode = e.getErrCode();
 			errMsg = messageService.getMessage(req,
-					MessageConstant.MSG_HEADER_FAILED, e.getLocalizedMessage());
-			logger.error(errMsg);
+					MessageConstant.MSG_HEADER_FAILED, errCode);
+			logger.error(errMsg, e.getMessage());
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_HEADER_FAILED, e.getLocalizedMessage());
+			logger.exception(errMsg, e);
 		}
 
 		if (!StrUtil.isEmpty(errMsg)) {
@@ -704,12 +913,12 @@ public final class OauthAction {
 		} catch (ASBaseException e) {
 			errCode = e.getErrCode();
 			errMsg = messageService.getMessage(req,
-					MessageConstant.MSG_GET_CLIENTID, e.getLocalizedMessage());
-			logger.error(errMsg);
+					MessageConstant.MSG_GET_CLIENTID, errCode);
+			logger.error(errMsg, e.getMessage());
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_GET_CLIENTID, e.getLocalizedMessage());
+			logger.exception(errMsg, e);
 		}
 
 		if (!StrUtil.isEmpty(errMsg)) {
@@ -772,7 +981,8 @@ public final class OauthAction {
 		SessionUtil.saveSessionOauthParamsStatus(req, appType, oauthParam);
 	}
 
-	private final void agreeAndBindAppCheck(String clientId, String accessToken) {
+	private final void agreeAndBindAppCheck(String appType, String clientId,
+			String accessToken) {
 		if (StrUtil.isEmpty(clientId)) {
 			throw new ASParamValidaterException(
 					MessageConstant.MSG_AGREE_AND_BIND_FAILED,
@@ -783,6 +993,12 @@ public final class OauthAction {
 			throw new ASParamValidaterException(
 					MessageConstant.MSG_AGREE_AND_BIND_FAILED,
 					AuthErrorCodeConstant.APP_NO_ACCESS_TOKEN);
+		}
+
+		if (!aSCoreService.checkClientIdValid(appType, clientId)) {
+			throw new ASParamValidaterException(
+					MessageConstant.MSG_AGREE_AND_BIND_FAILED,
+					AuthErrorCodeConstant.APP_CLIENT_ID_INVALID);
 		}
 	}
 
@@ -813,84 +1029,6 @@ public final class OauthAction {
 		}
 	}
 
-	private void checkCallBack(String appType, String fromPhone,
-			String backurl, String code, String oAuthVerifier) {
-		if ("true".equals(fromPhone)) {
-			if (StrUtil.isEmpty(backurl)) {
-				throw new ASParamValidaterException(
-						MessageConstant.MSG_AUTHENTICATE_FAILED,
-						AuthErrorCodeConstant.APP_NO_BACKURL);
-			}
-			if (StrUtil.isEmpty(code) && StrUtil.isEmpty(oAuthVerifier)
-					&& !appType.equals("pocket")) {
-				throw new ASParamValidaterException(
-						MessageConstant.MSG_AUTHENTICATE_FAILED,
-						AuthErrorCodeConstant.APP_NO_CODE_OR_VERIFY);
-			}
-		} else {
-			if (StrUtil.isEmpty(code) && StrUtil.isEmpty(oAuthVerifier)
-					&& !appType.equals("pocket")) {
-				throw new ASParamValidaterException(
-						MessageConstant.MSG_AUTHENTICATE_FAILED,
-						AuthErrorCodeConstant.APP_NO_CODE_OR_VERIFY);
-			}
-		}
-	}
-
-	private boolean checkResubmit(HttpServletResponse res,
-			HttpServletRequest req, String provider) {
-		int count = 0;
-		Object cntStr = req.getSession().getAttribute("CALLBACK-" + provider);
-		if (StrUtil.isNotEmpty(cntStr)) {
-			count = (Integer) cntStr;
-		}
-		if (count > 0) {
-			return true;
-		} else {
-			req.getSession().setAttribute("CALLBACK-" + provider, count + 1);
-			return false;
-		}
-	}
-
-	/**
-	 * 处理第三方app取消后的操作 目前做法是希望第三方页面取消后，都转向到列表页
-	 * 
-	 * @important
-	 * @param req
-	 * @param res
-	 * @param provider
-	 * @param fromPhone
-	 * @return
-	 * @throws IOException
-	 */
-	private boolean handleCancel(HttpServletRequest req,
-			HttpServletResponse res, String provider, String fromPhone)
-			throws IOException {
-		// TODO
-		boolean isHandle = false;
-		boolean fromPhoneBl = "true".equals(fromPhone);
-		String localServer = ServerPathUtil.getCurrentServerRootPath(req);
-		if ("twitter".equals(provider)) {
-			String denied = req.getParameter("denied");
-			if (!StrUtil.isEmpty(denied) && fromPhoneBl) {
-				if (fromPhoneBl) {
-					isHandle = true;
-					res.sendRedirect(localServer + "/redirect.html");
-				}
-			}
-		}
-		if ("soundcloud".equals(provider)) {
-			String error = req.getParameter("error");
-			if (!StrUtil.isEmpty(error) && fromPhoneBl) {
-				if (fromPhoneBl) {
-					isHandle = true;
-					res.sendRedirect(localServer + "/redirect.html");
-				}
-			}
-		}
-		return isHandle;
-	}
-
 	public String handleErrorUrl(HttpServletResponse res, String errurl,
 			String params) throws IOException {
 		res.sendRedirect(errurl + "?" + params);
@@ -901,5 +1039,17 @@ public final class OauthAction {
 		req.getSession().setAttribute("CALLBACK-" + provider, 0);
 		SessionUtil.removeSessionOauthStatus(req, provider);
 		SessionUtil.removeSessionOauthParamsStatus(req, provider);
+	}
+
+	static List<ActionCheck> callBackChecks = new ArrayList<ActionCheck>();
+	static List<ActionCheck> toBindChecks = new ArrayList<ActionCheck>();
+
+	static {
+		callBackChecks.add(new ResubmitActionCheck());
+		callBackChecks.add(new SessionObjectCheck());
+		callBackChecks.add(new ApptypeCheck());
+		// callBackChecks.add(new CancelCheck());
+		callBackChecks.add(new ParamsCheck());
+		toBindChecks.add(new ToBindParamsCheck());
 	}
 }

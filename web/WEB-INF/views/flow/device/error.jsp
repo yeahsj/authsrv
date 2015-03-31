@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://"
@@ -18,7 +17,16 @@
 		<title>error page</title>
 		<script language="javascript" type="text/javascript">
 	function init() {
-		$("#afui").css("height", ($(window).height()) + "px");
+		var pageHeight = $(window).height();
+		if( pageHeight > 480 ){
+			$("#afui").css("height", "480px");
+		}else{
+			$("#afui").css("height", pageHeight + "px");
+		}
+		console.log( $("#afui").height() );
+		if( $("#afui").height() > 480 ){
+			$("#afui").css("height", "480px");
+		}
 	}
 </script>
 		<style>
@@ -27,6 +35,10 @@ body {
 	margin:0;
 	top:0;
 	left:0;
+}
+
+#pageTitle{
+	margin:0px;	
 }
 
 .error_page {
@@ -53,7 +65,7 @@ body {
 	<body onload="init();">
 		<div id="afui" class="error_page">
 			<div class="error_msg">
-				Authentication failed,please press "Back" and try again
+				Authentication failed! Please press the "Back" button and try again.
 			</div>
 		</div>
 	</body>

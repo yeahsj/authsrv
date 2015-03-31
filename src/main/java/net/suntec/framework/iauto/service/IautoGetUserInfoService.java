@@ -69,8 +69,14 @@ public abstract class IautoGetUserInfoService extends
 				isSuccess = true;
 			} else {
 				errMsg = result.getString("errMsg");
-				throw new ASIautoException(errMsg,
-						AuthErrorCodeConstant.IT_GUI_ERR_PARAM);
+				if (errMsg.contains("expired")
+						|| errMsg.contains("login again")) {
+					throw new ASIautoException(errMsg,
+							AuthErrorCodeConstant.IT_GUI_ERR_TOKEN_EXPIRE);
+				} else {
+					throw new ASIautoException(errMsg,
+							AuthErrorCodeConstant.IT_GUI_ERR_PARAM);
+				}
 			}
 		} else {
 			errMsg = "request iauto user info failed";

@@ -1,6 +1,7 @@
 package net.suntec.oauthsrv.action;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +15,11 @@ import net.suntec.framework.dto.SpringErrorJsonResult;
 import net.suntec.framework.dto.SpringJsonResult;
 import net.suntec.framework.dto.SpringQueryJsonResult;
 import net.suntec.framework.exception.ASBaseException;
-import net.suntec.framework.iauto.dto.result.IautoPhoneLoginResultDTO;
+import net.suntec.framework.exception.ASParamValidaterException;
+import net.suntec.framework.util.ASLogger;
+import net.suntec.oauthsrv.action.check.AccessTokenCheck;
+import net.suntec.oauthsrv.action.check.ActionCheck;
+import net.suntec.oauthsrv.action.check.ClientIdCheck;
 import net.suntec.oauthsrv.action.jsonresult.AgreeBindStatusResult;
 import net.suntec.oauthsrv.action.jsonresult.AuthStatusResult;
 import net.suntec.oauthsrv.action.param.IautoDeviceParamDTO;
@@ -27,11 +32,8 @@ import net.suntec.oauthsrv.dto.AppIautoMap;
 import net.suntec.oauthsrv.service.ASCoreService;
 import net.suntec.oauthsrv.service.ASDeviceService;
 import net.suntec.oauthsrv.service.ASPhoneService;
-import net.suntec.oauthsrv.service.IautoApiService;
 import net.suntec.oauthsrv.service.MessageService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -54,8 +56,8 @@ import com.openjava.core.util.StrUtil;
 @Controller
 @RequestMapping(value = "/api")
 public class FlowEndpointAction {
-	private final Logger logger = LoggerFactory
-			.getLogger(FlowEndpointAction.class);
+	private final ASLogger logger = new ASLogger(FlowEndpointAction.class);
+
 	@Autowired
 	MessageService messageService;
 	@Autowired
@@ -64,31 +66,6 @@ public class FlowEndpointAction {
 	ASCoreService aSCoreService;
 	@Autowired
 	ASDeviceService aSDeviceService;
-
-	@RequestMapping(value = "/{provider}/sessionToken")
-	public @ResponseBody SpringJsonResult<IautoPhoneLoginResultDTO> getSessionToken(
-			@PathVariable("provider") String provider) {
-		logger.info("start [TST-1] " + provider + " ....... ");
-		SpringJsonResult<IautoPhoneLoginResultDTO> result = null;
-		IautoApiService iautoApiService = new IautoApiService();
-		try {
-			IautoPhoneLoginResultDTO dto = null;
-			if (provider.equals("phone")) {
-				dto = iautoApiService.doPhoneLogin();
-			} else {
-				dto = iautoApiService.doDeviceLogin();
-			}
-			result = new SpringDetailJsonResult<IautoPhoneLoginResultDTO>();
-			result.setResult(dto);
-			result.setCode(AppConstant.SUCCESS_CODE);
-		} catch (ASBaseException ex) {
-			logger.error(ex.getMessage());
-			result = new SpringErrorJsonResult<IautoPhoneLoginResultDTO>();
-			result.setErrMsg(ex.getMessage());
-			result.setCode(ex.getErrCode());
-		}
-		return result;
-	}
 
 	@Deprecated
 	@RequestMapping(value = "/doLoginEndpoint")
@@ -115,7 +92,7 @@ public class FlowEndpointAction {
 			logger.error(ex.getMessage(), ex);
 		} catch (Exception ex) {
 			errMsg = ex.getMessage();
-			logger.error(errMsg);
+			logger.exception(errMsg);
 		}
 
 		if (!StrUtil.isEmpty(errMsg)) {
@@ -125,6 +102,56 @@ public class FlowEndpointAction {
 		} else {
 			result = new SpringDetailJsonResult<String>();
 			result.setResult("success");
+			result.setCode(AppConstant.SUCCESS_CODE);
+		}
+		return result;
+	}
+
+	@RequestMapping(value = "/bindAppListEndpoint")
+	public @ResponseBody SpringJsonResult<AppBase> bindAppListEndpoint(
+			HttpServletRequest req,
+			@ModelAttribute IautoPhoneParamDTO iautoPhoneParamDTO) {
+		logger.info("start [OAUTH-2-9] ....... ");
+		SpringJsonResult<AppBase> result;
+		String lastUpdatetime = null;
+		List<AppBase> appListResult = null;
+		String errMsg = null;
+		try {
+			String userName = req.getParameter("loginName");
+			if (StrUtil.isEmpty(userName)) {
+				userName = IautoPhoneUtil
+						.getIautoPhoneUserName(iautoPhoneParamDTO);
+			}
+			if (StrUtil.isEmpty(userName)) {
+				errMsg = messageService.getMessage(req,
+						MessageConstant.MSG_LIST_BINDS_FAILED,
+						AuthErrorCodeConstant.APP_NO_LOGIN_NAME);
+			} else {
+				appListResult = aSPhoneService
+						.selectPhoneBindAppListNew(userName);
+//				lastUpdatetime = aSCoreService
+//						.selectLastestHistoryTime(userName);
+			}
+			// appListResult = ApiActionConvert.connvert(datas);
+		} catch (ASBaseException ex) {
+			errMsg = messageService.getMessage(req,
+					MessageConstant.MSG_LIST_BINDS_FAILED, ex.getErrCode());
+			logger.error(errMsg);
+		} catch (Exception ex) {
+			errMsg = messageService.getMessage(req,
+					MessageConstant.MSG_LIST_BINDS_FAILED,
+					AuthErrorCodeConstant.API_FETCH_APP_LIST);
+			logger.exception(ex.getMessage());
+		}
+
+		if (!StrUtil.isEmpty(errMsg)) {
+			result = new SpringErrorJsonResult<AppBase>();
+			result.setCode(AppConstant.ERROR_CODE);
+			result.setErrMsg(errMsg);
+		} else {
+			result = new SpringQueryJsonResult<AppBase>();
+			result.setLists(appListResult);
+			result.setLastUpdateTime(lastUpdatetime);
 			result.setCode(AppConstant.SUCCESS_CODE);
 		}
 		return result;
@@ -163,7 +190,7 @@ public class FlowEndpointAction {
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_LIST_BINDS_FAILED,
 					AuthErrorCodeConstant.API_FETCH_APP_LIST);
-			logger.error(errMsg);
+			logger.exception(errMsg);
 		}
 
 		if (!StrUtil.isEmpty(errMsg)) {
@@ -228,7 +255,7 @@ public class FlowEndpointAction {
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_UN_BIND_FAILED,
 					AuthErrorCodeConstant.API_UNBIDN_FAILED);
-			logger.error(errMsg);
+			logger.exception(errMsg);
 		}
 
 		if (!StrUtil.isEmpty(errMsg)) {
@@ -275,7 +302,7 @@ public class FlowEndpointAction {
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_AGREE_SWITCH_FAILED,
 					ex.getLocalizedMessage());
-			logger.error(errMsg);
+			logger.exception(errMsg);
 		}
 		return SpringResultUtil.jsonResult(errMsg);
 	}
@@ -311,7 +338,7 @@ public class FlowEndpointAction {
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_FETCH_AGREE_SWITCH_FAILED,
 					ex.getLocalizedMessage());
-			logger.error(errMsg);
+			logger.exception(errMsg);
 		}
 		if (!StrUtil.isEmpty(errMsg)) {
 			result = new SpringErrorJsonResult<String>();
@@ -347,7 +374,7 @@ public class FlowEndpointAction {
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_AGREE_SWITCH_FAILED,
 					ex.getLocalizedMessage());
-			logger.error(errMsg);
+			logger.exception(errMsg);
 		}
 		return SpringResultUtil.jsonResult(errMsg);
 	}
@@ -375,7 +402,7 @@ public class FlowEndpointAction {
 			errMsg = messageService
 					.getMessage(req, MessageConstant.MSG_SYSTEM_FAILED,
 							ex.getLocalizedMessage());
-			logger.error(errMsg);
+			logger.exception(errMsg);
 		}
 		if (!StrUtil.isEmpty(errMsg)) {
 			return SpringResultUtil.jsonResult(errMsg);
@@ -387,10 +414,100 @@ public class FlowEndpointAction {
 		}
 	}
 
+	/**
+	 * 
+	 * @param req
+	 * @param res
+	 * @param provider
+	 * @param iautoDeviceParamDTO
+	 * @return
+	 */
+	@RequestMapping(value = "/{provider}/bindAppEndpoint")
+	public @ResponseBody SpringJsonResult<String> bindApp(
+			HttpServletRequest req, HttpServletResponse res,
+			@PathVariable("provider") String provider,
+			@ModelAttribute IautoDeviceParamDTO iautoDeviceParamDTO) {
+		logger.info("start [OAUTH-2-11] ....... ");
+		String errMsg = null;
+
+		String sessionToken = req.getParameter("sessionToken");
+		String clientId = req.getParameter("clientId");
+		String accessToken = req.getParameter("accessToken");
+		String refreshToken = req.getParameter("refreshToken");
+		String loginName = req.getParameter("loginName");
+		String uid = StrUtil.nullToString(req.getParameter("uid"));
+
+		if (provider.equals("vine")) {
+			clientId = "vine";
+		}
+		Integer errCode = AppConstant.ERROR_CODE;
+		try {
+			boolean isContinue = false;
+			for (ActionCheck actionCheck : bindAppChecks) {
+				isContinue = actionCheck.execute(req, res, provider,
+						messageService);
+				if (!isContinue) {
+					errMsg = "check failed";
+					break;
+				}
+			}
+			checkClientIdValid(provider, clientId, accessToken);
+			if (StrUtil.isEmpty(loginName)) {
+				loginName = IautoPhoneUtil.getIautoPhoneUserName(sessionToken);
+			}
+
+			AppIautoMap record = new AppIautoMap();
+			record.setIautoUserId(loginName);
+			record.setClientId(clientId);
+			record.setAppType(provider);
+			record.setApiUid(uid);
+			record.setAccessToken(accessToken);
+			record.setRefreshToken(refreshToken);
+			aSCoreService.saveAuthStatus(record, AppConstant.AUTH_LOGIN_DEVICE);
+		} catch (ASBaseException e) {
+			errCode = e.getErrCode();
+			errMsg = messageService.getMessage(req,
+					MessageConstant.MSG_BIND_FAILED, errCode);
+			logger.error(errMsg, e.getMessage());
+		} catch (Exception e) {
+			errMsg = messageService.getMessage(req,
+					MessageConstant.MSG_BIND_FAILED, e.getLocalizedMessage());
+			logger.exception(errMsg, e);
+		}
+		return SpringResultUtil.jsonResult(errMsg, errCode);
+	}
+
+	private final void checkClientIdValid(String appType, String clientId,
+			String accessToken) {
+		if (StrUtil.isEmpty(clientId)) {
+			throw new ASParamValidaterException(
+					MessageConstant.MSG_BIND_FAILED,
+					AuthErrorCodeConstant.APP_NO_CLIENT_ID);
+		}
+
+		if (StrUtil.isEmpty(accessToken)) {
+			throw new ASParamValidaterException(
+					MessageConstant.MSG_BIND_FAILED,
+					AuthErrorCodeConstant.APP_NO_ACCESS_TOKEN);
+		}
+
+		if (!aSCoreService.checkClientIdValid(appType, clientId)) {
+			throw new ASParamValidaterException(
+					MessageConstant.MSG_BIND_FAILED,
+					AuthErrorCodeConstant.APP_CLIENT_ID_INVALID);
+		}
+	}
+
 	@RequestMapping(value = "/message")
 	public String message() throws IOException {
 		logger.info("start [OAUTH-2-6] ....... ");
 		return "/config/message";
+	}
+
+	static List<ActionCheck> bindAppChecks = new ArrayList<ActionCheck>();
+	static {
+		bindAppChecks.add(new ClientIdCheck());
+		bindAppChecks.add(new AccessTokenCheck());
 	}
 
 }

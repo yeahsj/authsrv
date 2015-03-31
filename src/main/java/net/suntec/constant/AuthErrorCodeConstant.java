@@ -11,8 +11,10 @@ package net.suntec.constant;
  * @修改历史:
  */
 public interface AuthErrorCodeConstant {
+	int SYSTEM_ERROR_UNEXCEPTED = 0011;
 
 	int NULL_POINTER_ERROR = 1099;
+	int JSON_PARSE_ERROR = 1098;
 	// 认证失败
 	int AUTH_FAILED = 1001;
 
@@ -49,6 +51,7 @@ public interface AuthErrorCodeConstant {
 	// Get User Info
 	int IT_GUI_ERR_PARAM = 3201;
 	int IT_GUI_ERR_NO_SESSIONTOKEN = 3202;
+	int IT_GUI_ERR_TOKEN_EXPIRE = 3203;
 	int IT_GUI_DEVICE_ERR_NO_CLIENTID = 3211;
 	int IT_GUI_DEVICE_ERR_NO_DEVICENO = 3212;
 	int IT_GUI_DEVICE_ERR_NO_IF = 3213;
@@ -65,6 +68,9 @@ public interface AuthErrorCodeConstant {
 	int APP_INVALID_ACCESS_TOKEN = 4008;
 	int APP_NO_CODE_OR_VERIFY = 4009;
 	int APP_NO_DEVICE_NO = 4010;
+	int APP_CLIENT_ID_INVALID = 4011; 
+	
+	
 	// app_base crud
 	int AB_NO_APPTYPE = 4101;
 	int AB_NO_CLAZZNAME = 4102;
@@ -73,4 +79,5 @@ public interface AuthErrorCodeConstant {
 	int SS_NO_PARAMS_OAUTHFLOWSTATUS = 6001;
 	int SS_NO_PARAMS_OAUTHSTATUSPARAM = 6002;
 	int SS_NO_PARAMS_USERINFO = 6003;
+	
 }

@@ -36,14 +36,15 @@ public class IautoDeviceLoginService extends IautoLoginService {
 
 	public static void main(String[] args) throws SAXException, IOException {
 		ResourceConfig instance = ResourceConfig.getInstance();
-		instance.init("H:\\code\\java\\openjava\\authsrv\\src\\main\\resources\\config\\SystemConfig.xml");
+//		instance.init("H:\\code\\java\\openjava\\authsrv\\src\\main\\resources\\config\\SystemConfig.xml");
+		instance.init("config/SystemConfig.xml");
 		IautoConfigDTO configDTO = instance.getIautoConfigDTO();
 		IautoPhoneLoginParamDTO paramDTO = new IautoPhoneLoginParamDTO();
 		paramDTO.setClientId(configDTO.getDeviceClientId());
 		paramDTO.setClientSercet(configDTO.getDeviceClientSercet());
 		paramDTO.setGrantType("password");
-		paramDTO.setUsername("demo1");
-		paramDTO.setPassword("demo");
+		paramDTO.setUsername("zpf");
+		paramDTO.setPassword("111111");
 		IautoHeaderDTO headerDTO = new IautoHeaderDTO();
 
 		IautoDeviceLoginService iautoDeviceLoginService = new IautoDeviceLoginService(

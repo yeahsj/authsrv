@@ -45,6 +45,17 @@ public class ASPhoneService {
 		aim.setIautoUserId(userFlag);
 		return appBaseMapper.listBindApp(aim);
 	}
+	
+	/**
+	 * 
+	 * @param userFlag
+	 * @return
+	 */
+	public List<AppBase> selectPhoneBindAppListNew(String userFlag) {
+		AppIautoMap aim = new AppIautoMap();
+		aim.setIautoUserId(userFlag);
+		return appBaseMapper.bindAppList(aim);
+	}
 
 	/**
 	 * 登出第三方App(手机)

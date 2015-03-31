@@ -7,6 +7,8 @@ import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.ProviderUser;
 import org.scribe.model.Token;
 import org.scribe.oauth.OAuthService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.openjava.core.util.StrUtil;
 
@@ -21,6 +23,8 @@ import com.openjava.core.util.StrUtil;
  * @修改历史:
  */
 public abstract class AbstractOauthProvider {
+	Logger logger = LoggerFactory.getLogger(AbstractOauthProvider.class);
+
 	public abstract String getAuthHeader(AppConfig appConfig, Token token,
 			String requestUrl, String method);
 
@@ -53,7 +57,7 @@ public abstract class AbstractOauthProvider {
 				.apiSecret(appConfig.getAppSecret())
 				.callback(
 						appConfig.getLocalServer() + appConfig.getCallbackUrl());
-		// builder.debugStream(System.out);
+//		builder.debugStream( System.out );
 		if (!StrUtil.isEmpty(appConfig.getScope())) {
 			builder.scope(appConfig.getScope());
 		}

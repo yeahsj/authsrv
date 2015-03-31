@@ -1,13 +1,15 @@
 package net.suntec.oauthsrv.framework.provider;
 
+import net.suntec.constant.AuthErrorCodeConstant;
+import net.suntec.framework.exception.ASServiceException;
+import net.suntec.framework.util.ASLogger;
 import net.suntec.oauthsrv.dto.AppConfig;
 import net.suntec.oauthsrv.framework.dto.OauthFlowStatus;
 
+import org.json.JSONException;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -20,7 +22,7 @@ import org.slf4j.LoggerFactory;
  * @修改历史:
  */
 public class Oauth2Provider extends AbstractOauthProvider {
-	private final Logger logger = LoggerFactory.getLogger(Oauth2Provider.class);
+	private final ASLogger logger = new ASLogger(Oauth2Provider.class);
 
 	/**
 	 * 
@@ -46,8 +48,13 @@ public class Oauth2Provider extends AbstractOauthProvider {
 	public void obtainAccessToken(OauthFlowStatus user) {
 		OAuthService service = getOAuthService(user);
 		Verifier verifier = new Verifier(user.getOAuthVerifier());
-		Token accessToken = service.getAccessToken(null, verifier);
-		user.setAccessToken(accessToken);
+		try {
+			Token accessToken = service.getAccessToken(null, verifier);
+			user.setAccessToken(accessToken);
+		} catch (JSONException ex) {
+			throw new ASServiceException("parse json error",
+					AuthErrorCodeConstant.JSON_PARSE_ERROR);
+		}
 	}
 
 	@Override

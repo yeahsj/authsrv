@@ -57,6 +57,9 @@ public final class OauthProviderService {
 			String clientId, String localServer) {
 		OauthFlowStatus oauthFlowStatus = new OauthFlowStatus();
 		AppConfig appConfig = prodAppConfig(appType, clientId);
+		if( null == appConfig || null == appConfig.getAppKey() ){
+			throw new ASBaseException(appType + "not exists in AppConfig");
+		}
 		appConfig.setLocalServer(localServer);
 		oauthFlowStatus.setAppConfig(appConfig);
 		return oauthFlowStatus;

@@ -1,5 +1,7 @@
 package net.suntec.oauthsrv.dto;
 
+import java.io.Serializable;
+
 import org.scribe.builder.api.Api;
 
 /**
@@ -11,7 +13,7 @@ import org.scribe.builder.api.Api;
  * @author: <a href="mailto:yeahsj@gmail.com">yeahsj</a>
  * @修改历史:
  */
-public class AppConfig {
+public class AppConfig implements Serializable {
 	private boolean isRequestForUserInfo = true;
 
 	private Integer appId;

@@ -1,6 +1,5 @@
 package net.suntec.oauthsrv.action.jsonresult;
 
-
 /**
  * 
  * 
@@ -48,5 +47,5 @@ public class AppListResult {
 	public boolean getIsBind() {
 		return isBind;
 	}
- 
+
 }

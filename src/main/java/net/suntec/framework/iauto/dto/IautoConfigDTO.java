@@ -17,6 +17,8 @@ public class IautoConfigDTO {
 
 	private String phoneClientId = "";
 	private String phoneClientSercet = "";
+	private String webClientId = "";
+	private String webClientSercet = "";
 	private String deviceClientId = "";
 	private String deviceClientSercet = "";
 
@@ -25,6 +27,22 @@ public class IautoConfigDTO {
 
 	private boolean isDemo = false;
 	private String demoName = "";
+
+	public String getWebClientId() {
+		return webClientId;
+	}
+
+	public void setWebClientId(String webClientId) {
+		this.webClientId = webClientId;
+	}
+
+	public String getWebClientSercet() {
+		return webClientSercet;
+	}
+
+	public void setWebClientSercet(String webClientSercet) {
+		this.webClientSercet = webClientSercet;
+	}
 
 	public String getDemoName() {
 		return demoName;

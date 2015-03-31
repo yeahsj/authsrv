@@ -188,7 +188,7 @@ public class TestIautoUserCacheMap extends TestCase {
 		logger.info(map.size() + "");
 
 		instance.IAUTO_USER_MAP.clear();
-		instance.IAUTO_USER_MAP = null;
+//		instance.IAUTO_USER_MAP = null;
 		thread1 = null;
 		thread2 = null;
 		thread3 = null;

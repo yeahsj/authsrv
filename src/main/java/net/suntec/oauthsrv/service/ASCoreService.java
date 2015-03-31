@@ -216,11 +216,35 @@ public class ASCoreService {
 		}
 	}
 
+	/**
+	 * 选择client Id
+	 * 
+	 * @param appType
+	 * @return
+	 */
+	public boolean checkClientIdValid(String appType, String clientId) {
+		AppInfo appInfo = new AppInfo();
+		appInfo.setAppClientid(clientId);
+		appInfo.setAppType(appType);
+		return appInfoMapper.checkClientIdValid(appInfo);
+	}
+
 	public String saveAfterSelectClientId(String appType, String deviceNo) {
-		String clientId = selectExistsClientId(appType, deviceNo);
-		if (StrUtil.isEmpty(clientId)) {
+		String clientId = null;
+		if (StrUtil.isEmpty(deviceNo)) {
 			clientId = selectClientId(appType);
-			if (StrUtil.isNotEmpty(deviceNo)) {
+		} else {
+			clientId = selectExistsClientId(appType, deviceNo);
+			if (StrUtil.isEmpty(clientId)) {
+				clientId = selectClientId(appType);
+				if (StrUtil.isEmpty(clientId)) {
+					throw new ASServiceException("clientId is required",
+							AuthErrorCodeConstant.APP_NO_CLIENT_ID);
+				}
+				if (StrUtil.isEmpty(deviceNo)) {
+					throw new ASServiceException("deviceNo is required",
+							AuthErrorCodeConstant.APP_NO_DEVICE_NO);
+				}
 				this.saveDeviceNoToClientId(appType, deviceNo, clientId);
 			}
 		}

@@ -15,6 +15,15 @@ public class ServerConfig {
 	String managerPassword = "";
 	String appName = "";
 	String protol = "";
+	String serverUrl = "";
+
+	public String getServerUrl() {
+		return serverUrl;
+	}
+
+	public void setServerUrl(String serverUrl) {
+		this.serverUrl = serverUrl;
+	}
 
 	public String getProtol() {
 		return protol;

@@ -35,6 +35,7 @@
 		<result column="access_token" property="accessToken" jdbcType="VARCHAR" />
 	    <result column="refresh_token" property="refreshToken" jdbcType="VARCHAR" />
 	    <result column="api_uid" property="apiUid" jdbcType="VARCHAR" />
+	    <result column="is_oauth" property="isOauth" jdbcType="BOOLEAN" />
 	</resultMap>
 
 
@@ -57,7 +58,8 @@
 		ab.oauth_version,
 		ab.request_user_info,
 		ab.description,
-		ab.expired_time
+		ab.expired_time,
+		ab.is_oauth
 	</sql>
 	<!--
 		<sql id="Where_Clause"> <trim prefix="WHERE" prefixOverrides="and">
@@ -151,6 +153,19 @@
 		aim.creation_date
 		from APP_BASE ab left join APP_IAUTO_MAP aim on ab.app_type=aim.app_type and aim.iauto_user_id = #{iautoUserId,jdbcType=VARCHAR}
 		where ab.need_oauth = true 
+		order by app_type asc;
+	</select>
+	
+	<select id="bindAppList" resultMap="BaseResultMap" parameterType="net.suntec.oauthsrv.dto.AppBase">
+		select
+		<include refid="Select_Column_List" />
+		, 
+		aim.access_token , 
+		aim.refresh_token , 
+		aim.api_uid,
+		aim.creation_date
+		from APP_BASE ab left join APP_IAUTO_MAP aim on ( ab.app_type=aim.app_type and aim.iauto_user_id = #{iautoUserId,jdbcType=VARCHAR} )
+		where ab.show_on_phone = true 
 		order by app_type asc;
 	</select>
 </mapper>

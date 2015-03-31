@@ -19,6 +19,8 @@ public interface AppIautoMapMapper extends PioneerDAO<AppIautoMap> {
 
 	public void deleteExpiredApps(AppIautoMap record);
 
+	public void deleteByAccessToken(AppIautoMap record);
+
 	public AppIautoMap selectByPrimaryKeys(AppIautoMap record);
 
 	public List<AppIautoMap> selectExpiredApp(AppIautoMap record);

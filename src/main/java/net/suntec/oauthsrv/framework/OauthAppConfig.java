@@ -83,7 +83,7 @@ public class OauthAppConfig {
 			for (AppBase appBase : appBases) {
 				if (appInfo.getAppType().equals(appBase.getAppType())) {
 					Class<Api> clazz = (Class<Api>) Class.forName(appBase
-							.getClazzName());
+							.getClazzName() , true , OauthAppConfig.class.getClassLoader() );
 					appConfig.setOauthVersion(appBase.getOauthVersion());
 					appConfig.setRequestForUserInfo(appBase
 							.getRequestUserInfo() == 1);

@@ -24,10 +24,12 @@
 				left: 50px !important;
 			}
 			div #content-container{
-				margin-top: 25px;
+				position: relative;
+				margin-top: 47%;
 				margin-left: 20px;
 				margin-right: 20px;
 				text-align: left;
+				vertical-align: middle;
 			}
 		</style>
 		<script type="text/javascript" language="JavaScript">
@@ -52,7 +54,7 @@
 			<div id="content" class="bindingapp_page"> 
 				<div id="content-container">
 					<div style="color: rgb(203, 250, 255);">
-						<p style="display:inline;word-break:break-all;">Authentication failed,please press "Back" and try again
+						<p style="display:inline;word-break:break-word;">Authentication failed! Please press the "Back" button and try again.
 						</p>
 					</div>
 				</div> 

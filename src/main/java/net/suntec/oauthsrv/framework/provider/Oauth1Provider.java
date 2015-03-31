@@ -1,5 +1,6 @@
 package net.suntec.oauthsrv.framework.provider;
 
+import net.suntec.framework.util.ASLogger;
 import net.suntec.oauthsrv.dto.AppConfig;
 import net.suntec.oauthsrv.framework.dto.OauthFlowStatus;
 
@@ -9,8 +10,6 @@ import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthPocketServiceImpl;
 import org.scribe.oauth.OAuthService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -23,7 +22,7 @@ import org.slf4j.LoggerFactory;
  * @修改历史:
  */
 public class Oauth1Provider extends AbstractOauthProvider {
-	private final Logger logger = LoggerFactory.getLogger(Oauth2Provider.class);
+	private final ASLogger logger = new ASLogger(Oauth1Provider.class);
 
 	/**
 	 * 

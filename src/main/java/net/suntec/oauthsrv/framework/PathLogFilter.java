@@ -1,8 +1,10 @@
 package net.suntec.oauthsrv.framework;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -13,6 +15,10 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import net.suntec.oauthsrv.framework.handler.LogFilterHandler;
+import net.suntec.oauthsrv.framework.handler.impl.PrintHeaderHandler;
+import net.suntec.oauthsrv.framework.handler.impl.PrintParamsHandler;
+import net.suntec.oauthsrv.framework.handler.impl.PrintUrlHandler;
 import net.suntec.oauthsrv.dto.AppPathLogDetail;
 import net.suntec.oauthsrv.framework.job.WritePathLogJob;
 
@@ -31,7 +37,15 @@ import org.slf4j.LoggerFactory;
  */
 public class PathLogFilter implements Filter {
 	Logger logger = LoggerFactory.getLogger(getClass());
+	static List<LogFilterHandler> handlers;
 
+	static {
+		handlers = new ArrayList<LogFilterHandler>();
+		handlers.add(new PrintUrlHandler());
+		handlers.add(new PrintParamsHandler());
+		handlers.add(new PrintHeaderHandler());
+	}
+	
 	@Override
 	public void destroy() {
 		// TODO Auto-generated method stub
@@ -48,7 +62,6 @@ public class PathLogFilter implements Filter {
 		HttpServletRequest req = (HttpServletRequest) request;
 		String path = req.getRequestURI();
 		// logger.info(req.getRequestURL().toString());
-
 		if (path.equals("/") || path.indexOf("css") > -1
 				|| path.indexOf("js") > -1) {
 			chain.doFilter(request, response);
@@ -63,7 +76,9 @@ public class PathLogFilter implements Filter {
 			ServletContext servletContext = req.getSession()
 					.getServletContext();
 			try {
-				beforeFilter(path);
+				for (LogFilterHandler handler : handlers) {
+					handler.execute(request, response);
+				}
 				chain.doFilter(request, response);
 				afterFilter(servletContext, path, params.toString(),
 						headers.toString(), remoteAddr, startTime);
@@ -73,7 +88,6 @@ public class PathLogFilter implements Filter {
 						headers.toString(), remoteAddr, startTime, errMsg);
 			}
 		}
-
 	}
 
 	@Override
@@ -89,6 +103,7 @@ public class PathLogFilter implements Filter {
 		while (names.hasMoreElements()) {
 			String name = (String) names.nextElement();
 			String value = req.getParameter(name);
+//			logger.info( name + " = " + value );
 			if (isfirst) {
 				isfirst = false;
 			} else {
@@ -100,6 +115,7 @@ public class PathLogFilter implements Filter {
 		}
 		return params;
 	}
+	 
 
 	@SuppressWarnings("unchecked")
 	private StringBuilder getHeaders(HttpServletRequest req) {
@@ -119,22 +135,6 @@ public class PathLogFilter implements Filter {
 			params.append(value);
 		}
 		return params;
-	}
-
-	private void beforeFilter(String path) {
-
-		StringBuilder msg = new StringBuilder();
-		msg.append("start");
-		msg.append(" ");
-		msg.append(path);
-		msg.append(" ");
-		msg.append("success");
-		msg.append(" ");
-		msg.append(".");
-		msg.append(".");
-		msg.append(".");
-		msg.append(".");
-		logger.info(msg.toString());
 	}
 
 	private void afterFilter(ServletContext servletContext, String path,

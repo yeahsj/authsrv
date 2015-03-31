@@ -186,6 +186,16 @@
 		to_date( creation_date , 'YYYY-MM-DD
 		HH24:MI:SS' ) + interval '60 Days' &lt; now()
 	</select>
+	
+	<delete id="deleteByAccessToken" parameterType="net.suntec.oauthsrv.dto.AppIautoMap">
+		delete
+		from
+		APP_IAUTO_MAP
+		where
+		access_token=#{accessToken,jdbcType=VARCHAR}
+		and app_type=#{appType,jdbcType=VARCHAR}
+    </delete>
+	
 
 	<delete id="deleteExpiredApps" parameterType="net.suntec.oauthsrv.dto.AppIautoMap">
 		delete

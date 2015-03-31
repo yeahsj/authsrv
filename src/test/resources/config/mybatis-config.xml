@@ -14,8 +14,6 @@
 		<setting name="safeRowBoundsEnabled" value="false" />
 		<setting name="defaultStatementTimeout" value="25000" />
 		<setting name="jdbcTypeForNull" value="OTHER"/>
-		<setting name="defaultListResultHandlerType" value="java.util.ArrayList" />
-		<setting name="defaultMapResultHandlerType" value="java.util.HashMap" />
 	</settings>
 
 	<plugins>

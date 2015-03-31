@@ -1,14 +1,13 @@
 package net.suntec.oauthsrv.action;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.suntec.framework.constant.AppConstant;
+import net.suntec.framework.util.ASLogger;
 import net.suntec.oauthsrv.dto.AppBase;
-import net.suntec.oauthsrv.framework.AppInitServlet;
 import net.suntec.oauthsrv.framework.OauthAppConfig;
 import net.suntec.oauthsrv.framework.ResourceConfig;
 import net.suntec.oauthsrv.framework.dto.ServerConfig;
@@ -32,7 +31,8 @@ import org.xml.sax.SAXException;
 @Controller
 @RequestMapping(value = "/config")
 public class ManagerAction {
-	Logger logger = Logger.getLogger(AppInitServlet.class.getName());
+	// Logger logger = Logger.getLogger(AppInitServlet.class.getName());
+	private final ASLogger logger = new ASLogger(MainAction.class);
 
 	@RequestMapping(value = "/index")
 	public String index(@ModelAttribute AppBase appBase, Model model) {
@@ -52,11 +52,11 @@ public class ManagerAction {
 			try {
 				ResourceConfig.getInstance().init(configFile);
 			} catch (SAXException e) {
-				logger.warning(e.getMessage());
+				logger.error(e.getMessage());
 				req.setAttribute("errMsg", e.getMessage());
 				return AppConstant.ERROR_URL;
 			} catch (IOException e) {
-				logger.warning(e.getMessage());
+				logger.error(e.getMessage());
 				req.setAttribute("errMsg", e.getMessage());
 				return AppConstant.ERROR_URL;
 			}

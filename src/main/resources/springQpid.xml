@@ -15,11 +15,14 @@
 	<bean id="qpidQueue" class="org.apache.qpid.client.AMQAnyDestination">
 		<constructor-arg value="ADDR:${QPID_QUEUE_NAME}; {create: always}" />
 	</bean>
+	
+	<bean id="qpidSubscribeQueue" class="org.apache.qpid.client.AMQAnyDestination">
+		<constructor-arg value="ADDR:${QPID_SUBSCRIBE_QUEUE_NAME}; {create: always}" />
+	</bean>
 
 	<bean id="qpidJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
 		<property name="connectionFactory" ref="qpidConnectionFactory" />
 		<property name="defaultDestination" ref="qpidQueue" />
-	</bean>
-	
+	</bean> 
 
 </beans>

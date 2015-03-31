@@ -111,24 +111,24 @@ public final class IautoDeviceUtil {
 	private static IautoUserDTO getIautoDeviceUser(
 			IautoDeviceParamDTO iautoDeviceParamDTO) {
 		String iautoSessionToken = iautoDeviceParamDTO.getSessionToken();
-		String platformVersion = iautoDeviceParamDTO.getPlatformVersion();
-		String deviceNo = iautoDeviceParamDTO.getDeviceNo();
+		// String platformVersion = iautoDeviceParamDTO.getPlatformVersion();
+		// String deviceNo = iautoDeviceParamDTO.getDeviceNo();
 		if (StrUtil.isEmpty(iautoSessionToken)) {
 			throw new ASIautoException(" sessionToken is required  ",
 					AuthErrorCodeConstant.IT_GUI_ERR_NO_SESSIONTOKEN);
 		}
-		if (StrUtil.isEmpty(platformVersion)) {
-			throw new ASIautoException(" platformVersion is required  ",
-					AuthErrorCodeConstant.IT_GUI_DEVICE_ERR_NO_IF);
-		}
-		if (StrUtil.isEmpty(deviceNo)) {
-			throw new ASIautoException(" deviceNo is required  ",
-					AuthErrorCodeConstant.IT_GUI_DEVICE_ERR_NO_DEVICENO);
-		}
+		// if (StrUtil.isEmpty(platformVersion)) {
+		// throw new ASIautoException(" platformVersion is required  ",
+		// AuthErrorCodeConstant.IT_GUI_DEVICE_ERR_NO_IF);
+		// }
+		// if (StrUtil.isEmpty(deviceNo)) {
+		// throw new ASIautoException(" deviceNo is required  ",
+		// AuthErrorCodeConstant.IT_GUI_DEVICE_ERR_NO_DEVICENO);
+		// }
 		String iautoClientId = iautoDeviceParamDTO.getIautoClientId();
 		String languageCode = "";
 		IautoApiService iautoApiService = new IautoApiService();
-		return iautoApiService.doGetDeviceUserInfo(iautoSessionToken,
-				iautoClientId, deviceNo, platformVersion, languageCode);
+		return iautoApiService.doGetWebUserInfo(iautoSessionToken,
+				iautoClientId, languageCode);
 	}
 }

@@ -81,12 +81,12 @@
 		parameterType="net.suntec.oauthsrv.dto.AppDeviceDistribute">
 		select
 		<include refid="Base_Column_List" />
-		from APP_DEVICE_DISTRIBUTE
+		from APP_DEVICE_DISTRIBUTE add
 		where 
 		app_type = #{appType,jdbcType=VARCHAR} 
 		and device_no = #{deviceNo,jdbcType=VARCHAR}
+		and exists (select null from app_info ai where ai.app_clientid=add.client_id)
 	</select>
-	
 
 	<select id="count" resultType="java.lang.Integer"
 		parameterType="net.suntec.oauthsrv.dto.AppDeviceDistribute">

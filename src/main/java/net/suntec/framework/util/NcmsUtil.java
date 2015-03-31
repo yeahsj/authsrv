@@ -4,6 +4,7 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 
+import net.suntec.framework.constant.AppConstant;
 import net.suntec.framework.exception.ASQpidException;
 import net.suntec.oauthsrv.dto.NcmsDTO;
 
@@ -26,7 +27,18 @@ public final class NcmsUtil {
 		this.qpidJmsTemplate = qpidJmsTemplate;
 	}
 
-	public void send(final String deviceInfo) {
+	public void sendDevice(final String deviceInfo) {
+		this.sendDevice(deviceInfo, AppConstant.IS_SEND_TO_MQ);
+	}
+
+	public void sendDevice(final NcmsDTO ncmsDTO) {
+		this.sendDevice(ncmsDTO, AppConstant.IS_SEND_TO_MQ);
+	}
+
+	public void sendDevice(final String deviceInfo, boolean isSend) {
+		if (!isSend) {
+			return;
+		}
 		qpidJmsTemplate.send(new MessageCreator() {
 			@Override
 			public Message createMessage(javax.jms.Session session) {
@@ -34,7 +46,8 @@ public final class NcmsUtil {
 				try {
 					message = session.createMapMessage();
 					message.setString("body", "accountsync");
-					message.setString("msg_id", "NT03");
+					message.setString("msg_id",
+							AppConstant.NCMS_MSGID_DEVICE_NOTI);
 					message.setString("marker", "accountsync");
 					message.setString("device_info", deviceInfo);
 					return message;
@@ -45,7 +58,10 @@ public final class NcmsUtil {
 		});
 	}
 
-	public void send(final NcmsDTO ncmsDTO) {
+	public void sendDevice(final NcmsDTO ncmsDTO, boolean isSend) {
+		if (!isSend) {
+			return;
+		}
 		qpidJmsTemplate.send(new MessageCreator() {
 			@Override
 			public Message createMessage(javax.jms.Session session) {

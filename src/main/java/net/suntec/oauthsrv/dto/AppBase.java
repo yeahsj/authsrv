@@ -30,6 +30,15 @@ public class AppBase extends PioneerDTO {
 	private String refreshToken;
 	private String apiUid;
 	private String creationDate;
+	private Boolean isOauth;
+
+	public Boolean getIsOauth() {
+		return isOauth;
+	}
+
+	public void setIsOauth(Boolean isOauth) {
+		this.isOauth = isOauth;
+	}
 
 	public Integer getExpiredTime() {
 		return expiredTime;
@@ -138,5 +147,5 @@ public class AppBase extends PioneerDTO {
 	public boolean getIsBind() {
 		return StrUtil.isNotEmpty(this.accessToken);
 	}
- 
+
 }

@@ -30,8 +30,6 @@ public class TestQpid extends BaseTest {
 				return message;
 			}
 		});
-
 		logger.info("send success ");
 	}
-
 }

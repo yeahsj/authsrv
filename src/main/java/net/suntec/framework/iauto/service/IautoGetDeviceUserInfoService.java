@@ -68,20 +68,27 @@ public class IautoGetDeviceUserInfoService extends IautoGetUserInfoService {
 	 */
 	public static void main(String[] args) throws SAXException, IOException {
 		ResourceConfig instance = ResourceConfig.getInstance();
-		instance.init("H:\\code\\java\\openjava\\authsrv\\src\\main\\resources\\config\\SystemConfig.xml");
+		instance.init("config/SystemConfig.xml");
+//		instance.init("H:\\code\\java\\openjava\\authsrv\\src\\main\\resources\\config\\SystemConfig.xml");
 		IautoConfigDTO configDTO = instance.getIautoConfigDTO();
 		IautoGetDeviceUserInfoParamDTO paramDTO = new IautoGetDeviceUserInfoParamDTO();
 		paramDTO.setClientId(configDTO.getDeviceClientId());
 		paramDTO.setLanguageCode(configDTO.getLanguageCode());
-		paramDTO.setDeviceNo("8b71ce1590e9b595a2f91aea97343117");
-		paramDTO.setPlatformVersion(configDTO.getIfVersion());
+//		paramDTO.setDeviceNo("7AB9FAC353FA8F4D234E46DCD11C9F6A");
+		paramDTO.setDeviceNo("7ADF1323450F5F364A64A4EA4BCF3EE4");
+		
+		paramDTO.setPlatformVersion(  "01000000");
 		IautoHeaderDTO headerDTO = new IautoHeaderDTO();
 		headerDTO.setIfVersion(configDTO.getIfVersion());
 		// deviceNo=
-		headerDTO.setSessionToken("8b71ce1590e9b595a2f91aea97343117");
+//		CarDevice_726ff9b40d40aa1e6e798abc701b4e06
+		headerDTO.setSessionToken("<TK>01NWVNkLH6AG0C7JpmKD9NAUlFf9LX6SABPxhz21d5NzI=");
 		IautoGetDeviceUserInfoService service = new IautoGetDeviceUserInfoService(
 				configDTO, paramDTO, headerDTO);
 		service.service();
+//		sessionToken=<TK>01PxD8dT7mfadhhqEYaL6ZYfwnw6HdrkT4EEDuwfyLP6E=&iautoClientId=CarDevice_726ff9b40d40aa1e6e798abc701b4e06&deviceNo=7AB9FAC353FA8F4D234E46DCD11C9F6A&platformVersion=01000000
 	}
+	
+	//https://info.iauto.com/accountsync/auth/pocket?sessionToken=%3CTK%3E01zy%2FVyoVfuDFX2ijd6khR3d8Qv2op6MUYfyt%2F9vlArmg88kVXc5N3kMRfe1NNryabNnYxa3ZqvvMG5W4w2ycr4g%3D%3D&iautoClientId=CarDevice_726ff9b40d40aa1e6e798abc701b4e06&deviceNo=7ADF1323450F5F364A64A4EA4BCF3EE4&platformVersion=01000000&backurl=http%3A%2F%2Flocalhost%2Foauth2callback%2Fiauto-app%3A%2F%2Fnet.suntec.web.pocket%2Fchrome%2Fcontent%2Fcallback.html&st=0.14663751143962145
 
 }

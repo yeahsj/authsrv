@@ -50,7 +50,7 @@ public class TestYamaxServer extends TestCase {
 	}
 
 	public static void testIndex() {
-		String url = "http://tmap-beluga-auth3rdsrv-1918984635.ap-northeast-1.elb.amazonaws.com/flow/login";
+		String url = "https://info.iauto.com/accountsync";
 		OAuthRequest request = new OAuthRequest(Verb.GET, url);
 		Response response = request.send();
 		String body = response.getBody();

@@ -105,6 +105,7 @@
 	<!-- 应用配置如下 -->
 
 	<import resource="springModel.xml" />
+	<import resource="springCheckToken.xml" />
 	
 	<bean id="ncmsUtil" class="net.suntec.framework.util.NcmsUtil">
 		<!-- 

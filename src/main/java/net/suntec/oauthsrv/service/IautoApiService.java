@@ -10,6 +10,7 @@ import net.suntec.framework.iauto.dto.result.IautoPhoneLoginResultDTO;
 import net.suntec.framework.iauto.service.IautoDeviceLoginService;
 import net.suntec.framework.iauto.service.IautoGetDeviceUserInfoService;
 import net.suntec.framework.iauto.service.IautoGetPhoneUserInfoService;
+import net.suntec.framework.iauto.service.IautoGetWebUserInfoService;
 import net.suntec.framework.iauto.service.IautoPhoneLoginService;
 import net.suntec.oauthsrv.framework.ResourceConfig;
 
@@ -62,6 +63,32 @@ public class IautoApiService {
 		// }
 	}
 
+	public IautoUserDTO doGetWebUserInfo(String sessionToken,
+			String clientId, String languageCode) {
+		IautoGetDeviceUserInfoParamDTO paramDTO = new IautoGetDeviceUserInfoParamDTO();
+//		if (StrUtil.isEmpty(clientId)) {
+			clientId = iautoConfigDTO.getDeviceClientId();
+//		}
+		if (StrUtil.isEmpty(languageCode)) {
+			languageCode = iautoConfigDTO.getLanguageCode();
+		}
+		paramDTO.setClientId(clientId);
+		paramDTO.setLanguageCode(languageCode);
+		IautoHeaderDTO headerDTO = new IautoHeaderDTO();
+		headerDTO.setSessionToken(sessionToken);
+		headerDTO.setIfVersion(iautoConfigDTO.getIfVersion());
+		IautoGetWebUserInfoService iautoGetDeviceUserInfoService = new IautoGetWebUserInfoService(
+				iautoConfigDTO, paramDTO, headerDTO);
+		iautoGetDeviceUserInfoService.service();
+		// isSuccess = iautoGetDeviceUserInfoService.isSuccess();
+		// if (isSuccess) {
+		return iautoGetDeviceUserInfoService.getResult();
+		// } else {
+		// errMsg = " iauto login failed ";
+		// throw new AuthException(errMsg);
+		// }
+	}
+	
 	public IautoUserDTO doGetPhoneUserInfo(String sessionToken,
 			String clientId, String languageCode) {
 		IautoGetDeviceUserInfoParamDTO paramDTO = new IautoGetDeviceUserInfoParamDTO();

@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.suntec.framework.constant.AppConstant;
 import net.suntec.framework.exception.ASBaseException;
+import net.suntec.framework.util.ASLogger;
 import net.suntec.framework.util.OauthProviderService;
 import net.suntec.framework.util.SessionUtil;
 import net.suntec.oauthsrv.dto.AppIautoMap;
@@ -14,8 +15,6 @@ import net.suntec.oauthsrv.framework.dto.OauthFlowStatus;
 import net.suntec.oauthsrv.framework.dto.OauthStatusParamDTO;
 import net.suntec.oauthsrv.service.ASCoreService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,7 +37,8 @@ public class MainAction {
 	@Autowired
 	ASCoreService aSCoreService = null;
 
-	private final Logger logger = LoggerFactory.getLogger(MainAction.class);
+//	private final Logger logger = LoggerFactory.getLogger(MainAction.class);
+	private final ASLogger logger = new ASLogger(MainAction.class);
 
 	@RequestMapping(value = "/")
 	public String all(HttpServletRequest req, HttpServletResponse res,
@@ -52,7 +52,7 @@ public class MainAction {
 		}
 		// return null;
 	}
-
+	 
 	public String handleFeedly(HttpServletRequest req, HttpServletResponse res)
 			throws IOException {
 		String errMsg = null;

@@ -22,11 +22,11 @@
 		<property name="password" value="${jdbc.password}" />
 
 		<!-- Connection Pooling Info -->
-		<property name="initialSize" value="5" />
-		<property name="maxActive" value="100" />
-		<property name="maxIdle" value="30" />
-		<property name="maxWait" value="1000" />
-		<property name="poolPreparedStatements" value="true" />
+		<property name="initialSize" value="${jdbc.initialSize}" />
+		<property name="maxActive" value="${jdbc.maxActive}" />
+		<property name="maxIdle" value="${jdbc.maxIdle}" />
+		<property name="maxWait" value="${jdbc.maxWait}" />
+		<property name="poolPreparedStatements" value="${jdbc.poolPreparedStatements}" />
 		<property name="defaultAutoCommit" value="false" />
 	</bean>
 
@@ -101,7 +101,10 @@
 	</bean>
 
 	<!-- 应用配置如下 -->
-	<!-- ... -->
 	<import resource="springModel.xml" />
 	<import resource="springQpid.xml" />
+	<!-- <import resource="springQpid.xml" /> -->
+	<bean id="ncmsUtil" class="net.suntec.framework.util.NcmsUtil" singleton="true">
+		<property name="qpidJmsTemplate" ref="qpidJmsTemplate" />
+	</bean>
 </beans>

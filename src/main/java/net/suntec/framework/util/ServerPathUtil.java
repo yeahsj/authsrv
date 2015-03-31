@@ -2,16 +2,13 @@ package net.suntec.framework.util;
 
 import javax.servlet.http.HttpServletRequest;
 
-
-
+import net.suntec.oauthsrv.framework.ResourceConfig;
+import net.suntec.oauthsrv.framework.dto.ServerConfig;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.openjava.core.util.StrUtil;
-
-import net.suntec.oauthsrv.framework.ResourceConfig;
-import net.suntec.oauthsrv.framework.dto.ServerConfig;
 
 /**
  * 
@@ -26,12 +23,33 @@ import net.suntec.oauthsrv.framework.dto.ServerConfig;
 public final class ServerPathUtil {
 	static String LABEL_1 = ":";
 	static String LABEL_2 = "//";
-	static Logger logger = LoggerFactory.getLogger(ServerPathUtil.class.getName());
+	static Logger logger = LoggerFactory.getLogger(ServerPathUtil.class
+			.getName());
 
 	private ServerPathUtil() {
 	}
 
+	public static String getRemoteCurrentServerRootPath(HttpServletRequest req) {
+		ServerConfig serverConfig = ResourceConfig.getInstance()
+				.getServerConfig();
+		return serverConfig.getServerUrl();
+	}
+
 	public static String getCurrentServerRootPath(HttpServletRequest req) {
+		// if (req.getServerName().contains("localhost")
+		// || req.getServerName().contains("127.0.0.1")) {
+		// return getLocalCurrentServerRootPath(req);
+		// } else {
+		// String configUrl = getRemoteCurrentServerRootPath(req);
+		// if (StrUtil.isEmpty(configUrl)) {
+		return getLocalCurrentServerRootPath(req);
+		// } else {
+		// return configUrl;
+		// }
+		// }
+	}
+
+	public static String getLocalCurrentServerRootPath(HttpServletRequest req) {
 		StringBuilder localServer = new StringBuilder();
 		ServerConfig serverConfig = ResourceConfig.getInstance()
 				.getServerConfig();
@@ -43,7 +61,7 @@ public final class ServerPathUtil {
 		localServer.append(LABEL_1);
 		localServer.append(LABEL_2);
 		localServer.append(req.getServerName());
-		
+
 		// localServer.append(req.getScheme());
 
 		if (req.getServerPort() != 80 && req.getServerPort() != 443) {
@@ -55,7 +73,7 @@ public final class ServerPathUtil {
 		if (!path.equals("/") && !path.equals("")) {
 			localServer.append(path);
 		}
-		logger.info( localServer.toString() );
+		logger.info(localServer.toString());
 		return localServer.toString();
 	}
 }

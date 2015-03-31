@@ -17,4 +17,5 @@ import net.suntec.oauthsrv.dto.AppIautoMap;
  */
 public interface AppBaseMapper extends PioneerDAO<AppBase> {
 	public List<AppBase> listBindApp(AppIautoMap aim);
+	public List<AppBase> bindAppList(AppIautoMap aim);
 }
