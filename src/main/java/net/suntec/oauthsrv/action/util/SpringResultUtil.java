@@ -1,9 +1,9 @@
 package net.suntec.oauthsrv.action.util;
 
-import net.suntec.framework.constant.AppConstant;
-import net.suntec.framework.dto.SpringDetailJsonResult;
-import net.suntec.framework.dto.SpringErrorJsonResult;
-import net.suntec.framework.dto.SpringJsonResult;
+import net.suntec.framework.springmvc.json.dto.SpringDetailJsonResult;
+import net.suntec.framework.springmvc.json.dto.SpringErrorJsonResult;
+import net.suntec.framework.springmvc.json.dto.SpringJsonResult;
+import net.suntec.oauthsrv.constant.AppConstant;
 
 import com.openjava.core.util.StrUtil;
 

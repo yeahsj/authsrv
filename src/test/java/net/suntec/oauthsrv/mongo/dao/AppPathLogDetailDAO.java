@@ -2,7 +2,7 @@ package net.suntec.oauthsrv.mongo.dao;
 
 import java.util.List;
 
-import net.suntec.framework.PioneerDAO;
+import net.suntec.framework.core.PioneerDAO;
 import net.suntec.oauthsrv.dto.AppPathLogDetail;
 
 import org.springframework.beans.factory.annotation.Autowired;

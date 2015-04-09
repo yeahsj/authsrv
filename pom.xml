@@ -10,6 +10,7 @@
 	<description />
 	<properties>
 		<sprintversion>3.2.8.RELEASE</sprintversion>
+		<nsfversion>1.1</nsfversion>
 		<!-- <sprintversion>3.1.0.RELEASE</sprintversion> -->
 	</properties>
 
@@ -109,7 +110,7 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.6.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
@@ -300,12 +301,34 @@
 			<version>1.1</version>
 			<scope>compile</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>net.suntec.framework</groupId>
+			<artifactId>nsf-core</artifactId>
+			<version>${nsfversion}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.suntec.framework</groupId>
+			<artifactId>nsf-web</artifactId>
+			<version>${nsfversion}</version>
+			<scope>compile</scope>
+		</dependency>
 		<dependency>
 			<groupId>net.suntec.oauth</groupId>
 			<artifactId>token-check</artifactId>
-			<version>0.1</version>
+			<version>${nsfversion}</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>net.suntec.oauth</groupId>
+			<artifactId>iauto-client</artifactId>
+			<version>${nsfversion}</version>
+			<scope>compile</scope>
+		</dependency>
+
+
+
 	</dependencies>
 
 	<reporting>

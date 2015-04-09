@@ -5,12 +5,12 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.suntec.framework.constant.AppConstant;
-import net.suntec.framework.util.ASLogger;
+import net.suntec.oauthsrv.constant.AppConstant;
 import net.suntec.oauthsrv.dto.AppBase;
 import net.suntec.oauthsrv.framework.OauthAppConfig;
 import net.suntec.oauthsrv.framework.ResourceConfig;
 import net.suntec.oauthsrv.framework.dto.ServerConfig;
+import net.suntec.oauthsrv.util.ASLogger;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

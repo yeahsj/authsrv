@@ -107,7 +107,7 @@
 	<import resource="springModel.xml" />
 	<import resource="springCheckToken.xml" />
 	
-	<bean id="ncmsUtil" class="net.suntec.framework.util.NcmsUtil">
+	<bean id="ncmsUtil" class="net.suntec.oauthsrv.util.NcmsUtil">
 		<!-- 
 		<property name="qpidJmsTemplate" ref="qpidJmsTemplate" />
 		-->

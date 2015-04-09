@@ -3,21 +3,21 @@ package net.suntec.oauthsrv.action.v2;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.suntec.framework.constant.AppConstant;
-import net.suntec.framework.constant.MessageConstant;
-import net.suntec.framework.dto.SpringDetailJsonResult;
-import net.suntec.framework.dto.SpringErrorJsonResult;
-import net.suntec.framework.dto.SpringJsonResult;
 import net.suntec.framework.exception.ASBaseException;
-import net.suntec.framework.util.ASLogger;
+import net.suntec.framework.springmvc.json.dto.SpringDetailJsonResult;
+import net.suntec.framework.springmvc.json.dto.SpringErrorJsonResult;
+import net.suntec.framework.springmvc.json.dto.SpringJsonResult;
 import net.suntec.oauthsrv.action.jsonresult.AgreeBindStatusResult;
 import net.suntec.oauthsrv.action.jsonresult.TokenResult;
 import net.suntec.oauthsrv.action.param.IautoDeviceParamDTO;
 import net.suntec.oauthsrv.action.util.IautoDeviceUtil;
+import net.suntec.oauthsrv.constant.AppConstant;
+import net.suntec.oauthsrv.constant.MessageConstant;
 import net.suntec.oauthsrv.dto.AppIautoMap;
 import net.suntec.oauthsrv.service.ASCoreService;
 import net.suntec.oauthsrv.service.ASDeviceService;
 import net.suntec.oauthsrv.service.MessageService;
+import net.suntec.oauthsrv.util.ASLogger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

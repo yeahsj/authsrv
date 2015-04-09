@@ -3,8 +3,8 @@ package net.suntec.oauthsrv.service;
 import java.util.List;
 
 import net.suntec.constant.AuthErrorCodeConstant;
-import net.suntec.framework.constant.AppConstant;
 import net.suntec.framework.exception.ASServiceException;
+import net.suntec.oauthsrv.constant.AppConstant;
 import net.suntec.oauthsrv.dao.AppBaseMapper;
 import net.suntec.oauthsrv.dao.AppIautoMapMapper;
 import net.suntec.oauthsrv.dto.AppBase;

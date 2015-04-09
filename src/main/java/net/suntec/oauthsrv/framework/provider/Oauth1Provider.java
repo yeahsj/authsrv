@@ -1,8 +1,8 @@
 package net.suntec.oauthsrv.framework.provider;
 
-import net.suntec.framework.util.ASLogger;
 import net.suntec.oauthsrv.dto.AppConfig;
 import net.suntec.oauthsrv.framework.dto.OauthFlowStatus;
+import net.suntec.oauthsrv.util.ASLogger;
 
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Token;

@@ -1,11 +1,13 @@
 package net.suntec.oauthsrv.service;
 
-import net.suntec.oauthsrv.dao.AppInfoMapper;
-import net.suntec.oauthsrv.dto.AppInfo;
+import net.suntec.constant.AuthErrorCodeConstant;
+import net.suntec.framework.exception.ASServiceException;
 import net.suntec.oauth.check.CheckToken;
 import net.suntec.oauth.check.CheckTokenFactory;
 import net.suntec.oauth.check.TokenInfo;
 import net.suntec.oauthsrv.action.param.DeviceAppInfo;
+import net.suntec.oauthsrv.dao.AppInfoMapper;
+import net.suntec.oauthsrv.dto.AppInfo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +44,11 @@ public class TokenCheckService {
 		return isValid;
 	}
 
+	public boolean checkNetWork(String appType) {
+		CheckToken checkToken = factory.create(appType);
+		return checkToken.checkNetwork();
+	}
+
 	public boolean isValid(String appType, DeviceAppInfo deviceAppInfo) {
 		AppInfo params = new AppInfo();
 		params.setAppClientid(deviceAppInfo.getClientId());
@@ -49,16 +56,22 @@ public class TokenCheckService {
 
 		AppInfo appInfo = appInfoMapper.selectByClientId(params);
 		if (null != appInfo) {
-			TokenInfo record = new TokenInfo();
-			record.setAccessToken(deviceAppInfo.getAccessToken());
-			record.setRefreshToken(deviceAppInfo.getRefreshToken());
-			record.setUid(deviceAppInfo.getUid());
-			record.setApiKey(appInfo.getAppClientid());
-			record.setSecret(appInfo.getAppSecret());
-			record.setAppType(appType);
-			return isValid(record);
+			if (checkNetWork(appType)) {
+				TokenInfo record = new TokenInfo();
+				record.setAccessToken(deviceAppInfo.getAccessToken());
+				record.setRefreshToken(deviceAppInfo.getRefreshToken());
+				record.setUid(deviceAppInfo.getUid());
+				record.setApiKey(appInfo.getAppClientid());
+				record.setSecret(appInfo.getAppSecret());
+				record.setAppType(appType);
+				return isValid(record);
+			} else {
+				throw new ASServiceException("newwork can't access",
+						AuthErrorCodeConstant.CHECK_TOKEN_NETWORK_CANOT_ACCESS);
+			}
 		} else {
-			return false;
+			throw new ASServiceException("clientId invalid",
+					AuthErrorCodeConstant.CHECK_TOKEN_INVALID_CLIENTID);
 		}
 	}
 }

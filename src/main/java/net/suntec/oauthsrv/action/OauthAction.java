@@ -11,17 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.suntec.constant.Agent;
 import net.suntec.constant.AuthErrorCodeConstant;
-import net.suntec.framework.constant.AppConstant;
-import net.suntec.framework.constant.MessageConstant;
-import net.suntec.framework.dto.SpringDetailJsonResult;
-import net.suntec.framework.dto.SpringErrorJsonResult;
-import net.suntec.framework.dto.SpringJsonResult;
 import net.suntec.framework.exception.ASBaseException;
 import net.suntec.framework.exception.ASParamValidaterException;
-import net.suntec.framework.util.ASLogger;
-import net.suntec.framework.util.OauthProviderService;
-import net.suntec.framework.util.ServerPathUtil;
-import net.suntec.framework.util.SessionUtil;
+import net.suntec.framework.springmvc.json.dto.SpringDetailJsonResult;
+import net.suntec.framework.springmvc.json.dto.SpringErrorJsonResult;
+import net.suntec.framework.springmvc.json.dto.SpringJsonResult;
 import net.suntec.oauthsrv.action.check.ActionCheck;
 import net.suntec.oauthsrv.action.check.ApptypeCheck;
 import net.suntec.oauthsrv.action.check.auth.callback.ParamsCheck;
@@ -37,6 +31,8 @@ import net.suntec.oauthsrv.action.util.IautoDeviceUtil;
 import net.suntec.oauthsrv.action.util.IautoPhoneUtil;
 import net.suntec.oauthsrv.action.util.SpringResultUtil;
 import net.suntec.oauthsrv.action.util.UrlUtil;
+import net.suntec.oauthsrv.constant.AppConstant;
+import net.suntec.oauthsrv.constant.MessageConstant;
 import net.suntec.oauthsrv.dto.AppConfig;
 import net.suntec.oauthsrv.dto.AppIautoBindConfig;
 import net.suntec.oauthsrv.dto.AppIautoMap;
@@ -46,6 +42,10 @@ import net.suntec.oauthsrv.service.ASCoreService;
 import net.suntec.oauthsrv.service.ASDeviceService;
 import net.suntec.oauthsrv.service.MessageService;
 import net.suntec.oauthsrv.service.TokenCheckService;
+import net.suntec.oauthsrv.util.ASLogger;
+import net.suntec.oauthsrv.util.OauthProviderService;
+import net.suntec.oauthsrv.util.ServerPathUtil;
+import net.suntec.oauthsrv.util.SessionUtil;
 
 import org.scribe.model.Token;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +82,7 @@ public final class OauthAction {
 
 	/**
 	 * 检查Token有效性
+	 * 
 	 * @param req
 	 * @param res
 	 * @param provider
@@ -122,7 +123,7 @@ public final class OauthAction {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * 
 	 * @param req
@@ -175,19 +176,10 @@ public final class OauthAction {
 							refreshToken, uid, clientId);
 					res.sendRedirect(redUrl);
 				} else {
-//					AppIautoMap record = new AppIautoMap();
-//					record.setIautoUserId(loginName);
-//					record.setClientId(clientId);
-//					record.setAppType(provider);
-//					record.setApiUid(uid);
-//					record.setAccessToken(accessToken);
-//					record.setRefreshToken(refreshToken);
-//					String redUrl = conCallbackSuccessUrl(backurl, accessToken,
-//							refreshToken, uid, clientId);
-//					req.setAttribute("backurl", backurl);
-//					req.setAttribute("agreeParams", record);
-					res.sendRedirect( req.getContextPath() +
-									this.conAgreeUrl(backurl, accessToken, refreshToken, uid, clientId, provider, loginName) );
+					res.sendRedirect(req.getContextPath()
+							+ this.conAgreeUrl(backurl, accessToken,
+									refreshToken, uid, clientId, provider,
+									loginName));
 				}
 			}
 		} catch (ASBaseException e) {
@@ -207,11 +199,11 @@ public final class OauthAction {
 			req.setAttribute("appType", provider);
 			return AppConstant.DEVICE_ERROR_URL;
 		} else {
-//			if (isBind) {
+			// if (isBind) {
 			return null;
-//			} else {
-//				return "/flow/device/switchAgree";
-//			}
+			// } else {
+			// return "/flow/device/switchAgree";
+			// }
 		}
 	}
 
@@ -517,6 +509,10 @@ public final class OauthAction {
 					redirectUrl += "&mobile=1";
 				}
 				logger.info("Redirect URL: " + redirectUrl);
+				// res.addHeader("Cache-Control",
+				// "no-cache, no-store, must-revalidate");
+				// res.addHeader("Pragma", "no-cache");
+				// res.addHeader("Expires", "0");
 				res.sendRedirect(redirectUrl);
 			}
 		} catch (NullPointerException e) {
@@ -654,12 +650,15 @@ public final class OauthAction {
 								oauthFlowStatus.getAppConfig().getAppKey());
 						res.sendRedirect(redUrl);
 					} else {
-						res.sendRedirect( req.getContextPath() +
-								this.conAgreeUrl(backurl, oauthFlowStatus.getAccessToken()
-										.getToken(), oauthFlowStatus.getAccessToken()
-										.getSecret(), oauthFlowStatus.getProviderUser()
-										.getUserId(), oauthFlowStatus.getAppConfig()
-										.getAppKey(), provider, oauthStatusParamDTO.getLoginName()) );
+						res.sendRedirect(req.getContextPath()
+								+ this.conAgreeUrl(backurl, oauthFlowStatus
+										.getAccessToken().getToken(),
+										oauthFlowStatus.getAccessToken()
+												.getSecret(), oauthFlowStatus
+												.getProviderUser().getUserId(),
+										oauthFlowStatus.getAppConfig()
+												.getAppKey(), provider,
+										oauthStatusParamDTO.getLoginName()));
 						return null;
 						// return "/flow/device/switchAgree";
 						// aSCoreService.saveAuthHistory(provider,
@@ -728,27 +727,29 @@ public final class OauthAction {
 	}
 
 	private String conAgreeUrl(String backurl, String accessToken,
-			String refreshToken, String uid, String clientId , String appType , String loginName ) throws UnsupportedEncodingException{
+			String refreshToken, String uid, String clientId, String appType,
+			String loginName) throws UnsupportedEncodingException {
 		StringBuilder params = new StringBuilder();
 		params.append("/page/iAuto3rdBind?");
 		params.append("clientId=");
-		params.append( clientId );
+		params.append(clientId);
 		params.append("&accessToken=");
-		params.append( accessToken );
+		params.append(accessToken);
 		params.append("&refreshToken=");
-		params.append( refreshToken );
+		params.append(refreshToken);
 		params.append("&iautoUserId=");
-		params.append( loginName );
+		params.append(loginName);
 		params.append("&uid=");
-		params.append( uid );
+		params.append(uid);
 		params.append("&appType=");
 		params.append(appType);
 		params.append("&st=");
-		params.append( Math.random() );
+		params.append(Math.random());
 		params.append("&backurl=");
 		params.append(URLEncoder.encode(backurl, "UTF-8"));
 		return params.toString();
 	}
+
 	private String conCallbackSuccessUrl(String backurl, String accessToken,
 			String refreshToken, String uid, String clientId) {
 		StringBuilder redUrl = new StringBuilder();

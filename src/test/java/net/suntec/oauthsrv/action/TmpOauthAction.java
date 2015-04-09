@@ -7,19 +7,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.suntec.constant.AuthErrorCodeConstant;
-import net.suntec.framework.constant.AppConstant;
-import net.suntec.framework.constant.MessageConstant;
-import net.suntec.framework.dto.SpringDetailJsonResult;
-import net.suntec.framework.dto.SpringErrorJsonResult;
-import net.suntec.framework.dto.SpringJsonResult;
 import net.suntec.framework.exception.ASBaseException;
 import net.suntec.framework.exception.ASParamValidaterException;
-import net.suntec.framework.util.OauthProviderService;
+import net.suntec.framework.springmvc.json.dto.SpringDetailJsonResult;
+import net.suntec.framework.springmvc.json.dto.SpringErrorJsonResult;
+import net.suntec.framework.springmvc.json.dto.SpringJsonResult;
 import net.suntec.oauthsrv.action.util.DianPingSignUtil;
+import net.suntec.oauthsrv.constant.AppConstant;
+import net.suntec.oauthsrv.constant.MessageConstant;
 import net.suntec.oauthsrv.dto.AppConfig;
 import net.suntec.oauthsrv.service.ASCoreService;
 import net.suntec.oauthsrv.service.ASDeviceService;
 import net.suntec.oauthsrv.service.MessageService;
+import net.suntec.oauthsrv.util.OauthProviderService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,6 +1,6 @@
 package net.suntec.oauthsrv.dao;
 
-import net.suntec.framework.PioneerDAO;
+import net.suntec.framework.core.PioneerDAO;
 import net.suntec.oauthsrv.dto.DeviceOperationHistory;
 
 /**

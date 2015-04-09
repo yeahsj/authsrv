@@ -2,7 +2,7 @@ package net.suntec.oauthsrv.dto;
 
 import java.io.Serializable;
 
-import net.suntec.framework.PioneerDTO;
+import net.suntec.framework.core.PioneerDTO;
 
 /**
  * 

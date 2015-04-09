@@ -2,9 +2,9 @@ package net.suntec.oauthsrv.framework.provider;
 
 import net.suntec.constant.AuthErrorCodeConstant;
 import net.suntec.framework.exception.ASServiceException;
-import net.suntec.framework.util.ASLogger;
 import net.suntec.oauthsrv.dto.AppConfig;
 import net.suntec.oauthsrv.framework.dto.OauthFlowStatus;
+import net.suntec.oauthsrv.util.ASLogger;
 
 import org.json.JSONException;
 import org.scribe.model.Token;

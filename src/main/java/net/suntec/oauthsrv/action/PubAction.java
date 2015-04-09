@@ -2,10 +2,10 @@ package net.suntec.oauthsrv.action;
 
 import java.util.Calendar;
 
-import net.suntec.framework.constant.AppConstant;
-import net.suntec.framework.dto.SpringDetailJsonResult;
-import net.suntec.framework.dto.SpringJsonResult;
-import net.suntec.framework.util.ASLogger;
+import net.suntec.framework.springmvc.json.dto.SpringDetailJsonResult;
+import net.suntec.framework.springmvc.json.dto.SpringJsonResult;
+import net.suntec.oauthsrv.constant.AppConstant;
+import net.suntec.oauthsrv.util.ASLogger;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

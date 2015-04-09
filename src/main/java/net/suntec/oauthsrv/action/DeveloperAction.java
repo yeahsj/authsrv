@@ -5,14 +5,14 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.suntec.framework.constant.AppConstant;
-import net.suntec.framework.dto.SpringDetailJsonResult;
-import net.suntec.framework.dto.SpringErrorJsonResult;
-import net.suntec.framework.dto.SpringJsonResult;
 import net.suntec.framework.exception.ASBaseException;
-import net.suntec.framework.iauto.dto.result.IautoPhoneLoginResultDTO;
-import net.suntec.framework.util.ASLogger;
+import net.suntec.framework.iauto.client.dto.result.IautoPhoneLoginResultDTO;
+import net.suntec.framework.springmvc.json.dto.SpringDetailJsonResult;
+import net.suntec.framework.springmvc.json.dto.SpringErrorJsonResult;
+import net.suntec.framework.springmvc.json.dto.SpringJsonResult;
+import net.suntec.oauthsrv.constant.AppConstant;
 import net.suntec.oauthsrv.service.IautoApiService;
+import net.suntec.oauthsrv.util.ASLogger;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;

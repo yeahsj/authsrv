@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import net.suntec.framework.iauto.dto.IautoConfigDTO;
+import net.suntec.framework.iauto.client.dto.IautoConfigDTO;
 import net.suntec.oauthsrv.framework.dto.ServerConfig;
 import net.suntec.oauthsrv.framework.dto.SystemConfig;
 

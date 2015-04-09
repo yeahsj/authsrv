@@ -3,12 +3,13 @@ package net.suntec.oauthsrv.action.util;
 import javax.servlet.http.HttpServletRequest;
 
 import net.suntec.constant.AuthErrorCodeConstant;
-import net.suntec.framework.constant.MessageConstant;
 import net.suntec.framework.exception.ASBaseException;
-import net.suntec.framework.exception.ASIautoException;
-import net.suntec.framework.iauto.dto.IautoConfigDTO;
-import net.suntec.framework.iauto.dto.IautoUserDTO;
+import net.suntec.framework.iauto.client.constant.IautoErrorCodeConstant;
+import net.suntec.framework.iauto.client.dto.IautoConfigDTO;
+import net.suntec.framework.iauto.client.dto.IautoUserDTO;
+import net.suntec.framework.iauto.client.exception.ASIautoException;
 import net.suntec.oauthsrv.action.param.IautoDeviceParamDTO;
+import net.suntec.oauthsrv.constant.MessageConstant;
 import net.suntec.oauthsrv.framework.IautoUserCacheMap;
 import net.suntec.oauthsrv.framework.ResourceConfig;
 import net.suntec.oauthsrv.service.IautoApiService;
@@ -115,7 +116,7 @@ public final class IautoDeviceUtil {
 		// String deviceNo = iautoDeviceParamDTO.getDeviceNo();
 		if (StrUtil.isEmpty(iautoSessionToken)) {
 			throw new ASIautoException(" sessionToken is required  ",
-					AuthErrorCodeConstant.IT_GUI_ERR_NO_SESSIONTOKEN);
+					IautoErrorCodeConstant.IT_GUI_ERR_NO_SESSIONTOKEN);
 		}
 		// if (StrUtil.isEmpty(platformVersion)) {
 		// throw new ASIautoException(" platformVersion is required  ",

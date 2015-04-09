@@ -1,17 +1,17 @@
 package net.suntec.oauthsrv.service;
 
-import net.suntec.framework.iauto.constant.IautoConstant;
-import net.suntec.framework.iauto.dto.IautoConfigDTO;
-import net.suntec.framework.iauto.dto.IautoHeaderDTO;
-import net.suntec.framework.iauto.dto.IautoUserDTO;
-import net.suntec.framework.iauto.dto.param.IautoGetDeviceUserInfoParamDTO;
-import net.suntec.framework.iauto.dto.param.IautoPhoneLoginParamDTO;
-import net.suntec.framework.iauto.dto.result.IautoPhoneLoginResultDTO;
-import net.suntec.framework.iauto.service.IautoDeviceLoginService;
-import net.suntec.framework.iauto.service.IautoGetDeviceUserInfoService;
-import net.suntec.framework.iauto.service.IautoGetPhoneUserInfoService;
-import net.suntec.framework.iauto.service.IautoGetWebUserInfoService;
-import net.suntec.framework.iauto.service.IautoPhoneLoginService;
+import net.suntec.framework.iauto.client.constant.IautoConstant;
+import net.suntec.framework.iauto.client.dto.IautoConfigDTO;
+import net.suntec.framework.iauto.client.dto.IautoHeaderDTO;
+import net.suntec.framework.iauto.client.dto.IautoUserDTO;
+import net.suntec.framework.iauto.client.dto.param.IautoGetDeviceUserInfoParamDTO;
+import net.suntec.framework.iauto.client.dto.param.IautoPhoneLoginParamDTO;
+import net.suntec.framework.iauto.client.dto.result.IautoPhoneLoginResultDTO;
+import net.suntec.framework.iauto.client.service.IautoDeviceLoginService;
+import net.suntec.framework.iauto.client.service.IautoGetDeviceUserInfoService;
+import net.suntec.framework.iauto.client.service.IautoGetPhoneUserInfoService;
+import net.suntec.framework.iauto.client.service.IautoGetWebUserInfoService;
+import net.suntec.framework.iauto.client.service.IautoPhoneLoginService;
 import net.suntec.oauthsrv.framework.ResourceConfig;
 
 import com.openjava.core.util.StrUtil;

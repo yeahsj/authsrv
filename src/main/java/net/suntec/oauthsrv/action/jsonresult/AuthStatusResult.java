@@ -1,6 +1,6 @@
 package net.suntec.oauthsrv.action.jsonresult;
 
-import net.suntec.framework.dto.SpringJsonResult;
+import net.suntec.framework.springmvc.json.dto.SpringJsonResult;
 
 /**
  * 

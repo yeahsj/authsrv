@@ -104,7 +104,7 @@
 	<import resource="springModel.xml" />
 	<import resource="springQpid.xml" />
 	<!-- <import resource="springQpid.xml" /> -->
-	<bean id="ncmsUtil" class="net.suntec.framework.util.NcmsUtil" singleton="true">
+	<bean id="ncmsUtil" class="net.suntec.oauthsrv.util.NcmsUtil" singleton="true">
 		<property name="qpidJmsTemplate" ref="qpidJmsTemplate" />
 	</bean>
 </beans>

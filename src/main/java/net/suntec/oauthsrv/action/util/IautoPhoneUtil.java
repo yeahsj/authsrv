@@ -1,8 +1,8 @@
 package net.suntec.oauthsrv.action.util;
 
 import net.suntec.constant.AuthErrorCodeConstant;
-import net.suntec.framework.exception.ASIautoException;
-import net.suntec.framework.iauto.dto.IautoUserDTO;
+import net.suntec.framework.iauto.client.dto.IautoUserDTO;
+import net.suntec.framework.iauto.client.exception.ASIautoException;
 import net.suntec.oauthsrv.action.param.IautoPhoneParamDTO;
 import net.suntec.oauthsrv.framework.IautoUserCacheMap;
 import net.suntec.oauthsrv.service.IautoApiService;

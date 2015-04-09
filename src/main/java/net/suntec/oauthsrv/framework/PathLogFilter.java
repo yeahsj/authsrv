@@ -15,10 +15,10 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import net.suntec.oauthsrv.framework.handler.LogFilterHandler;
-import net.suntec.oauthsrv.framework.handler.impl.PrintHeaderHandler;
-import net.suntec.oauthsrv.framework.handler.impl.PrintParamsHandler;
-import net.suntec.oauthsrv.framework.handler.impl.PrintUrlHandler;
+import net.suntec.framework.web.handler.LogFilterHandler;
+import net.suntec.framework.web.handler.impl.PrintHeaderHandler;
+import net.suntec.framework.web.handler.impl.PrintParamsHandler;
+import net.suntec.framework.web.handler.impl.PrintUrlHandler;
 import net.suntec.oauthsrv.dto.AppPathLogDetail;
 import net.suntec.oauthsrv.framework.job.WritePathLogJob;
 

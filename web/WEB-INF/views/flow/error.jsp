@@ -1,3 +1,4 @@
+<%@page import="com.openjava.core.util.StrUtil"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
@@ -5,6 +6,7 @@
 	String path = request.getContextPath();
 	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
+	String errMsg = StrUtil.nullToString( request.getAttribute("errMsg") );
 %>
 <!DOCTYPE html>
 <html>
@@ -37,11 +39,12 @@
 			    window.demo.clickOnAndroid('redirectLocal');
 		    }
 		    function init(){
+		    	console.log( "error message: <%=errMsg%>" );
 		    	$("#afui").css("height" , ( $(window).height() ) + "px" ); 
 		    }
 		</script>
 	</head>
-	<body onload="init();">
+	<body onload="init();" onselectstart="return false;">
 		<div id="afui" class="android" >
 			<div id="header" class="header">
 				<header id="defaultHeader">

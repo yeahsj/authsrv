@@ -1,3 +1,4 @@
+<%@page import="com.openjava.core.util.StrUtil"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%
@@ -5,6 +6,7 @@
 	String basePath = request.getScheme() + "://"
 			+ request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
+	String errMsg = StrUtil.nullToString( request.getAttribute("errMsg") );
 %>
 <!DOCTYPE html>
 <html>
@@ -17,6 +19,7 @@
 		<title>error page</title>
 		<script language="javascript" type="text/javascript">
 	function init() {
+		console.log( "error message: <%=errMsg%>" );
 		var pageHeight = $(window).height();
 		if( pageHeight > 480 ){
 			$("#afui").css("height", "480px");
@@ -28,6 +31,7 @@
 			$("#afui").css("height", "480px");
 		}
 	}
+	
 </script>
 		<style>
 body {
@@ -62,7 +66,7 @@ body {
 }
 </style>
 	</head>
-	<body onload="init();">
+	<body onload="init();" onselectstart="return false;">
 		<div id="afui" class="error_page">
 			<div class="error_msg">
 				Authentication failed! Please press the "Back" button and try again.

@@ -1,6 +1,6 @@
 package net.suntec.oauthsrv.framework.dto;
 
-import net.suntec.framework.iauto.dto.IautoConfigDTO;
+import net.suntec.framework.iauto.client.dto.IautoConfigDTO;
 
 /**
  * 

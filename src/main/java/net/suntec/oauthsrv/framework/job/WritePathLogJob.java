@@ -3,9 +3,9 @@ package net.suntec.oauthsrv.framework.job;
 import javax.servlet.ServletContext;
 
 import net.suntec.framework.exception.ASBaseException;
-import net.suntec.framework.util.ASLogger;
 import net.suntec.oauthsrv.dto.AppPathLogDetail;
 import net.suntec.oauthsrv.service.PathLogService;
+import net.suntec.oauthsrv.util.ASLogger;
 
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;

@@ -1,10 +1,10 @@
 package net.suntec.oauthsrv.action.util;
 
+import junit.framework.TestCase;
+import net.suntec.oauthsrv.util.AesUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.suntec.framework.util.AesUtil;
-import junit.framework.TestCase;
 
 public class TestAES extends TestCase {
 	Logger logger = LoggerFactory.getLogger(TestAES.class);
