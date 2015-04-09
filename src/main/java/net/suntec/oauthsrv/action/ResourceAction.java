@@ -26,7 +26,7 @@ public class ResourceAction {
 		try {
 			req.getRequestDispatcher(png).forward(req, res);
 		} catch (ServletException e) {
-			e.printStackTrace();
+			logger.exception(e.getMessage());
 		}
 		return null;
 	}

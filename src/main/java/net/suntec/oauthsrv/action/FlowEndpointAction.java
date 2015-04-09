@@ -92,7 +92,7 @@ public class FlowEndpointAction {
 			logger.error(ex.getMessage(), ex);
 		} catch (Exception ex) {
 			errMsg = ex.getMessage();
-			logger.exception(errMsg);
+			logger.exception(errMsg, ex);
 		}
 
 		if (!StrUtil.isEmpty(errMsg)) {
@@ -129,19 +129,19 @@ public class FlowEndpointAction {
 			} else {
 				appListResult = aSPhoneService
 						.selectPhoneBindAppListNew(userName);
-//				lastUpdatetime = aSCoreService
-//						.selectLastestHistoryTime(userName);
+				// lastUpdatetime = aSCoreService
+				// .selectLastestHistoryTime(userName);
 			}
 			// appListResult = ApiActionConvert.connvert(datas);
 		} catch (ASBaseException ex) {
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_LIST_BINDS_FAILED, ex.getErrCode());
-			logger.error(errMsg);
+			logger.error(errMsg, ex.getMessage());
 		} catch (Exception ex) {
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_LIST_BINDS_FAILED,
 					AuthErrorCodeConstant.API_FETCH_APP_LIST);
-			logger.exception(ex.getMessage());
+			logger.exception(errMsg, ex);
 		}
 
 		if (!StrUtil.isEmpty(errMsg)) {
@@ -185,12 +185,12 @@ public class FlowEndpointAction {
 		} catch (ASBaseException ex) {
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_LIST_BINDS_FAILED, ex.getErrCode());
-			logger.error(errMsg);
+			logger.error(errMsg, ex.getMessage());
 		} catch (Exception ex) {
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_LIST_BINDS_FAILED,
 					AuthErrorCodeConstant.API_FETCH_APP_LIST);
-			logger.exception(errMsg);
+			logger.exception(errMsg, ex);
 		}
 
 		if (!StrUtil.isEmpty(errMsg)) {
@@ -250,12 +250,12 @@ public class FlowEndpointAction {
 		} catch (ASBaseException ex) {
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_UN_BIND_FAILED, ex.getErrCode());
-			logger.error(errMsg);
+			logger.error(errMsg, ex.getMessage());
 		} catch (Exception ex) {
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_UN_BIND_FAILED,
 					AuthErrorCodeConstant.API_UNBIDN_FAILED);
-			logger.exception(errMsg);
+			logger.exception(errMsg, ex);
 		}
 
 		if (!StrUtil.isEmpty(errMsg)) {
@@ -297,12 +297,12 @@ public class FlowEndpointAction {
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_AGREE_SWITCH_FAILED,
 					ex.getLocalizedMessage());
-			logger.error(errMsg);
+			logger.error(errMsg, ex.getMessage());
 		} catch (Exception ex) {
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_AGREE_SWITCH_FAILED,
 					ex.getLocalizedMessage());
-			logger.exception(errMsg);
+			logger.exception(errMsg, ex);
 		}
 		return SpringResultUtil.jsonResult(errMsg);
 	}
@@ -333,12 +333,12 @@ public class FlowEndpointAction {
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_FETCH_AGREE_SWITCH_FAILED,
 					ex.getLocalizedMessage());
-			logger.error(errMsg);
+			logger.error(errMsg, ex.getMessage());
 		} catch (Exception ex) {
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_FETCH_AGREE_SWITCH_FAILED,
 					ex.getLocalizedMessage());
-			logger.exception(errMsg);
+			logger.exception(errMsg, ex);
 		}
 		if (!StrUtil.isEmpty(errMsg)) {
 			result = new SpringErrorJsonResult<String>();
@@ -369,12 +369,12 @@ public class FlowEndpointAction {
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_AGREE_SWITCH_FAILED,
 					ex.getLocalizedMessage());
-			logger.error(errMsg);
+			logger.error(errMsg, ex.getMessage());
 		} catch (Exception ex) {
 			errMsg = messageService.getMessage(req,
 					MessageConstant.MSG_AGREE_SWITCH_FAILED,
 					ex.getLocalizedMessage());
-			logger.exception(errMsg);
+			logger.exception(errMsg, ex);
 		}
 		return SpringResultUtil.jsonResult(errMsg);
 	}
