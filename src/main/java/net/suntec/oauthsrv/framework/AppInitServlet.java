@@ -46,9 +46,9 @@ public class AppInitServlet extends HttpServlet {
 		super.init(servletConfig);
 		initSysConfig();
 		initAppConfig();
-
 		doAutoJob();
 	}
+ 
 
 	/**
 	 * 定时JOB

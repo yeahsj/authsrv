@@ -145,6 +145,7 @@ public final class OauthAction {
 		String accessToken = req.getParameter("accessToken");
 		String refreshToken = req.getParameter("refreshToken");
 		String backurl = req.getParameter("backurl");
+		setLocale(req);
 		boolean isContinue = false;
 		boolean isBind = false;
 		try {
@@ -297,6 +298,14 @@ public final class OauthAction {
 		return SpringResultUtil.jsonResult(errMsg, errCode);
 	}
 
+	private void setLocale(HttpServletRequest req) {
+		String locale = req.getParameter("locale");
+		if (StrUtil.isNotEmpty(locale)) {
+			logger.info("locale is " + locale);
+			req.getSession().setAttribute("locale", locale);
+		}
+	}
+
 	/**
 	 * 这个接口只支持device访问 获取Token,如果用户之前已经激活了该App,则直接从数据库中获取Token,如果之前用户未激活过Token,
 	 * 则走oauth流程获取Token( /auth/twitter )
@@ -315,6 +324,7 @@ public final class OauthAction {
 		boolean noToken = true; // 标记服务器上有没有该iauto用户的对应的App信息
 		Integer errCode = AppConstant.ERROR_CODE;
 		String appVersion = req.getParameter("appVersion");
+		setLocale(req);
 		try {
 			/**
 			 * 1: 首先从session中判断是否已存在loginName 2: 没有则从iauto获取 3: 返回loginName

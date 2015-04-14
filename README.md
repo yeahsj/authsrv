@@ -1,6 +1,6 @@
 #Test
 open browser, input url:   
-http://localhost:8080/auth/twitter?backurl=http://www.myhome.com  
+<http://localhost:8080/auth/twitter?backurl=http://www.myhome.com>  
 
 then redirect to twitter authentication page, input your username and password  and authorization.  
 

@@ -25,6 +25,8 @@ import net.suntec.oauthsrv.framework.job.WritePathLogJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.openjava.core.util.StrUtil;
+
 /**
  * 
  * 
@@ -39,13 +41,25 @@ public class PathLogFilter implements Filter {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	static List<LogFilterHandler> handlers;
 
+	boolean printDetail = false;
+
 	static {
 		handlers = new ArrayList<LogFilterHandler>();
 		handlers.add(new PrintUrlHandler());
 		handlers.add(new PrintParamsHandler());
 		handlers.add(new PrintHeaderHandler());
 	}
-	
+
+	@Override
+	public void init(FilterConfig filterConfig) throws ServletException {
+		logger = LoggerFactory.getLogger(PathLogFilter.class);
+		String printDetailStr = StrUtil.nullToString(filterConfig
+				.getInitParameter("printDetail"));
+		if (!StrUtil.isEmpty(printDetailStr)) {
+			printDetail = Boolean.parseBoolean(printDetailStr);
+		}
+	}
+
 	@Override
 	public void destroy() {
 		// TODO Auto-generated method stub
@@ -59,27 +73,42 @@ public class PathLogFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		HttpServletRequest req = (HttpServletRequest) request;
+		final HttpServletRequest req = (HttpServletRequest) request;
+		final ServletResponse res = (ServletResponse) response;
 		String path = req.getRequestURI();
-		// logger.info(req.getRequestURL().toString());
+		logger.info("path is" + req.getRequestURL().toString());
 		if (path.equals("/") || path.indexOf("css") > -1
 				|| path.indexOf("js") > -1) {
 			chain.doFilter(request, response);
 		} else if (path.indexOf("/api/authStatus") > -1) {
 			chain.doFilter(request, response);
 		} else {
+
 			StringBuilder params = this.getParams(req);
 			StringBuilder headers = this.getHeaders(req);
 			long startTime = Calendar.getInstance().getTimeInMillis();
 			String remoteAddr = req.getRemoteAddr();
-
 			ServletContext servletContext = req.getSession()
 					.getServletContext();
 			try {
-				for (LogFilterHandler handler : handlers) {
-					handler.execute(request, response);
+				if (printDetail) {
+					for (final LogFilterHandler handler : handlers) {
+						AppTaskExecutors.getInstance().addLogTask(
+								new Runnable() {
+									@Override
+									public void run() {
+										handler.execute(req, res);
+									}
+								});
+					}
 				}
-				chain.doFilter(request, response);
+				if (path.indexOf("/page/iAuto3rdBind") > -1
+						|| path.indexOf("/dev/switchAgree") > -1) {
+					LocaleRequestWrapper wrapper = new LocaleRequestWrapper(req);
+					chain.doFilter(wrapper, response);
+				} else {
+					chain.doFilter(request, response);
+				}
 				afterFilter(servletContext, path, params.toString(),
 						headers.toString(), remoteAddr, startTime);
 			} catch (Exception ex) {
@@ -90,11 +119,6 @@ public class PathLogFilter implements Filter {
 		}
 	}
 
-	@Override
-	public void init(FilterConfig arg0) throws ServletException {
-		// TODO Auto-generated method stub
-	}
-
 	@SuppressWarnings("unchecked")
 	private StringBuilder getParams(HttpServletRequest req) {
 		Enumeration<String> names = req.getParameterNames();
@@ -103,7 +127,7 @@ public class PathLogFilter implements Filter {
 		while (names.hasMoreElements()) {
 			String name = (String) names.nextElement();
 			String value = req.getParameter(name);
-//			logger.info( name + " = " + value );
+			// logger.info( name + " = " + value );
 			if (isfirst) {
 				isfirst = false;
 			} else {
@@ -115,7 +139,6 @@ public class PathLogFilter implements Filter {
 		}
 		return params;
 	}
-	 
 
 	@SuppressWarnings("unchecked")
 	private StringBuilder getHeaders(HttpServletRequest req) {

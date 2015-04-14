@@ -18,6 +18,7 @@ public class PageAction {
 	@RequestMapping(value = "/iAuto3rdBind")
 	public String switchAgree(HttpServletRequest req, HttpServletResponse res,
 			@ModelAttribute AppIautoMap record) {
+		//
 		String backurl = req.getParameter("backurl");
 		logger.info(backurl);
 		req.setAttribute("backurl", backurl);

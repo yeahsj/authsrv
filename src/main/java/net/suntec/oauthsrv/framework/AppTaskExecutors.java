@@ -105,4 +105,8 @@ public class AppTaskExecutors {
 	public void addLogTask(WritePathLogJob job) {
 		logThreadPoolExecutor.execute(job);
 	}
+
+	public void addLogTask(Runnable command) {
+		logThreadPoolExecutor.execute(command);
+	}
 }

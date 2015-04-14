@@ -107,4 +107,14 @@
 	<bean id="ncmsUtil" class="net.suntec.oauthsrv.util.NcmsUtil" singleton="true">
 		<property name="qpidJmsTemplate" ref="qpidJmsTemplate" />
 	</bean>
+	
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>msg-info</value>
+			</list> 
+		</property>
+		<property name="useCodeAsDefaultMessage" value="true"></property>
+	</bean>
 </beans>

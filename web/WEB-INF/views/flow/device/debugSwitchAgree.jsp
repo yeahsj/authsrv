@@ -13,6 +13,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta HTTP-EQUIV="pragma" CONTENT="no-cache"/> 
+<meta HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate"/> 
+<meta HTTP-EQUIV="expires" CONTENT="0"/> 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <script type="text/javascript" charset="utf-8"
@@ -49,7 +52,7 @@
 	<div id="afui">
 		<div id="b-caution-main"
 			style="background-image: url(<%=path%>/css/images/caution_bg.png)">
-			<div id="b-caution-title">Caution</div>
+			<div id="b-caution-title"><spring:message code="MSG_CAUTION"/></div>
 			<div id="b-caution-container"
 				style="background-image: url(<%=path%>/css/images/caution_content_bg.png)">
 				<div id="b-caution-content">
@@ -61,22 +64,22 @@
 				<!-- normal button1 -->
 				<div id="b-caution-button-1" class="b-caution-button"
 					style="background-image: url(<%=path%>/css/images/caution_btn_m.png)">
-					<div class="b-caution-button-text">Not Agree</div>
+					<div class="b-caution-button-text"><spring:message code="MSG_BTN_NOT_AGREE"/></div>
 				</div>
 				<!-- pressed button1 -->
 				<div id="b-caution-button-1-pressed" class="b-caution-button"
 					style="background-image: url(<%=path%>/css/images/caution_btn_m_p.png)">
-					<div class="b-caution-button-text">Not Agree</div>
+					<div class="b-caution-button-text"><spring:message code="MSG_BTN_NOT_AGREE"/></div>
 				</div>
 				<!-- normal button2 -->
 				<div id="b-caution-button-2" class="b-caution-button"
 					style="background-image: url(<%=path%>/css/images/caution_btn_m.png)">
-					<div class="b-caution-button-text">Agree</div>
+					<div class="b-caution-button-text"><spring:message code="MSG_BTN_AGREE"/></div>
 				</div>
 				<!-- pressed button2 -->
 				<div id="b-caution-button-2-pressed" class="b-caution-button"
 					style="background-image: url(<%=path%>/css/images/caution_btn_m_p.png)">
-					<div class="b-caution-button-text">Agree</div>
+					<div class="b-caution-button-text"><spring:message code="MSG_BTN_AGREE"/></div>
 				</div>
 			</div>
 		</div>
