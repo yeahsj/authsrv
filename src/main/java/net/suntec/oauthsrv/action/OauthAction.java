@@ -19,14 +19,14 @@ import net.suntec.framework.springmvc.json.dto.SpringJsonResult;
 import net.suntec.oauthsrv.action.check.ActionCheck;
 import net.suntec.oauthsrv.action.check.ApptypeCheck;
 import net.suntec.oauthsrv.action.check.auth.callback.ParamsCheck;
-import net.suntec.oauthsrv.action.check.auth.callback.ResubmitActionCheck;
-import net.suntec.oauthsrv.action.check.auth.callback.SessionObjectCheck;
 import net.suntec.oauthsrv.action.check.auth.tobind.ToBindParamsCheck;
 import net.suntec.oauthsrv.action.jsonresult.AgreeBindStatusResult;
 import net.suntec.oauthsrv.action.jsonresult.AppInfoResult;
 import net.suntec.oauthsrv.action.jsonresult.TokenResult;
 import net.suntec.oauthsrv.action.param.DeviceAppInfo;
 import net.suntec.oauthsrv.action.param.IautoDeviceParamDTO;
+import net.suntec.oauthsrv.action.piece.CallbackAction;
+import net.suntec.oauthsrv.action.piece.CallbackCacheResult;
 import net.suntec.oauthsrv.action.util.IautoDeviceUtil;
 import net.suntec.oauthsrv.action.util.IautoPhoneUtil;
 import net.suntec.oauthsrv.action.util.SpringResultUtil;
@@ -572,6 +572,36 @@ public final class OauthAction {
 	public String callback(HttpServletRequest req, HttpServletResponse res,
 			@PathVariable("provider") String provider,
 			@PathVariable("sortNo") String sortNo) throws IOException {
+		logger.info("callback for [OAUTH-1-2] from "
+				+ req.getHeader("user-agent"));
+		CallbackAction callbackAction = new CallbackAction(aSCoreService,
+				messageService);
+		CallbackCacheResult result = callbackAction.execute(req, res, provider);
+		if (!StrUtil.isEmpty(result.getErrMsg())) {
+			return this
+					.handleErrMsg(req, res, null, result.getFromPhone(),
+							result.getErrCode(), result.getErrMsg(),
+							result.getErrUrl());
+		} else {
+			res.sendRedirect(result.getBackurl());
+			return null;
+		}
+	}
+
+	/**
+	 * oauth 流程回调点
+	 * 
+	 * @param req
+	 * @param res
+	 * @param provider
+	 * @param appId
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "/{provider}/{sortNo}/callback0")
+	public String callback0(HttpServletRequest req, HttpServletResponse res,
+			@PathVariable("provider") String provider,
+			@PathVariable("sortNo") String sortNo) throws IOException {
 
 		// String userAgent = req.getHeader("user-agent");
 		// Agent agent = AgentUtil.getAgent(userAgent);
@@ -1056,8 +1086,8 @@ public final class OauthAction {
 	static List<ActionCheck> toBindChecks = new ArrayList<ActionCheck>();
 
 	static {
-		callBackChecks.add(new ResubmitActionCheck());
-		callBackChecks.add(new SessionObjectCheck());
+		// callBackChecks.add(new ResubmitActionCheck());
+		// callBackChecks.add(new SessionObjectCheck());
 		callBackChecks.add(new ApptypeCheck());
 		// callBackChecks.add(new CancelCheck());
 		callBackChecks.add(new ParamsCheck());
