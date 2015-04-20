@@ -45,6 +45,11 @@
 	}
 	
 	function doAgree() {
+		console.log("doAgree");
+	}
+	
+	function disAgree() {
+		console.log("disAgree");
 	}
 </script>
 </head>
