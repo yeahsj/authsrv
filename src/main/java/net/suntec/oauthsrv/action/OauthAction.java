@@ -839,15 +839,15 @@ public final class OauthAction {
 					logger.error(ex.getMessage());
 				}
 				if (!StrUtil.isEmpty(loginName)) {
-					aSDeviceService.saveLogoutByAccessToken(provider,
-							accessToken);
-				} else {
 					AppIautoMap appIautoMap = new AppIautoMap();
 					appIautoMap.setIautoUserId(loginName);
 					appIautoMap.setAppType(provider);
 					appIautoMap.setAccessToken(accessToken);
 					aSDeviceService.saveLogout(appIautoMap,
 							AppConstant.AUTH_LOGOUT_DEVICE);
+				} else {
+					aSDeviceService.saveLogoutByAccessToken(provider,
+							accessToken);
 				}
 			}
 		} catch (ASBaseException e) {
