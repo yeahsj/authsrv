@@ -17,6 +17,7 @@ import net.suntec.oauthsrv.dto.AppIautoMap;
 import net.suntec.oauthsrv.service.ASCoreService;
 import net.suntec.oauthsrv.service.ASDeviceService;
 import net.suntec.oauthsrv.service.MessageService;
+import net.suntec.oauthsrv.service.TokenCheckService;
 import net.suntec.oauthsrv.util.ASLogger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,12 +47,14 @@ public final class DeviceEndpointAction {
 	ASCoreService aSCoreService;
 	@Autowired
 	MessageService messageService;
+	@Autowired
+	TokenCheckService tokenCheckService;
 
 	private final ASLogger logger = new ASLogger(DeviceEndpointAction.class);
 
 	/**
 	 * 这个接口只支持device访问 获取Token,如果用户之前已经激活了该App,则直接从数据库中获取Token,如果之前用户未激活过Token,
-	 * 则走oauth流程获取Token( /auth/twitter )
+	 * 则走oauth流程获取Token
 	 */
 	@RequestMapping(value = "/{provider}/token")
 	public @ResponseBody SpringJsonResult<TokenResult> fetchToken(
@@ -79,7 +82,12 @@ public final class DeviceEndpointAction {
 				isBind = aSCoreService.hasAgreeBindConfig(loginName);
 				noToken = true;
 			} else {
-				noToken = false;
+				boolean isValid = tokenCheckService.isValid(provider, record);
+				if (isValid) {
+					noToken = false;
+				} else {
+					noToken = true;
+				}
 			}
 		} catch (ASBaseException e) {
 			errCode = e.getErrCode();

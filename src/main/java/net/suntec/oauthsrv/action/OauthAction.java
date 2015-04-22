@@ -337,7 +337,12 @@ public final class OauthAction {
 				// isBind = aSCoreService.hasAgreeBindConfig(loginName);
 				noToken = true;
 			} else {
-				noToken = false;
+				boolean isValid = tokenCheckService.isValid(provider, record);
+				if( isValid ){
+					noToken = false;
+				}else{
+					noToken = true;
+				}
 			}
 		} catch (ASBaseException e) {
 			errCode = e.getErrCode();

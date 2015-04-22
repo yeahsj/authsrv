@@ -53,7 +53,7 @@
 	}
 </script>
 </head>
-<body onload="init();" onunload="close();">
+<body onload="init();" onunload="close();" onselectstart="return false;">
 	<div id="afui">
 		<div id="b-caution-main"
 			style="background-image: url(<%=path%>/css/images/caution_bg.png)">

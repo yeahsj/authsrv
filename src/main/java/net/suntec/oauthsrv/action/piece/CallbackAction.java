@@ -64,10 +64,11 @@ public class CallbackAction {
 		CallbackCacheKey key = new CallbackCacheKey(req.getSession().getId(),
 				provider, code, oAuthVerifier, oauthToken);
 		synchronized (session) {
-			if (null != session.getAttribute(key.toString())) {
+			Object cacheResult = session.getAttribute(key.toString());
+			if (null != cacheResult
+					&& cacheResult instanceof CallbackCacheResult) {
 				logger.info("get callback result from cahce");
-				result = (CallbackCacheResult) session.getAttribute(key
-						.toString());
+				result = (CallbackCacheResult) cacheResult;
 			} else {
 				logger.info("new request, create result for callback");
 				try {
