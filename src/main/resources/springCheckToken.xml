@@ -32,6 +32,8 @@
 				<prop key="pocket">pocketCheckToken</prop>
 				<prop key="soundcloud">soundcloudCheckToken</prop>
 				<prop key="weibo">weiboCheckToken</prop>
+				<prop key="vine">vineCheckToken</prop>
+				<prop key="foursquare">foursquareCheckToken</prop>
 			</props>
 		</property>
 	</bean>

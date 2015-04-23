@@ -82,7 +82,13 @@ public final class DeviceEndpointAction {
 				isBind = aSCoreService.hasAgreeBindConfig(loginName);
 				noToken = true;
 			} else {
-				boolean isValid = tokenCheckService.isValid(provider, record);
+				boolean isValid = true;
+				try {
+					isValid = tokenCheckService.isValid(provider, record);
+				} catch (Exception ex) {
+					logger.error(ex.getMessage());
+					isValid = true;
+				}
 				if (isValid) {
 					noToken = false;
 				} else {
